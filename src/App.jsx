@@ -1,35 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+// El Router-dom permite mostrar diferentes componentes o páginas según el URL, en este caso que trabajamos con 
+// el headery cursos, cuando se ejecute el servidor va a dar la URL y a ella le tendrémos que agregar el elemento al que 
+// queremos hacer referencia, por ejemplo: http://localhost:5173/header o http://localhost:5173/cursos
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import CursosPage from './pages/cursoPage.jsx';
+import SolicitarCitaPage from './pages/SolicitarCitaCliente.jsx';
+import CalendarioCitas from './components/layout/calendarioCitas.jsx';
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      {/* Definimos rutas con <Routes> y <Route path="..." element={<Componente />} />
+      Cuando la URL coincide con el path, React muestra ese componente. */}
+      <Routes>
+        <Route path="/cursos" element={<CursosPage />} />
+        <Route path='/cita' element={< SolicitarCitaPage />} />
+        <Route path='/calendario' element={< CalendarioCitas />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

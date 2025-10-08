@@ -1,0 +1,168 @@
+:root {
+  --color-fondo-principal: #f9f5ea;
+  --color-texto: #222;
+  --color-fondo-secciones: #faf8f6; 
+  /* para el fondo de secciones se usa este color, pero no se deja ver el formulario: #f9f5ea;  */
+  --color-sombra: rgba(0, 0, 0, 0.1);
+  --color-sombra-input: rgba(0, 0, 0, 0.2); 
+  --color-borde-input: #ccc;
+  --color-boton-fondo: #222;
+  --color-boton-texto: #ffd600;
+  --color-boton-hover: #444;
+  --color-resumen-fondo: #f0f0f0;
+  --color-focus-input: #c9a56a;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--color-fondo-principal);
+  margin: 0;
+  padding: 0;
+  color: var(--color-texto);
+}
+
+/* Contenedor principal con texto centrado */
+.contenedor-principal {
+  margin-bottom: 40px;
+  width: 100%; /* Elimino max-width para ocupar todo el ancho */
+  padding: 10px 20px; /* Reduzco los márgenes laterales a 20px */
+}
+
+.texto-centrado {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Contenedor de citas */
+.contenedor-citas {
+  width: 100%; /* Elimino max-width para ocupar todo el ancho */
+  display: flex;
+  gap: 20px;
+  padding: 0 20px; /* Reduzco los paddings laterales a 20px */
+  flex-wrap: wrap; /* Para que sea responsive en pantallas pequeñas */
+}
+
+/* Sección del formulario (izquierda) */
+.seccion-formulario {
+  flex: 1;
+  background: var(--color-fondo-secciones);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px var(--color-sombra);
+  min-width: 300px;
+  max-width: 45%; /* Reduzco un poco para dar más espacio al calendario */
+  margin-left: 30px; /* Añadido margen izquierdo al formulario */
+}
+
+/* Título principal */
+.titulo-principal,
+.descripcion-principal {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: var(--color-texto);
+}
+
+.titulo-principal {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.descripcion-principal {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Etiquetas de formulario */
+label {
+  font-weight: bold;
+  display: block;
+  margin: 15px 0 5px;
+  color: var(--color-texto);
+}
+
+/* Campos de entrada y selects */
+input[type="text"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid var(--color-borde-input);
+  box-sizing: border-box;
+  font-size: 14px;
+  box-shadow: 0 2px 4px var(--color-sombra-input);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+select:focus {
+  border-color: var(--color-focus-input);
+  box-shadow: 0 0 6px rgba(201, 165, 106, 0.4);
+  outline: none;
+}
+
+
+
+/* Botón enviar */
+button {
+  margin-top: 20px;
+  width: 100%;
+  background: var(--color-boton-fondo);
+  color: var(--color-boton-texto);
+  font-weight: bold;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--color-boton-hover);
+}
+
+/* Resumen de la cita */
+.resumen-cita {
+  background: var(--color-resumen-fondo);
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.resumen-cita strong {
+  color: var(--color-texto);
+}
+
+/* Sección del calendario (derecha) */
+.seccion-calendario {
+  flex: 1;
+  background:#faf8f6;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px var(--color-sombra);
+  min-width: 400px;
+  max-width: 55%; /* Aumento el ancho del calendario al 55% */
+  margin-right: 20px; /* Añadido margen derecho al calendario */
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .contenedor-citas {
+    flex-direction: column;
+  }
+
+  .seccion-formulario,
+  .seccion-calendario {
+    max-width: 100%;
+    min-width: 100%;
+    margin-left: 0; /* Elimino márgenes en móvil */
+    margin-right: 0; /* Elimino márgenes en móvil */
+  }
+
+  .texto-centrado {
+    margin-bottom: 10px;
+  }
+}

@@ -1,0 +1,87 @@
+.footer {
+  background-color: #000;
+  color: #fff;
+  padding: 50px 20px 30px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer__container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 40px;
+}
+
+.footer__column {
+  flex: 1;
+  min-width: 250px;
+}
+
+.footer__column h3 {
+  font-size: 1.2rem;
+  color: #c9a56a;
+  margin-bottom: 15px;
+}
+
+.footer__column p {
+  font-size: 0.95rem;
+  color: #ddd;
+  line-height: 1.6;
+}
+
+.footer__column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer__column li {
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ccc;
+}
+
+.footer__column a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer__column a:hover {
+  color: #c9a56a;
+}
+
+.footer__mapa iframe {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+}
+
+.footer__bottom {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.85rem;
+  color: #888;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer__container {
+    flex-direction: column;
+  }
+
+  .footer__column {
+    width: 100%;
+  }
+
+  .footer__mapa iframe {
+    height: 200px;
+  }
+}

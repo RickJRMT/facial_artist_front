@@ -1,0 +1,112 @@
+:root {
+    --color-primary: #007bff; /* Botones principales */
+    --color-primary-hover: #0056b3; /* Botones al hacer hover */
+
+    --color-event-background-active: #d77e44; /* Fondo de eventos activos */
+    --color-event-border-active: #c59855; /* Borde de eventos activos */
+    --color-event-text-active: #fcfcfc; /* Texto de eventos activos */
+
+    --color-event-background-cancelled: #6c757d; /* Fondo de eventos cancelados */
+    --color-event-border-cancelled: #5a6268; /* Borde de eventos cancelados */
+    --color-event-text-cancelled: #ffffff; /* Texto de eventos cancelados */
+
+    --color-event-time: #181717; /* Texto de hora en eventos */
+    --color-text: #333333; /* Texto general */
+    --color-background: #faf8f6; /* Fondo general del calendario */
+}
+
+.calendario-container {
+    width: 100%;
+    overflow-x: auto;
+    background-color: var(--color-background); /* Fondo del contenedor */
+}
+
+.calendario-citas {
+    padding: 20px;
+    min-width: 300px;
+}
+
+.fc {
+    font-size: 14px;
+}
+
+.fc-header-toolbar {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fc-toolbar-chunk {
+    display: flex;
+    gap: 10px;
+}
+
+.fc-button {
+    padding: 10px 15px;
+    font-size: 14px;
+    margin: 0 5px;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.fc-button:hover {
+    background-color: var(--color-primary-hover) !important; /* Hover botones */
+}
+
+.fc-daygrid-day-frame {
+    min-height: 160px;
+}
+
+.fc-event {
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+/* Eventos activos */
+.event-active {
+    background-color: var(--color-event-background-active);
+    color: var(--color-event-text-active);
+    border: 1px solid var(--color-event-border-active);
+}
+
+.event-active:hover {
+    background-color: #c86e3b; /* Hover personalizado para eventos activos */
+    transform: scale(1.02);
+}
+
+/* Eventos cancelados */
+.event-cancelled {
+    background-color: var(--color-event-background-cancelled);
+    color: var(--color-event-text-cancelled);
+    border: 1px solid var(--color-event-border-cancelled);
+}
+
+.event-cancelled:hover {
+    background-color: #5a5a5a; /* Hover personalizado para eventos cancelados */
+    transform: scale(1.02);
+}
+
+.fc-event-title {
+    font-weight: normal;
+    font-size: 12px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fc-event-time {
+    color: var(--color-event-time);
+    font-size: 10px;
+}
+
+.calendario-day {
+    background-color: var(--color-background) !important; /* Fondo de los días */
+}
