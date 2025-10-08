@@ -7,19 +7,17 @@ import { crearCita } from '../services/citasClientesConexion';
 import { obtenerProfesionales } from '../Services/profesionalesConexion.js';
 import { obtenerServicios } from '../Services/ServiciosConexion.js';
 import CalendarioCitas from '../components/layout/calendarioCitas.jsx';
+import { useValidacionFormulario } from '../hooks/ValidarFormCitaCliente.jsx';
 
 const SolicitarCitaPage = () => {
+  const { formData, handleInputChange, limpiarFormulario } = useValidacionFormulario();
   const { resumen, actualizarResumen } = useResumenCita();
   const [profesionales, setProfesionales] = useState([]);
   const [servicios, setServicios] = useState([]);
-  const [formData, setFormData] = useState({
-    nombreCliente: '',
-    celularCliente: '',
-    fechaNacCliente: '',
-  });
   const [idProfesional, setIdProfesional] = useState('');
   const [idServicio, setIdServicio] = useState('');
 
+  // Cargar profesionales
   useEffect(() => {
     async function cargarProfesionales() {
       try {
@@ -32,6 +30,7 @@ const SolicitarCitaPage = () => {
     cargarProfesionales();
   }, []);
 
+  // Cargar servicios
   useEffect(() => {
     async function cargarServicios() {
       try {
@@ -44,14 +43,7 @@ const SolicitarCitaPage = () => {
     cargarServicios();
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
+  // Cambiar el profesional seleccionado
   const handleProfesionalChange = (e) => {
     const id = e.target.value;
     setIdProfesional(id);
@@ -59,6 +51,7 @@ const SolicitarCitaPage = () => {
     actualizarResumen({ target: { name: 'profesional', value: nombre } });
   };
 
+  // Cambiar el servicio seleccionado
   const handleServicioChange = (e) => {
     const id = e.target.value;
     setIdServicio(id);
@@ -66,6 +59,7 @@ const SolicitarCitaPage = () => {
     actualizarResumen({ target: { name: 'servicio', value: nombre } });
   };
 
+  // Obtener el id de la hora seleccionada
   const obtenerIdHorario = (hora) => {
     switch (hora) {
       case '9:00 AM': return 1;
@@ -78,35 +72,39 @@ const SolicitarCitaPage = () => {
     }
   };
 
+  // Convertir hora de 12h a 24h
   const convertirHora12a24 = (hora12) => {
     if (!hora12) return null;
     const [time, modifier] = hora12.split(' ');
     let [hours, minutes] = time.split(':');
-    if (hours === '12') hours = '00';
-    if (modifier === 'PM') hours = (parseInt(hours, 10) + 12).toString().padStart(2, '0');
+    if (modifier === 'PM' && hours !== '12') {
+      hours = (parseInt(hours, 10) + 12).toString().padStart(2, '0');
+    }
+    if (modifier === 'AM' && hours === '12') {
+      hours = '00';
+    }
     return `${hours}:${minutes}:00`;
   };
 
-  const limpiarFormulario = () => {
-    setFormData({
-      nombreCliente: '',
-      celularCliente: '',
-      fechaNacCliente: '',
-    });
+  // Limpiar todos los campos del formulario
+  const limpiarTodoFormulario = () => {
+    limpiarFormulario();
     setIdProfesional('');
     setIdServicio('');
     actualizarResumen({ target: { name: 'fecha', value: 'No seleccionada' } });
     actualizarResumen({ target: { name: 'hora', value: 'No seleccionada' } });
     actualizarResumen({ target: { name: 'servicio', value: 'Por seleccionar' } });
-    actualizarResumen({ target: { name: 'profesional', value: '' } });
+    actualizarResumen({ target: { name: 'profesional', value: 'Por seleccionar' } });
   };
 
+  // Manejar el envío del formulario
   const manejarEnvio = async (e) => {
     e.preventDefault();
     if (
       resumen.fecha === 'No seleccionada' ||
       resumen.hora === 'No seleccionada' ||
       resumen.servicio === 'Por seleccionar' ||
+      resumen.profesional === 'Por seleccionar' ||
       !idProfesional ||
       !idServicio
     ) {
@@ -127,11 +125,11 @@ const SolicitarCitaPage = () => {
 
     try {
       await crearCita(datosCita);
-      alert(' Cita solicitada con éxito');
-      limpiarFormulario();
+      alert('Cita solicitada con éxito');
+      limpiarTodoFormulario();
     } catch (error) {
       console.error('Error al enviar cita:', error);
-      alert(' Error al solicitar cita');
+      alert('Error al solicitar cita');
     }
   };
 
@@ -190,6 +188,7 @@ const SolicitarCitaPage = () => {
                   </option>
                 ))}
               </select>
+
               <label htmlFor="profesional">Profesional Preferido</label>
               <select
                 id="profesional"
@@ -205,20 +204,23 @@ const SolicitarCitaPage = () => {
                   </option>
                 ))}
               </select>
+
               <label htmlFor="fecha">Selecciona la fecha para la cita</label>
               <input
                 type="date"
                 id="fecha"
                 name="fecha"
                 onChange={actualizarResumen}
+                min={new Date().toISOString().split('T')[0]}
                 required
               />
+
               <label htmlFor="hora">Selecciona la hora para la cita</label>
               <select
                 id="hora"
                 name="hora"
                 onChange={actualizarResumen}
-                defaultValue="No seleccionada"
+                value={resumen.hora}  // Cambiar a value controlado
                 required
               >
                 <option value="No seleccionada" disabled>Selecciona la hora</option>
@@ -229,6 +231,7 @@ const SolicitarCitaPage = () => {
                 <option value="3:30 PM">3:30 PM</option>
                 <option value="5:00 PM">5:00 PM</option>
               </select>
+
               <div className="resumen-cita" style={{ marginTop: '1rem' }}>
                 <strong>Resumen del agendamiento de cita:</strong><br />
                 Fecha: <span>{resumen.fecha}</span><br />
@@ -236,6 +239,7 @@ const SolicitarCitaPage = () => {
                 Servicio: <span>{resumen.servicio}</span><br />
                 Profesional: <span>{resumen.profesional}</span>
               </div>
+
               <button type="submit" style={{ marginTop: '1rem' }}>
                 Solicitar Cita
               </button>
