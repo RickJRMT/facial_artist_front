@@ -17,10 +17,10 @@ export const getServicios = async () => {
   return response.data;
 };
 
-export const getHorarios = async () => {
-  const response = await axios.get(`${API_URL}/horarios`);
-  return response.data;
-};
+// export const getHorarios = async () => {
+//   const response = await axios.get(`${API_URL}/horarios`);
+//   return response.data;
+// };
 
 export const crearCita = async (cita) => {
   const response = await axios.post(`${API_URL}/citas`, cita);

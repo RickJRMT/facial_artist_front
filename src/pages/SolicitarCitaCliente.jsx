@@ -117,7 +117,7 @@ const SolicitarCitaPage = () => {
       celularCliente: formData.celularCliente,
       fechaNacCliente: formData.fechaNacCliente,
       idProfesional: parseInt(idProfesional),
-      idServicio: parseInt(idServicio),
+      idServicios: parseInt(idServicio),
       idHorario: obtenerIdHorario(resumen.hora),
       fechaCita: resumen.fecha,
       horaCita: convertirHora12a24(resumen.hora),

@@ -5,14 +5,14 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { message } from 'antd';
-import { getCitas, getProfesionales, getServicios, getHorarios } from '../../Services/calendarioConexion';
+import { getCitas, getProfesionales, getServicios } from '../../Services/calendarioConexion';
 import '../layout/calendarioCitas.css';
 
 const CalendarioCitas = () => {
     const [eventos, setEventos] = useState([]);
     const [profesionales, setProfesionales] = useState([]);
     const [servicios, setServicios] = useState([]);
-    const [horarios, setHorarios] = useState([]);
+    // const [horarios, setHorarios] = useState([]);
 
     useEffect(() => {
         const cargarDatos = async () => {
@@ -45,11 +45,11 @@ const CalendarioCitas = () => {
 
                 const profesionalesResp = await getProfesionales();
                 const serviciosResp = await getServicios();
-                const horariosResp = await getHorarios();
+                // const horariosResp = await getHorarios();
 
                 setProfesionales(profesionalesResp.data || []);
                 setServicios(serviciosResp.data || []);
-                setHorarios(horariosResp.data || []);
+                // setHorarios(horariosResp.data || []);
             } catch (error) {
                 console.error('Error al cargar datos:', error);
                 message.error('Error al conectar con el servidor. Verifica los endpoints.');
