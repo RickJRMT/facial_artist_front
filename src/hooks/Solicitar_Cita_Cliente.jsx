@@ -9,7 +9,7 @@ export const useResumenCita = () => {
     // Este estado guarda los datos que el usuario selecciona en el formulario de citas.
     // Inicialmente, se establecen valores predeterminados que indican que aún no se ha seleccionado nada.
     const [resumen, setResumen] = useState({
-        fecha: 'No seleccionada',
+        fecha: '',
         hora: 'No seleccionada',
         servicio: 'Por seleccionar',
         profesional: 'Por seleccionar',
@@ -33,7 +33,7 @@ export const useResumenCita = () => {
     // Es útil para mantener un mensaje claro en el resumen.
     const valorPorDefecto = (campo) => {
         const valores = {
-            fecha: 'No seleccionada',
+            fecha: '',
             hora: 'No seleccionada',
             servicio: 'Por seleccionar',
             profesional: 'Por seleccionar',

@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CursosPage from './pages/cursoPage.jsx';
 import SolicitarCitaPage from './pages/SolicitarCitaCliente.jsx';
 import CalendarioCitas from './components/layout/calendarioCitas.jsx';
+import ModalCitaExitosa from './components/layout/ModalCitaSolicitada.jsx';
+
 function App() {
   return (
     <BrowserRouter>
@@ -14,6 +16,7 @@ function App() {
         <Route path="/cursos" element={<CursosPage />} />
         <Route path='/cita' element={< SolicitarCitaPage />} />
         <Route path='/calendario' element={< CalendarioCitas />} />
+        <Route path='/modal' element={<ModalCitaExitosa />} /> 
       </Routes>
     </BrowserRouter>
   );
