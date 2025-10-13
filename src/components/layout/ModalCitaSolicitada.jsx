@@ -7,14 +7,7 @@ import bancolombiaImg from '../../assets/img/metodospago/bancolombia.png';
 import transfiyaImg from '../../assets/img/metodospago/transfiya.png';
 
 const ModalCitaExitosa = ({ datosCita = {}, onClose }) => {
-    const {
-        fecha = "15/10/2025",
-        hora = "10:00 AM",
-        profesional = "Natalia Torres",
-        servicio = "Limpieza Facial",
-        costo = "$80.000",
-        numReferencia = "REF-202510150001"
-    } = datosCita;
+    const { nombreCliente, fecha, hora, profesional, servicio, costo, numeroReferencia } = datosCita;
 
     return (
         <div className="modal-overlay">
@@ -26,12 +19,13 @@ const ModalCitaExitosa = ({ datosCita = {}, onClose }) => {
                 <div className="modal-secciones">
                     <div className="seccion-cita">
                         <h3> Detalles de la cita</h3>
+                        <p><strong>Cliente:</strong> {nombreCliente}</p>
                         <p><strong>Fecha:</strong> {fecha}</p>
                         <p><strong>Hora:</strong> {hora}</p>
                         <p><strong>Profesional:</strong> {profesional}</p>
                         <p><strong>Servicio:</strong> {servicio}</p>
                         <p><strong>Costo del servicio:</strong> {costo}</p>
-                        <p><strong>Número de referencia:</strong> {numReferencia}</p>
+                        <p><strong>Número de referencia:</strong> {numeroReferencia}</p>
                     </div>
 
                     <div className="seccion-pagos">

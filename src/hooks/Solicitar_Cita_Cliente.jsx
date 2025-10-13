@@ -12,6 +12,7 @@ export const useResumenCita = () => {
         fecha: '',
         hora: 'No seleccionada',
         servicio: 'Por seleccionar',
+        precio: 'No disponible',
         profesional: 'Por seleccionar',
     });
 
@@ -30,12 +31,12 @@ export const useResumenCita = () => {
     };
 
     // Esta función devuelve un valor por defecto en caso de que el campo quede vacío.
-    // Es útil para mantener un mensaje claro en el resumen.
     const valorPorDefecto = (campo) => {
         const valores = {
             fecha: '',
             hora: 'No seleccionada',
             servicio: 'Por seleccionar',
+            precio: 'No disponible',
             profesional: 'Por seleccionar',
         };
         return valores[campo] || ''; // Si no se encuentra el campo, se retorna una cadena vacía

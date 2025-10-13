@@ -13,7 +13,8 @@ import { useResumenCita } from '../hooks/Solicitar_Cita_Cliente.jsx';
 
 // Componente que renderiza un calendario para seleccionar fechas
 import CalendarioCitas from '../components/layout/calendarioCitas.jsx';
-
+// componente del modal que aparece tras solicitar una cita
+import ModalCitaExitosa from '../components/layout/ModalCitaSolicitada.jsx'
 // Función que se conecta con el backend para crear una cita
 import { crearCita } from '../Services/citasClientesConexion';
 
@@ -22,6 +23,10 @@ import { useValidacionFormulario } from '../hooks/ValidarFormCitaCliente.jsx';
 import { useProfesionales } from '../hooks/CargarProfesionales.jsx';
 import { UseServicios } from '../hooks/CargarServicios.jsx';
 import { useHorariosDisponibles } from '../hooks/CargarHorarios.jsx';
+import useModalCitaExitosa from '../hooks/useModalCitaExitosa';
+
+
+
 
 const SolicitarCitaPage = () => {
   // Hook para manejar los datos del formulario y su validación (nombre, teléfono, etc.)
@@ -42,6 +47,8 @@ const SolicitarCitaPage = () => {
     idServicio,
     resumen.fecha
   );
+  // es para determinar el estado visible o no visible del modal:
+  const { modalVisible, mostrarModal, cerrarModal, datosCita } = useModalCitaExitosa();
 
   // Función que se ejecuta cuando cambia la selección del profesional en el formulario
   // Actualiza el id en el estado local y también actualiza el resumen con el nombre del profesional
@@ -49,19 +56,35 @@ const SolicitarCitaPage = () => {
     const id = e.target.value;
     setIdProfesional(id);
     // Buscamos el nombre del profesional seleccionado para actualizar el resumen
+    // el fin busca el primer elemento de un array que cumpla con una condición especificada.
     const nombre = profesionales.find((p) => p.idProfesional === parseInt(id))?.nombreProfesional || '';
     actualizarResumen({ target: { name: 'profesional', value: nombre } });
   };
 
-  // Similar a la función anterior, pero para el servicio seleccionado
+
   const handleServicioChange = (e) => {
     const id = e.target.value;
     setIdServicio(id);
     // Buscamos el nombre del servicio para actualizar el resumen
-    const nombre = servicios.find((s) => s.idServicios === parseInt(id))?.servNombre || '';
-    actualizarResumen({ target: { name: 'servicio', value: nombre } });
-  };
+    const servicioSeleccionado = servicios.find((s) => s.idServicios === parseInt(id));
+    const nombre = servicioSeleccionado?.servNombre || '';
+    const precio = servicioSeleccionado?.servCosto || 'No disponible';
 
+    // Comprobamos si el precio no es igual a 'No disponible'
+    // Si el precio es un valor válido, lo formateamos; si no, lo dejamos como 'No disponible'
+    const precioFormateado = precio !== 'No disponible' ?
+      // Si el precio está disponible, usamos Intl.NumberFormat para darle el formato adecuado
+      // 'es-ES' indica que usaremos el formato de número español, con puntos como separadores de miles.
+      // minimumFractionDigits: 2 asegura que siempre se muestren dos decimales.
+      new Intl.NumberFormat('es-ES', {
+        style: 'decimal',
+        minimumFractionDigits: (precio % 1 === 0) ? 0 : 2,  // Si es entero, no muestra decimales, si tiene decimales muestra 2
+        maximumFractionDigits: 2  // Limita el número de decimales a 2
+      }).format(precio)
+      : precio;  // Si el precio es "No disponible", lo dejamos tal cual
+    actualizarResumen({ target: { name: 'servicio', value: nombre } });
+    actualizarResumen({ target: { name: 'precio', value: precioFormateado } });
+  };
   // Función para limpiar todos los campos del formulario y resetear estados a valores iniciales
   const limpiarTodoFormulario = () => {
     limpiarFormulario(); // limpia los campos básicos (nombre, teléfono, etc.)
@@ -73,12 +96,11 @@ const SolicitarCitaPage = () => {
     actualizarResumen({ target: { name: 'servicio', value: 'Por seleccionar' } });
     actualizarResumen({ target: { name: 'profesional', value: 'Por seleccionar' } });
   };
-
   // Función que se ejecuta al enviar el formulario (al solicitar la cita)
   const manejarEnvio = async (e) => {
     e.preventDefault(); // Evita que el formulario recargue la página al enviar
-
     // Validamos que todos los campos obligatorios estén completos
+
     if (
       resumen.fecha === 'No seleccionada' ||
       resumen.hora === 'No seleccionada' ||
@@ -90,7 +112,6 @@ const SolicitarCitaPage = () => {
       alert('Por favor, completa todos los campos de la cita');
       return; // No continúa si faltan campos
     }
-
     // Creamos un objeto con todos los datos que se enviarán al backend para crear la cita
     const datosCita = {
       nombreCliente: formData.nombreCliente,
@@ -101,13 +122,22 @@ const SolicitarCitaPage = () => {
       fechaCita: resumen.fecha,
       // Convertimos la hora seleccionada en formato 24h para el backend
       horaCita: horariosDisponibles.find((h) => h.horaInicio === resumen.hora)?.horaInicio24,
+      numeroReferencia: Math.floor(Date.now() / 1000),
     };
 
     try {
       // Llamamos a la función que envía la cita al backend
       await crearCita(datosCita);
-      alert('Cita solicitada con éxito');
-      limpiarTodoFormulario(); 
+      mostrarModal({
+        nombreCliente: datosCita.nombreCliente,
+        fecha: resumen.fecha,
+        hora: resumen.hora,
+        profesional: resumen.profesional,
+        servicio: resumen.servicio,
+        costo: resumen.precio,
+        numeroReferencia: Math.floor(Date.now() / 1000)
+      });
+      limpiarTodoFormulario();
     } catch (error) {
       // En caso de error mostramos un mensaje y lo registramos en consola para depuración
       console.error('Error al enviar cita:', error);
@@ -155,7 +185,7 @@ const SolicitarCitaPage = () => {
                 name="celularCliente"
                 value={formData.celularCliente}
                 onChange={handleInputChange}
-                placeholder="322 456 7687"
+                placeholder="3224567687"
                 required
               />
               {/* Selector de servicio */}
@@ -175,7 +205,6 @@ const SolicitarCitaPage = () => {
                   </option>
                 ))}
               </select>
-
               {/* Selector de profesional */}
               <label htmlFor="profesional">Profesional Preferido</label>
               <select
@@ -193,7 +222,6 @@ const SolicitarCitaPage = () => {
                   </option>
                 ))}
               </select>
-
               {/* Selector de fecha para la cita */}
               <label htmlFor="fecha">Selecciona la fecha para la cita</label>
               <input
@@ -203,10 +231,16 @@ const SolicitarCitaPage = () => {
                 // Si no se ha seleccionado fecha, el input queda vacío
                 value={resumen.fecha !== 'No seleccionada' ? resumen.fecha : ''}
                 onChange={actualizarResumen} // Actualiza el resumen con la fecha seleccionada
+                //   1. `new Date()` - Crea un objeto de fecha con la fecha y hora actual.
+                // 2. `toISOString()` - Convierte la fecha a una cadena en formato ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ).
+                //    Ejemplo: "2025-10-13T14:30:00.000Z"
+                // 3. `split('T')` - Divide la cadena en dos partes, separando la fecha y la hora con el carácter 'T'.
+                //    Ejemplo: ["2025-10-13", "14:30:00.000Z"]
+                // 4. `[0]` - Toma solo la primera parte del array (la fecha) para obtener solo el valor "2025-10-13".
+                // 5. `min={...}` - Establece la fecha mínima seleccionable en el campo de entrada como la fecha de hoy, evitando así que el usuario elija fechas pasadas.
                 min={new Date().toISOString().split('T')[0]} // Fecha mínima es hoy para evitar fechas pasadas
                 required
               />
-
               {/* Selector de hora para la cita */}
               <label htmlFor="hora">Selecciona la hora para la cita</label>
               <select
@@ -228,9 +262,12 @@ const SolicitarCitaPage = () => {
               {/* Sección que muestra un resumen con los datos de la cita que se están configurando */}
               <div className="resumen-cita" style={{ marginTop: '1rem' }}>
                 <strong>Resumen del agendamiento de cita:</strong><br />
+                <br />
+                Cliente: <span>{formData.nombreCliente || 'No ingresado'}</span><br />
                 Fecha: <span>{resumen.fecha || 'No seleccionada'}</span><br />
                 Hora: <span>{resumen.hora}</span><br />
                 Servicio: <span>{resumen.servicio}</span><br />
+                Precio: <span>{resumen.precio || 'No disponible'}</span> <br />
                 Profesional: <span>{resumen.profesional}</span>
               </div>
 
@@ -248,6 +285,13 @@ const SolicitarCitaPage = () => {
         </div>
       </div>
       <Footer />
+      {/* Renderizamos el modal si modalVisible es true */}
+      {modalVisible && (
+        <ModalCitaExitosa
+          datosCita={datosCita}
+          onClose={cerrarModal}  // Cerramos el modal al hacer clic en "Cerrar"
+        />
+      )}
     </>
   );
 };

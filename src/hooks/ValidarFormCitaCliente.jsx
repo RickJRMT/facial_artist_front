@@ -16,15 +16,20 @@ export const useValidacionFormulario = () => {
     const handleInputChange = (e) => {
         // Extraemos el nombre del campo y el valor que se ingresó
         const { name, value } = e.target;
-
         // Validación para el campo nombreCliente:
         // Solo permite letras (mayúsculas, minúsculas, tildes y espacios)
         if (name === 'nombreCliente') {
+            // Usamos .trim() para asegurarnos que no se ingresen solo espacios en blanco
+            const trimmedValue = value.trim();
+            // Verificamos que el campo no esté vacío
+            if (trimmedValue === '') {
+                   setFormData((prev) => ({ ...prev, [name]: '' })); // Dejamos el campo vacío
+                return; // Si es vacío (solo espacios), no actualizamos el estado
+            }
             const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
             if (!regex.test(value)) return;  // Si no cumple, no actualiza el estado
             if (value.length > 25) return;   // Limita la longitud máxima a 25 caracteres
         }
-
         // Validación para el campo celularCliente:
         // Solo permite números
         if (name === 'celularCliente') {
