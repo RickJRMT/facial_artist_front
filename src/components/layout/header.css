@@ -31,15 +31,70 @@
     margin-left: 1rem;
 }
 
-.header__nav a {
+.header__nav {
+    display: flex; 
+    justify-content: flex-start;
+    align-items: center;
+    gap: 25px;
+}
+
+.header__nav-item {
+    position: relative;
+    margin-left: 0;
+}
+
+/* Solo los enlaces principales con el dorado elegante */
+.header__nav a.main-nav-link {
     color: #fff;
-    margin-left: 30px;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
-.header__nav a:hover {
-    color: #c9a56a;
-    /* dorado elegante */
+.header__nav a.main-nav-link:hover {
+    color: #c9a56a; /* dorado elegante solo para el menú principal */
+}
+
+/* Estilo para el submenú */
+.header__submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #000;
+    list-style: none;
+    padding: 0;
+    min-width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+    border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Mostrar el submenú cuando el usuario pasa el mouse sobre el ítem */
+.header__nav-item:hover .header__submenu {
+    display: block;
+}
+
+.header__submenu li {
+    padding: 8px 15px; /* Menos espacio alrededor del texto */
+}
+
+/* Estilo para los enlaces dentro del submenú */
+.header__submenu li a {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 600; /* Texto más grueso */
+    display: block;
+    font-size: 14px; /* Fuente más pequeña */
+    text-align: center; /* Centrar el texto en los botones */
+    background-color: #FFB81C; /* Fondo amarillo dorado */
+    padding: 6px 12px; /* Menos padding en los botones */
+    border-radius: 8px; /* Bordes redondeados para los botones */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Efecto hover para los enlaces del submenú */
+.header__submenu li a:hover {
+    background-color: #e0a700; /* Color dorado más oscuro en hover */
+    transform: translateY(-3px); /* Desplazamiento hacia arriba con menos intensidad */
 }

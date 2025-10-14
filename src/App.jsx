@@ -6,6 +6,7 @@ import CursosPage from './pages/cursoPage.jsx';
 import SolicitarCitaPage from './pages/SolicitarCitaCliente.jsx';
 import CalendarioCitas from './components/layout/calendarioCitas.jsx';
 import ModalCitaExitosa from './components/layout/ModalCitaSolicitada.jsx';
+import Homecliente from './pages/homeCliente.jsx';
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route path="/cursos" element={<CursosPage />} />
         <Route path='/cita' element={< SolicitarCitaPage />} />
         <Route path='/calendario' element={< CalendarioCitas />} />
-        <Route path='/modal' element={<ModalCitaExitosa />} /> 
+        <Route path='/modal' element={<ModalCitaExitosa />} />
+        <Route path='/homecliente' element={< Homecliente />} />
       </Routes>
     </BrowserRouter>
   );
