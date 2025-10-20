@@ -13,10 +13,16 @@ import { useResumenCita } from "../hooks/Solicitar_Cita_Cliente.jsx";
 
 // Componente que renderiza un calendario para seleccionar fechas
 import CalendarioCitas from "../components/layout/calendarioCitas.jsx";
-// componente del modal que aparece tras solicitar una cita
-import ModalCitaExitosa from "../components/layout/ModalCitaSolicitada.jsx";
+
 // Función que se conecta con el backend para crear una cita
 import { crearCita } from "../Services/citasClientesConexion";
+
+// Modales de error
+import ModalErrorEdad from "../components/layout/ModalErrorEdad.jsx";
+import ModalErrorEdadMenor from "../components/layout/ModalEdadMenor.jsx";
+import ModalErrorCaracteres from "../components/layout/ModalNombreIncompleto.jsx";
+import ModalErrorTelefono from "../components/layout/ModalTelefonoIncompleto.jsx";
+import ModalCitaExitosa from "../components/layout/ModalCitaSolicitada.jsx";
 
 // Hooks personalizados que manejan la validación de formulario y carga de datos necesarios para la cita
 import { useValidacionFormulario } from "../hooks/ValidarFormCitaCliente.jsx";
@@ -48,6 +54,11 @@ const SolicitarCitaPage = () => {
   // es para determinar el estado visible o no visible del modal:
   const { modalVisible, mostrarModal, cerrarModal, datosCita } =
     useModalCitaExitosa();
+  // este es para el modal de edad de servicio de micropigmentación
+  const [mostrarModalEdad, setMostrarModalEdad] = useState(false);
+  const [mostrarModalEdadMenor, setMostrarModalEdadMenor] = useState(false);
+  const [mostrarModalNombreIncompleto, setmostrarModalNombreIncompleto] = useState(false);
+  const [mostrarModalTelefonoIncompleto, setmostrarModalTelefonoIncompleto] = useState(false);
 
   // Función que se ejecuta cuando cambia la selección del profesional en el formulario
   // Actualiza el id en el estado local y también actualiza el resumen con el nombre del profesional
@@ -77,13 +88,13 @@ const SolicitarCitaPage = () => {
     const precioFormateado =
       precio !== "No disponible"
         ? // Si el precio está disponible, usamos Intl.NumberFormat para darle el formato adecuado
-          // 'es-ES' indica que usaremos el formato de número español, con puntos como separadores de miles.
-          // minimumFractionDigits: 2 asegura que siempre se muestren dos decimales.
-          new Intl.NumberFormat("es-ES", {
-            style: "decimal",
-            minimumFractionDigits: precio % 1 === 0 ? 0 : 2, // Si es entero, no muestra decimales, si tiene decimales muestra 2
-            maximumFractionDigits: 2, // Limita el número de decimales a 2
-          }).format(precio)
+        // 'es-ES' indica que usaremos el formato de número español, con puntos como separadores de miles.
+        // minimumFractionDigits: 2 asegura que siempre se muestren dos decimales.
+        new Intl.NumberFormat("es-ES", {
+          style: "decimal",
+          minimumFractionDigits: precio % 1 === 0 ? 0 : 2, // Si es entero, no muestra decimales, si tiene decimales muestra 2
+          maximumFractionDigits: 2, // Limita el número de decimales a 2
+        }).format(precio)
         : precio; // Si el precio es "No disponible", lo dejamos tal cual
     actualizarResumen({ target: { name: "servicio", value: nombre } });
     actualizarResumen({ target: { name: "precio", value: precioFormateado } });
@@ -121,8 +132,8 @@ const SolicitarCitaPage = () => {
   // Función que se ejecuta al enviar el formulario (al solicitar la cita)
   const manejarEnvio = async (e) => {
     e.preventDefault(); // Evita que el formulario recargue la página al enviar
-    // Validamos que todos los campos obligatorios estén completos
 
+    // Validamos que todos los campos obligatorios estén completos
     if (
       resumen.fecha === "No seleccionada" ||
       resumen.hora === "No seleccionada" ||
@@ -132,10 +143,26 @@ const SolicitarCitaPage = () => {
       !idServicio
     ) {
       alert("Por favor, completa todos los campos de la cita");
-      return; // No continúa si faltan campos
+      return;
+    }
+    if (formData.nombreCliente.trim().length < 3) {
+      setmostrarModalNombreIncompleto(true);
+      return;
+    }
+    if (formData.celularCliente.trim().length < 10) {
+      setmostrarModalTelefonoIncompleto(true);
+      return;
     }
 
     const edadCliente = calcularEdad(formData.fechaNacCliente);
+    const fechaNacimiento = new Date(formData.fechaNacCliente);
+    const hoy = new Date();
+
+    // Validar si la fecha de nacimiento es en el futuro
+    if (fechaNacimiento > hoy) {
+      alert("La fecha de nacimiento no puede ser en el futuro.");
+      return;
+    }
 
     // Listado de servicios de micropigmentación
     const serviciosProhibidos = [
@@ -148,16 +175,20 @@ const SolicitarCitaPage = () => {
       (s) => s.idServicios === parseInt(idServicio)
     )?.servNombre;
 
-    // Verificar si la edad es menor a 18 y el servicio es uno de los prohibidos
     if (
       edadCliente < 18 &&
       serviciosProhibidos.includes(servicioSeleccionado)
     ) {
-      alert(
-        "Lo siento, debes tener al menos 18 años para solicitar este servicio."
-      );
+      setMostrarModalEdad(true);
       return; // No continuar si la validación falla
     }
+
+    // Validar edad mínima general
+    if (edadCliente < 13) {
+      setMostrarModalEdadMenor(true);
+      return;
+    }
+
 
     // Creamos un objeto con todos los datos que se enviarán al backend para crear la cita
     const datosCita = {
@@ -172,7 +203,7 @@ const SolicitarCitaPage = () => {
         ?.horaInicio24,
       numeroReferencia: Math.floor(Date.now() / 1000),
     };
-    
+
     try {
       // Llamamos a la función que envía la cita al backend
       await crearCita(datosCita);
@@ -225,6 +256,7 @@ const SolicitarCitaPage = () => {
                 name="fechaNacCliente"
                 value={formData.fechaNacCliente}
                 onChange={handleInputChange}
+                max={new Date().toISOString().split("T")[0]}
                 required
               />
               {/* Campo para teléfono */}
@@ -349,11 +381,28 @@ const SolicitarCitaPage = () => {
         </div>
       </div>
       <Footer />
+
       {/* Renderizamos el modal si modalVisible es true */}
       {modalVisible && (
         <ModalCitaExitosa
           datosCita={datosCita}
           onClose={cerrarModal} // Cerramos el modal al hacer clic en "Cerrar"
+        />
+      )}
+      {mostrarModalEdad && (
+        <ModalErrorEdad onClose={() => setMostrarModalEdad(false)}
+        />
+      )}
+      {mostrarModalEdadMenor && (
+        <ModalErrorEdadMenor onClose={() => setMostrarModalEdadMenor(false)}
+        />
+      )}
+      {mostrarModalNombreIncompleto && (
+        <ModalErrorCaracteres onClose={() => setmostrarModalNombreIncompleto(false)}
+        />
+      )}
+      {mostrarModalTelefonoIncompleto && (
+        <ModalErrorTelefono onClose={() => setmostrarModalTelefonoIncompleto(false)}
         />
       )}
     </>
