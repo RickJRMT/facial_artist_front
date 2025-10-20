@@ -1,0 +1,151 @@
+:root {
+    --color-primario: #f1b207;
+    --color-primario-hover: #d69e05;
+    --color-secundario: #000000;
+    /* curiosamente, si solo lo dejo con "color-texto" el color asignado me afecta con el formulario de solicitar citas */
+    --color-texto-home: #ffffff;
+    --color-fondo-seccion: #f8eedc;
+    --overlay-color: rgba(0, 0, 0, 0.5);
+
+    --transition: 0.3s ease;
+    --radio-borde: 8px;
+}
+
+.main_container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.seccion1 {
+    position: relative;
+    width: 100%;
+    height: 65vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.imagenfondoinicial {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0.8;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-color);
+    z-index: 2;
+}
+
+.contenido {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: var(--color-texto-home);
+    padding: 0 20px;
+    max-width: 800px;
+}
+
+.titulo {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.subtitulo {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.btn_reservarcita {
+    background-color: var(--color-primario);
+    border: none;
+    color: var(--color-secundario);
+    font-weight: bold;
+    padding: 12px 30px;
+    border-radius: var(--radio-borde);
+    cursor: pointer;
+    transition: var(--transition);
+    width: 25%;
+}
+
+.btn_reservarcita:hover {
+    background-color: var(--color-primario-hover);
+}
+
+/* CSS de la seccion dos, donde aparece el sobre nosotros, descripcion y video  */
+.seccion2 {
+    background-color: var(--color-fondo-seccion);
+    padding: 60px 10%;
+    text-align: center;
+}
+
+.titulo2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-secundario);
+    margin-bottom: 40px;
+}
+
+.seccion2_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.descripcion {
+    flex: 1 1 45%;
+    font-size: 1.1rem;
+    color: var(--color-secundario);
+    text-align: justify;
+    line-height: 1.6;
+}
+
+.video {
+    flex: 1 1 45%;
+    display: flex;
+    justify-content: center;
+}
+
+.video video {
+    width: 100%;
+    height: 15rem;
+    /* si le llego a quitar el objectfit, esto hará que el video tenga una anchura, pero no se ajuste a ella */
+    object-fit: cover;
+    max-width: 600px;
+    border-radius: var(--radio-borde);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+@media (max-width: 768px) {
+    .seccion2_container {
+        flex-direction: column-reverse;
+        text-align: center;
+    }
+
+    .descripcion {
+        flex: 1 1 100%;
+    }
+
+    .video {
+        flex: 1 1 100%;
+    }
+
+    .video video {
+        max-width: 100%;
+    }
+}
