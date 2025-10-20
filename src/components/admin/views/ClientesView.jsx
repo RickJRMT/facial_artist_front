@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Search, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import './ClientesView.css';
+import ModalHojasVida from '../modals/ModalHojasVida';
 
 const ClientesView = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [pageInputValue, setPageInputValue] = useState('1');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCliente, setSelectedCliente] = useState(null);
   const [clientes, setClientes] = useState([
     {
       id: 1,
@@ -76,7 +79,8 @@ const ClientesView = () => {
   };
 
   const handleVerHistorias = (cliente) => {
-    alert(`Ver historias de ${cliente.nombre}`);
+    setSelectedCliente(cliente);
+    setModalOpen(true);
   };
 
   const handleEditarCliente = (cliente) => {
@@ -227,6 +231,13 @@ const ClientesView = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Hojas de Vida */}
+      <ModalHojasVida
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        cliente={selectedCliente}
+      />
     </div>
   );
 };

@@ -1,0 +1,91 @@
+/* Ajustes responsivos */
+@media (max-width: 1024px) {
+  .servicios-container {
+    padding: 20px;
+  }
+  
+  .servicios-title {
+    font-size: 28px;
+  }
+  
+  .servicios-subtitle {
+    font-size: 15px;
+  }
+  
+  .table-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .servicios-container {
+    padding: 16px;
+  }
+  
+  .servicios-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .servicios-title {
+    font-size: 24px;
+  }
+  
+  .servicios-subtitle {
+    font-size: 14px;
+  }
+  
+  .descripcion {
+    max-width: 200px;
+  }
+  
+  .btn-visualizar {
+    padding: 6px 12px;
+  }
+  
+  .action-buttons {
+    gap: 4px;
+  }
+  
+  .btn-edit,
+  .btn-delete {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .servicios-container {
+    padding: 12px;
+  }
+  
+  .servicios-title {
+    font-size: 22px;
+  }
+  
+  .table-card {
+    padding: 12px;
+  }
+  
+  .servicios-table th,
+  .servicios-table td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .descripcion {
+    max-width: 150px;
+  }
+  
+  .badge {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  
+  .btn-edit,
+  .btn-delete {
+    width: 28px;
+    height: 28px;
+  }
+}

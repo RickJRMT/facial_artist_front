@@ -4,6 +4,7 @@ import Sidebar from '../components/admin/Sidebar';
 import Navbar from '../components/admin/Navbar';
 import StatCard from '../components/admin/StatCard';
 import ClientesView from '../components/admin/views/ClientesView';
+import ServiciosView from '../components/admin/views/ServiciosView';
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -66,6 +67,7 @@ const AdminPage = () => {
         )}
 
         {activeMenu === 'clientes' && <ClientesView />}
+        {activeMenu === 'servicios' && <ServiciosView />}
       </div>
     </div>
   );
