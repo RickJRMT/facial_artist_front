@@ -13,12 +13,16 @@
     --color-event-time: #181717; /* Texto de hora en eventos */
     --color-text: #333333; /* Texto general */
     --color-background: #faf8f6; /* Fondo general del calendario */
+
+    /* Nuevas variables para hover opaco en vista de lista */
+    --color-event-hover-active-list: rgba(200, 110, 59, 0.3);
+    --color-event-hover-cancelled-list: rgba(108, 117, 125, 0.3);
 }
 
 .calendario-container {
     width: 100%;
     overflow-x: auto;
-    background-color: var(--color-background); /* Fondo del contenedor */
+    background-color: var(--color-background);
 }
 
 .calendario-citas {
@@ -54,7 +58,7 @@
 }
 
 .fc-button:hover {
-    background-color: var(--color-primary-hover) !important; /* Hover botones */
+    background-color: var(--color-primary-hover) !important;
 }
 
 .fc-daygrid-day-frame {
@@ -78,7 +82,7 @@
 }
 
 .event-active:hover {
-    background-color: #c86e3b; /* Hover personalizado para eventos activos */
+    background-color: #c86e3b;
     transform: scale(1.02);
 }
 
@@ -90,8 +94,21 @@
 }
 
 .event-cancelled:hover {
-    background-color: #5a5a5a; /* Hover personalizado para eventos cancelados */
+    background-color: #5a5a5a;
     transform: scale(1.02);
+}
+
+/* Hover en vista de lista */
+.fc-list-event.event-active:hover td {
+    background-color: var(--color-event-hover-active-list) !important;
+    color: inherit !important;
+    transform: none !important;
+}
+
+.fc-list-event.event-cancelled:hover td {
+    background-color: var(--color-event-hover-cancelled-list) !important;
+    color: inherit !important;
+    transform: none !important;
 }
 
 .fc-event-title {
@@ -108,5 +125,40 @@
 }
 
 .calendario-day {
-    background-color: var(--color-background) !important; /* Fondo de los días */
+    background-color: var(--color-background) !important;
+}
+
+/* Oculta el título cuando se está en vista de día */
+.calendario-citas.ocultar-titulo .fc-toolbar-title {
+    display: none !important;
+}
+
+.calendario-wrapper {
+    position: relative;
+}
+
+.titulo-fecha-dia {
+    position: absolute;
+    top: 25px;
+    left: 0.2%;
+    transform: translateX(-2%);
+    width: 100%;
+    text-align: center;
+    font-size: 1.4em;
+    font-weight: bold;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.titulo-fecha-dia.hidden {
+    display: none;
+}
+
+.titulo-fecha-dia.visible {
+    display: block;
+}
+
+.fc-list-event-dot {
+    background-color: #ffffff !important; 
+    border-color: transparent !important;
 }

@@ -13,6 +13,9 @@ const CalendarioCitas = () => {
     const [profesionales, setProfesionales] = useState([]);
     const [servicios, setServicios] = useState([]);
     // const [horarios, setHorarios] = useState([]);
+    const [currentView, setCurrentView] = useState('dayGridMonth');
+    const [currentDate, setCurrentDate] = useState(new Date());
+
 
     useEffect(() => {
         const cargarDatos = async () => {
@@ -27,7 +30,6 @@ const CalendarioCitas = () => {
                         console.warn('Fecha inválida para cita:', cita);
                         return null;
                     }
-
                     return {
                         id: cita.idCita,
                         title: `Ocupado`,
@@ -70,38 +72,58 @@ const CalendarioCitas = () => {
             </div>
         );
     };
+    const formatFechaDia = (date) => {
+        if (!date) return '';
+        return date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
 
     return (
         <div className="calendario-container">
-            <div className="calendario-citas">
-                <FullCalendar
-                    plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
-                    headerToolbar={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                    }}
-                    initialView="dayGridMonth"
-                    events={eventos}
-                    eventContent={renderEventContent}
-                    editable={false}
-                    selectable={false}
-                    eventOverlap={false}
-                    slotMinTime="09:00:00"
-                    slotMaxTime="18:00:00"
-                    height="auto"
-                    locale="es"
-                    buttonText={{
-                        today: 'Hoy',
-                        month: 'Mes',
-                        week: 'Semana',
-                        day: 'Día',
-                        list: 'Lista'
-                    }}
-                    contentHeight="600px"
-                    titleFormat={{ year: 'numeric', month: 'long' }}
-                    dayCellClassNames="calendario-day"
-                />
+            <div className="calendario-wrapper">
+                {currentView === 'timeGridDay' && (
+                    <div className="titulo-fecha-dia">
+                        {formatFechaDia(currentDate)}
+                    </div>
+                )}
+                <div className={`calendario-citas ${currentView === 'timeGridDay' ? 'ocultar-titulo' : ''}`}>
+                    <FullCalendar
+                        plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+                        headerToolbar={{
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                        }}
+                        initialView="dayGridMonth"
+                        events={eventos}
+                        eventContent={renderEventContent}
+                        editable={false}
+                        selectable={false}
+                        eventOverlap={false}
+                        slotMinTime="09:00:00"
+                        slotMaxTime="18:00:00"
+                        height="auto"
+                        locale="es"
+                        buttonText={{
+                            today: 'Hoy',
+                            month: 'Mes',
+                            week: 'Semana',
+                            day: 'Día',
+                            list: 'Lista'
+                        }}
+                        contentHeight="600px"
+                        titleFormat={{ year: 'numeric', month: 'long' }}
+                        dayCellClassNames="calendario-day"
+                        datesSet={(arg) => {
+                            setCurrentView(arg.view.type);
+                            setCurrentDate(new Date(arg.start));
+                        }}
+
+                    />
+                </div>
             </div>
         </div>
     );
