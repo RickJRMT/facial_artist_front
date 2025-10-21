@@ -5,6 +5,8 @@ import Navbar from '../components/admin/Navbar';
 import StatCard from '../components/admin/StatCard';
 import ClientesView from '../components/admin/views/ClientesView';
 import './AdminPage.css';
+import CitasAdmin from '../components/admin/CitasAdmin';
+import Prueba from '../components/admin/prueba';
 
 const AdminPage = () => {
   const [activeMenu, setActiveMenu] = useState('inicio');
@@ -66,6 +68,8 @@ const AdminPage = () => {
         )}
 
         {activeMenu === 'clientes' && <ClientesView />}
+        {activeMenu === 'citas' && <CitasAdmin />}
+        {activeMenu == 'cursos' && <Prueba />}
       </div>
     </div>
   );
