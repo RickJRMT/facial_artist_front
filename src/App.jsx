@@ -7,6 +7,8 @@ import SolicitarCitaPage from './pages/SolicitarCitaCliente.jsx';
 import CalendarioCitas from './components/layout/calendarioCitas.jsx';
 import ModalCitaExitosa from './components/layout/ModalCitaSolicitada.jsx';
 import Homecliente from './pages/homeCliente.jsx';
+import Adminpage from './pages/adminPage.jsx';
+
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
         <Route path='/calendario' element={< CalendarioCitas />} />
         <Route path='/modal' element={<ModalCitaExitosa />} />
         <Route path='/homecliente' element={< Homecliente />} />
+        <Route path='/admin' element={< Adminpage/>} />
       </Routes>
     </BrowserRouter>
   );
