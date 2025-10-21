@@ -1,0 +1,116 @@
+:root {
+  --color-fondo: #faf8f3;
+  --color-primario: #c89400; /* amarillo oscuro */
+  --color-primario-hover: #b07f00;
+  --color-texto: #333;
+  --color-texto-secundario: #555;
+  --color-boton-texto: white;
+  --color-boton-borde: transparent;
+}
+
+.citas-container {
+  padding: 2rem;
+  font-family: sans-serif;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  position: relative; /* para el posicionamiento absoluto del botón */
+}
+
+.citas-header {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.citas-header h1 {
+  margin: 0;
+}
+
+.citas-header p {
+  color: var(--color-texto-secundario);
+}
+
+/* Botón + Nueva Cita a la derecha arriba */
+.btn-nueva-cita {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: var(--color-primario);
+  color: var(--color-boton-texto);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(197, 148, 0, 0.5);
+  transition: background-color 0.3s ease;
+  width: auto; /* Evitar que tome todo el ancho */
+  max-width: none;
+  display: inline-block;
+}
+
+.btn-nueva-cita:hover {
+  background-color: var(--color-primario-hover);
+}
+
+.filtros {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filtros input,
+.filtros select {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  flex: 1;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  background: var(--color-fondo); /* Usa el fondo del tema principal */
+  padding: 1rem; /* Reduce padding para que el formulario ocupe más espacio */
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  max-width: 700px; /* Ajusta para que sea más armónico con el formulario */
+  width: 90%;
+  position: relative;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.btn-cerrar-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  width: auto;
+  height: auto;
+  line-height: 1;
+  padding: 5px;
+}
