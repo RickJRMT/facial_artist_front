@@ -16,12 +16,10 @@
     "@fullcalendar/react": "^6.1.19",
     "@fullcalendar/timegrid": "^6.1.19",
     "antd": "^5.27.5",
+    "aos": "^2.3.4",
     "axios": "^1.12.2",
-<<<<<<< HEAD
     "lucide-react": "^0.546.0",
-=======
     "moment": "^2.30.1",
->>>>>>> main
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.1"

@@ -129,6 +129,129 @@
     border-radius: var(--radio-borde);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
+.seccion4 {
+    background-color: var(--color-fondo-seccion);
+    padding: 60px 10%;
+    text-align: center;
+}
+
+.titulo_seccion4 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-secundario);
+    margin-bottom: 40px;
+}
+
+.seccion4_container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.seccion4_item {
+    flex: 1 1 200px;
+    max-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.icono_circular {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    border-radius: 100px;
+    align-items: center;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; 
+}
+.icono_circular:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.icono_circular img {
+    width: auto;
+    height: 80px;
+   object-fit: contain;
+}
+
+.seccion4_item p {
+    font-size: 0.95rem;
+    color: var(--color-secundario);
+    line-height: 1.5;
+}
+
+.seccion4_item a {
+    color: green;
+    text-decoration: underline;
+}
+
+
+.seccion6 {
+    background-color: var(--color-fondo-seccion);
+    padding: 30px 10%;
+    text-align: center;
+}
+
+.titulo_seccion6 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-secundario);
+    margin-bottom: 40px;
+}
+
+.seccion6_container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    justify-items: center;
+}
+
+.seccion6_item {
+    flex: 1 1 220px;
+    max-width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.seccion6_item p {
+    font-size: 0.95rem;
+    color: var(--color-secundario);
+    line-height: 1.5;
+}
+
+/* para animar el titulo de natalia salazar, que cuando se inicie en la  pagina tenga un efecto de entrada */
+.animar_entrada {
+    animation: fadeUp 1s ease-out forwards;
+    opacity: 0; /* inicia oculto hasta que se anime */
+}
+.animar_entrada.delay1 {
+    animation-delay: 0.3s;
+}
+.animar_entrada.delay2 {
+    animation-delay: 0.6s;
+}
+.animar_entrada.delay3 {
+    animation-delay: 0.9s;
+}
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 
 @media (max-width: 768px) {
@@ -148,4 +271,11 @@
     .video video {
         max-width: 100%;
     }
+        .seccion4_container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .seccion6_container {
+    grid-template-columns: 1fr;
+}
 }
