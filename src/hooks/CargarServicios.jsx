@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { obtenerServicios } from '../services/ServiciosConexion.js';
+import { obtenerServicios } from '../Services/ServiciosConexion';
 
 export function UseServicios() {
     const [servicios, setServicios] = useState([]);
