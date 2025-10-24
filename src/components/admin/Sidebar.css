@@ -129,7 +129,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+.nav-item-logout span{
+color: #ccc;
+}
 .nav-item-logout:hover {
   background: rgba(255, 255, 255, 0.05);
   color: #999;

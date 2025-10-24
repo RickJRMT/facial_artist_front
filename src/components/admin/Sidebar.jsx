@@ -1,6 +1,7 @@
 import React from 'react';
 import { Home, Users, Scissors, Calendar, GraduationCap, UserCircle, LogOut as LogOutIcon } from 'lucide-react';
 import './Sidebar.css';
+import { Link } from "react-router-dom";
 
 const Sidebar = ({ activeMenu, setActiveMenu, isOpen, onClose }) => {
   const menuItems = [
@@ -38,7 +39,7 @@ const Sidebar = ({ activeMenu, setActiveMenu, isOpen, onClose }) => {
 
       <button className="nav-item-logout" onClick={onClose}>
         <LogOutIcon size={20} />
-        <span>Salir</span>
+      <Link to='/homecliente'><span>Salir</span></Link>  
       </button>
     </div>
   );
