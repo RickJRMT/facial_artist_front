@@ -16,8 +16,14 @@ citasProfesionalApi.interceptors.response.use(
 );
 
 export const getCitasByProfesional = async (idProfesional) => {
-    const response = await citasProfesionalApi.get(`/citas-profesional/profesional/${idProfesional}`);
-    return response.data.eventosParaCalendario; // Eventos formateados
+    const validId = idProfesional || 1;
+    const response = await citasProfesionalApi.get(`/citas-profesional/profesional/${validId}`);
+    return response.data.citas; // Raw
+};
+
+export const getAllCitas = async () => {
+    const response = await citasProfesionalApi.get('/citas-profesional/all');
+    return response.data.citas; // Raw all
 };
 
 export const getEstadisticasCitas = async () => {

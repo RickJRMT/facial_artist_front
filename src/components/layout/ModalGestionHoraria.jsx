@@ -1,21 +1,22 @@
 import React from 'react';
+import './ModalGestionHoraria.css'; // ← NUEVO: Import CSS
 
 const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuardarHorario, error, onClose }) => {
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-            <div style={{ background: 'white', padding: '20px', borderRadius: '8px', width: '400px', maxHeight: '80vh', overflowY: 'auto' }}>
+        <div className="modal-overlay">
+            <div className="modal-content">
                 <h3>{formData.idHorario ? 'Editar Horario' : 'Nuevo Horario'}</h3>
-                {error && <p style={{ color: 'red', margin: '10px 0' }}>{error}</p>}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {error && <p className="modal-error">{error}</p>}
+                <div className="modal-form">
                     <label>
                         Profesional:
                         <select
                             value={formData.idProfesional || ''}
                             onChange={(e) => setFormData({ ...formData, idProfesional: Number(e.target.value) })}
                             required
-                            style={{ width: '100%', marginLeft: '5px' }}
+                            className="modal-input"
                         >
-                            <option value="">Selecciona un profesional</option>
+                            <option value="">Seleccionar profesional</option>
                             {profesionales.map(pro => (
                                 <option key={pro.idProfesional} value={pro.idProfesional}>
                                     {pro.nombreProfesional}
@@ -30,7 +31,7 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                             value={formData.fecha}
                             onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
                             required
-                            style={{ width: '100%', marginLeft: '5px' }}
+                            className="modal-input"
                         />
                     </label>
                     <label>
@@ -40,7 +41,7 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                             value={formData.hora_inicio}
                             onChange={(e) => setFormData({ ...formData, hora_inicio: e.target.value })}
                             required
-                            style={{ width: '100%', marginLeft: '5px' }}
+                            className="modal-input"
                         />
                     </label>
                     <label>
@@ -50,7 +51,7 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                             value={formData.hora_fin}
                             onChange={(e) => setFormData({ ...formData, hora_fin: e.target.value })}
                             required
-                            style={{ width: '100%', marginLeft: '5px' }}
+                            className="modal-input"
                         />
                     </label>
                     <label>
@@ -58,18 +59,19 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                         <select
                             value={formData.estado}
                             onChange={(e) => setFormData({ ...formData, estado: e.target.value })}
-                            required
-                            style={{ width: '100%', marginLeft: '5px' }}
+                            className="modal-input"
                         >
                             <option value="activo">Activo</option>
                             <option value="inactivo">Inactivo</option>
                         </select>
                     </label>
-                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                        <button type="button" onClick={() => handleGuardarHorario(!!formData.idHorario)} style={{ padding: '8px 16px' }}>
+                    <div className="modal-buttons">
+                        <button type="button" onClick={() => handleGuardarHorario(!!formData.idHorario)} className="btn-save">
                             Guardar
                         </button>
-                        <button type="button" onClick={onClose} style={{ padding: '8px 16px' }}>Cancelar</button>
+                        <button type="button" onClick={onClose} className="btn-cancel">
+                            Cancelar
+                        </button>
                     </div>
                 </div>
             </div>
