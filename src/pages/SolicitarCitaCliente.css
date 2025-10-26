@@ -6,12 +6,11 @@
   --color-sombra: rgba(0, 0, 0, 0.1);
   --color-sombra-input: rgba(0, 0, 0, 0.2); 
   --color-borde-input: #ccc;
-  --color-boton-cliente: #222;
-  --color-boton-texto-cliente: #ffd600;
-  --color-boton-cliente-hover: #444;
+  --color-boton-fondo: #222;
+  --color-boton-texto: #ffd600;
+  --color-boton-hover: #444;
   --color-resumen-fondo: #f0f0f0;
   --color-focus-input: #c9a56a;
-  
 }
 
 body {
@@ -103,6 +102,27 @@ select:focus {
   outline: none;
 }
 
+
+
+/* Botón enviar */
+button {
+  margin-top: 20px;
+  width: 100%;
+  background: var(--color-boton-fondo);
+  color: var(--color-boton-texto);
+  font-weight: bold;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--color-boton-hover);
+}
+
 /* Resumen de la cita */
 .resumen-cita {
   background: var(--color-resumen-fondo);
@@ -126,24 +146,6 @@ select:focus {
   min-width: 400px;
   max-width: 55%; /* Aumento el ancho del calendario al 55% */
   margin-right: 20px; /* Añadido margen derecho al calendario */
-}
-
-/* ==== Estilos exclusivos del botón de cliente ==== */
-.btn-solicitar-cita-cliente {
-  background: var(--color-boton-cliente); /* negro */
-  color: var(--color-boton-texto-cliente); /* amarillo */
-  font-weight: bold;
-  font-size: 16px;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
-}
-
-.btn-solicitar-cita-cliente:hover {
-  background: var(--color-boton-cliente-hover); /* gris oscuro */
 }
 
 /* Media queries para responsividad */
