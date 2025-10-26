@@ -368,7 +368,7 @@ const SolicitarCitaPage = () => {
               </div>
 
               {/* Botón para enviar la solicitud de cita */}
-              <button type="submit" style={{ marginTop: "1rem" }}  className="btn-solicitar-cita-cliente">
+              <button type="submit" style={{ marginTop: "1rem" }}>
                 Solicitar Cita
               </button>
             </form>
