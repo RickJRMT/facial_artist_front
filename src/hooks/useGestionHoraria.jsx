@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getHorariosByProfesional, createHorario, updateHorario } from '../services/horariosConexion';
-import { getCitasByProfesional, getEstadisticasCitas } from '../services/citasProfesionalConexion';
+import { getAllCitas, getCitasByDate, getEstadisticasCitas } from '../services/citasProfesionalConexion';
+import { getAllHorarios, getHorariosByDate, createHorario, updateHorario } from '../services/horariosConexion';
 import { obtenerProfesionales } from '../services/profesionalesConexion';
 
 const getAllProfesionales = async () => obtenerProfesionales();
@@ -8,72 +8,97 @@ const getAllProfesionales = async () => obtenerProfesionales();
 export const useGestionHoraria = (idProfesionalInicial = 1) => {
     const [eventos, setEventos] = useState([]);
     const [citaSeleccionada, setCitaSeleccionada] = useState(null);
+    const [selectedDateCitas, setSelectedDateCitas] = useState([]);
+    const [selectedDateHorarios, setSelectedDateHorarios] = useState([]);
     const [stats, setStats] = useState({ totalCitas: 0, citasPendientes: 0, citasConfirmadas: 0 });
     const [profesionales, setProfesionales] = useState([]);
-    const [selectedPro, setSelectedPro] = useState(null); // ← FIX: State definido al inicio
+    const [selectedPro, setSelectedPro] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({ idProfesional: idProfesionalInicial, fecha: '', hora_inicio: '', hora_fin: '', estado: 'activo' });
+    const [formData, setFormData] = useState({ idProfesional: '', fecha: '', hora_inicio: '', hora_fin: '', estado: 'activo', idHorario: null });
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [mensaje, setMensaje] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [initialDate] = useState('2025-10-20');
 
     const fetchAllData = async (idPro = idProfesionalInicial) => {
-        const validIdPro = idPro || idProfesionalInicial;
         setLoading(true);
         setError(null);
         try {
-            const [horariosEvents, citasRaw, statsData, pros] = await Promise.all([
-                getHorariosByProfesional(validIdPro),
-                getCitasByProfesional(validIdPro),
+            const [allCitasEvents, allHorariosEvents, statsData, pros] = await Promise.all([
+                getAllCitas(),
+                getAllHorarios(),
                 getEstadisticasCitas(),
                 getAllProfesionales()
             ]);
-
-            const horariosEventsFiltered = horariosEvents.filter(e => e.start);
-
-            const citasEvents = citasRaw.map(cita => {
-                const fechaCitaStr = cita.fechaCita ? cita.fechaCita.split('T')[0] : new Date().toISOString().split('T')[0];
-                const horaCita = cita.horaCita || '00:00:00';
-                const startStr = `${fechaCitaStr}T${horaCita}`;
-                const startDate = new Date(startStr);
-                const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
-
-                if (isNaN(startDate.getTime())) {
-                    console.warn('Fecha inválida para cita:', cita, 'startStr:', startStr);
-                    return null;
+            console.log('DEBUG All Citas raw:', allCitasEvents);
+            console.log('DEBUG All Horarios raw:', allHorariosEvents);
+            const citasEventsWithProps = (allCitasEvents || []).filter(ev => ev && ev.title).map(ev => ({
+                ...ev,
+                extendedProps: {
+                    nombreProfesional: ev.extendedProps?.nombreProfesional || (ev.title || '').split(' - ')[0] || 'N/A',
+                    descripcionServicio: ev.extendedProps?.descripcionServicio || (ev.title || '').split(' - ')[1] || ''
                 }
-                return {
-                    id: cita.idCita,
-                    title: `${cita.nombreProfesional || 'N/A'} - ${cita.descripcionServicio || 'Servicio N/A'}`,
-                    start: startDate.toISOString(),
-                    end: endDate.toISOString(),
-                    classNames: cita.estadoCita === 'confirmada' ? ['event-active'] :
-                        cita.estadoCita === 'pendiente' ? ['event-pending'] : ['event-cancelled'],
-                    extendedProps: {
-                        idCliente: cita.idCliente || null,
-                        idProfesional: cita.idProfesional || null,
-                        horaCita,
-                        nombreProfesional: cita.nombreProfesional || 'N/A',
-                        descripcionServicio: cita.descripcionServicio || 'Servicio N/A',
-                        estadoCita: cita.estadoCita || 'pendiente'
-                    }
-                };
-            }).filter(evento => evento !== null);
-
-            const combinedEvents = [...horariosEventsFiltered, ...citasEvents];
-            setEventos(combinedEvents);
-            console.log('DEBUG Citas mapeadas (con pro name):', citasEvents.length, 'eventos válidos');
-            console.log('Ejemplos:', citasEvents.slice(0, 2));
-            setStats(statsData);
-            setProfesionales(pros);
-            const initialPro = pros.find(p => p.idProfesional === validIdPro) || pros[0];
-            setSelectedPro(initialPro); // ← Set después de fetch
-            setFormData(prev => ({ ...prev, idProfesional: initialPro?.idProfesional || idProfesionalInicial }));
+            })).filter(ev => ev.extendedProps.nombreProfesional !== 'N/A' || ev.extendedProps.descripcionServicio);
+            const horariosEventsWithProps = (allHorariosEvents || []).filter(ev => ev && ev.title).map(ev => ({
+                ...ev,
+                extendedProps: {
+                    estado: ev.extendedProps?.estado || (ev.title.includes('Activo') ? 'activo' : 'inactivo'),
+                    nombreProfesional: ev.extendedProps?.nombreProfesional || 'N/A',
+                    idHorario: ev.id
+                }
+            }));
+            const combinedEvents = [...citasEventsWithProps, ...horariosEventsWithProps];
+            const finalEvents = combinedEvents.map(ev => {
+                const solapHorario = horariosEventsWithProps.find(h => h.extendedProps.estado === 'inactivo' && h.start <= ev.start && h.end >= ev.end);
+                if (solapHorario && ev.extendedProps?.estado !== 'confirmada') {
+                    return { ...ev, classNames: ['cita-solapada-inactiva'], backgroundColor: '#dc3545' };
+                }
+                return ev;
+            });
+            setEventos(finalEvents);
+            console.log('DEBUG Eventos combinados (citas + horarios):', finalEvents);
+            setStats(statsData || { totalCitas: 0, citasPendientes: 0, citasConfirmadas: 0 });
+            setProfesionales(pros || []);
+            const initialPro = (pros || []).find(p => p.idProfesional === idPro) || (pros || [])[0];
+            setSelectedPro(initialPro);
         } catch (err) {
             setError(err.message || 'Error al cargar datos');
-            console.error('Error en fetchAllData (ID:', validIdPro, '):', err);
+            console.error('Error en fetchAllData:', err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchCitasByDate = async (fecha) => {
+        try {
+            const citasDia = await getCitasByDate(fecha);
+            const formattedCitas = citasDia.map(cita => ({
+                ...cita,
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)), // ← FIX: Simple dia/mes/año
+                horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${cita.horaCita}`))
+            }));
+            setSelectedDateCitas(formattedCitas);
+            console.log('DEBUG Citas por fecha formatted:', formattedCitas);
+        } catch (err) {
+            console.error('Error fetch citas por fecha:', err);
+            setSelectedDateCitas([]);
+        }
+    };
+
+    const fetchHorariosByDate = async (fecha) => {
+        try {
+            const horariosDia = await getHorariosByDate(fecha);
+            const formattedHorarios = horariosDia.map(horario => ({
+                ...horario,
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(horario.fecha)), // ← FIX: Simple
+                horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horario.hora_inicio}`))
+            }));
+            setSelectedDateHorarios(formattedHorarios);
+            console.log('DEBUG Horarios por fecha formatted:', formattedHorarios);
+        } catch (err) {
+            console.error('Error fetch horarios por fecha:', err);
+            setSelectedDateHorarios([]);
         }
     };
 
@@ -81,22 +106,85 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         fetchAllData();
     }, []);
 
+    const handleSelectPro = (newPro) => {
+        setSelectedPro(newPro);
+        fetchAllData(newPro?.idProfesional);
+    };
+
     const handleSelectEvent = (info) => {
-        const eventoFull = eventos.find(e => e.id === parseInt(info.event.id));
+        const eventoFull = eventos.find(e => e && e.id === parseInt(info.event.id));
         if (eventoFull) {
+            const title = eventoFull.title || '';
+            const isHorario = title.includes('Activo') || title.includes('Inactivo');
+            const fechaLocal = info.event.start.toLocaleDateString('en-CA'); // ← FIX: YYYY-MM-DD local no UTC
+            const horaLocal = info.event.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // ← FIX: HH:MM local
+            const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(info.event.start);
+            const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(info.event.start);
+            if (isHorario) {
+                setCitaSeleccionada({
+                    nombreProfesional: eventoFull.extendedProps?.nombreProfesional || 'N/A',
+                    fecha: fechaLocal,
+                    hora: horaLocal,
+                    fechaFormatted,
+                    horaFormatted,
+                    descripcion: title,
+                    idHorario: eventoFull.id
+                });
+                return;
+            }
             setCitaSeleccionada({
-                nombreProfesional: eventoFull.extendedProps.nombreProfesional || 'N/A (Horario)',
-                fecha: info.event.start.toISOString().split('T')[0],
-                hora: info.event.start.toTimeString().slice(0, 5),
-                descripcion: eventoFull.extendedProps.descripcionServicio || eventoFull.title
+                nombreProfesional: eventoFull.extendedProps?.nombreProfesional || title.split(' - ')[0] || 'N/A',
+                fecha: fechaLocal,
+                hora: horaLocal,
+                fechaFormatted,
+                horaFormatted,
+                descripcion: eventoFull.extendedProps?.descripcionServicio || title.split(' - ')[1] || 'N/A'
             });
         }
     };
 
-    const validateForm = (isEdit = false) => {
-        if (isEdit && !formData.fecha && !formData.hora_inicio && !formData.hora_fin) {
-            return null;
+    const handleDateClick = (info) => {
+        const fecha = info.dateStr;
+        setCitaSeleccionada(null);
+        fetchCitasByDate(fecha);
+        fetchHorariosByDate(fecha);
+        console.log('DEBUG Click en día:', fecha);
+    };
+
+    const openModal = () => {
+        let initialData = { idProfesional: '', fecha: '', hora_inicio: '', hora_fin: '', estado: 'activo', idHorario: null };
+
+        if (citaSeleccionada) {
+            const horaFin = citaSeleccionada.idHorario ? '' : new Date(new Date(`2000-01-01T${citaSeleccionada.hora.replace(' ', '')}`).getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
+            initialData = {
+                ...initialData,
+                idProfesional: profesionales.find(p => p.nombreProfesional === citaSeleccionada.nombreProfesional)?.idProfesional || '',
+                fecha: citaSeleccionada.fecha,
+                hora_inicio: citaSeleccionada.hora.replace(' ', ''), // HH:MM
+                hora_fin: horaFin,
+                idHorario: citaSeleccionada.idHorario
+            };
+            console.log('DEBUG Prefill form from selección:', initialData);
+        } else if (selectedDateHorarios.length > 0) {
+            const horario = selectedDateHorarios[0];
+            initialData = {
+                ...initialData,
+                idProfesional: horario.idProfesional || '',
+                fecha: horario.fecha.split('T')[0] || '',
+                hora_inicio: horario.hora_inicio,
+                hora_fin: horario.hora_fin,
+                estado: horario.estado,
+                idHorario: horario.idHorario
+            };
+            console.log('DEBUG Prefill from día horario:', initialData);
         }
+
+        setFormData(initialData);
+        setShowModal(true);
+        setError(null);
+    };
+
+    const validateForm = () => {
         if (!formData.idProfesional || !formData.fecha || !formData.hora_inicio || !formData.hora_fin) {
             return 'Faltan campos requeridos';
         }
@@ -106,85 +194,70 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         return null;
     };
 
-    const handleGuardarHorario = async (isEdit = false) => {
-        const validationError = validateForm(isEdit);
+    const handleGuardarHorario = async () => {
+        const validationError = validateForm();
         if (validationError) {
+            setMensaje(validationError);
+            setShowError(true);
             setError(validationError);
             return;
         }
 
+        const isEdit = formData.idHorario && !isNaN(Number(formData.idHorario)) && Number(formData.idHorario) > 0;
+        console.log('DEBUG isEdit:', isEdit, 'ID:', formData.idHorario);
+
         try {
             setError(null);
-            let newEvent = null;
-            const startStr = `${formData.fecha}T${formData.hora_inicio}:00`;
-            const endStr = `${formData.fecha}T${formData.hora_fin}:00`;
+            let responseData;
             if (isEdit) {
-                await updateHorario(formData.idHorario, formData);
-                newEvent = {
-                    id: formData.idHorario,
-                    title: formData.estado === 'activo' ? `Disponible - ${formData.hora_inicio} a ${formData.hora_fin}` : 'Agenda Cerrada',
-                    start: startStr,
-                    end: endStr,
-                    backgroundColor: formData.estado === 'activo' ? '#28a745' : '#dc3545',
-                    borderColor: formData.estado === 'activo' ? '#28a745' : '#dc3545'
-                };
-                setEventos(prev => prev.map(e => e.id === formData.idHorario ? newEvent : e));
+                responseData = await updateHorario(formData.idHorario, formData);
             } else {
-                const response = await createHorario(formData);
-                newEvent = {
-                    id: response.id,
-                    title: formData.estado === 'activo' ? `Disponible - ${formData.hora_inicio} a ${formData.hora_fin}` : 'Agenda Cerrada',
-                    start: startStr,
-                    end: endStr,
-                    backgroundColor: formData.estado === 'activo' ? '#28a745' : '#dc3545',
-                    borderColor: formData.estado === 'activo' ? '#28a745' : '#dc3545'
-                };
-                setEventos(prev => [...prev, newEvent]);
-                console.log('DEBUG Nuevo evento agregado:', newEvent);
+                responseData = await createHorario(formData);
             }
             setShowModal(false);
-            await fetchAllData();
-        } catch (err) {
-            setError(err.message || 'Error al guardar horario');
-            console.error('Error en handleGuardarHorario:', err);
-        }
-    };
+            setMensaje('Horario guardado exitosamente');
+            setShowSuccess(true);
+            console.log('DEBUG Horario guardado:', responseData);
 
-    const openModal = (horarioEdit = null) => {
-        let initialData = { idProfesional: selectedPro ? selectedPro.idProfesional : idProfesionalInicial, fecha: '', hora_inicio: '', hora_fin: '', estado: 'activo' };
-        if (horarioEdit) {
-            initialData = { ...horarioEdit };
-        } else if (citaSeleccionada) {
-            initialData = {
-                ...initialData,
-                idProfesional: citaSeleccionada.idProfesional || idProfesionalInicial,
-                fecha: citaSeleccionada.fecha,
-                hora_inicio: citaSeleccionada.hora,
-                hora_fin: '01:00:00',
-                descripcion: citaSeleccionada.descripcion
-            };
+            fetchAllData(selectedPro?.idProfesional);
+        } catch (err) {
+            const errMsg = err.response?.data?.error || err.message || 'Error al guardar horario';
+            if (errMsg.includes('Solapamiento')) {
+                setMensaje('No se puede guardar: Hay citas existentes en ese horario. Cancela citas primero o elige otro rango.');
+            } else {
+                setMensaje(errMsg);
+            }
+            setShowError(true);
+            setError(errMsg);
+            console.error('Error en guardar:', err);
         }
-        setFormData(initialData);
-        setShowModal(true);
-        setError(null);
     };
 
     return {
         eventos,
         citaSeleccionada,
+        selectedDateCitas,
+        selectedDateHorarios,
         stats,
         profesionales,
         selectedPro,
         showModal,
         formData,
+        setFormData,
         loading,
         error,
-        setFormData,
         handleSelectEvent,
+        handleDateClick,
         openModal,
         handleGuardarHorario,
         setShowModal,
         fetchAllData,
-        initialDate
+        handleSelectPro,
+        showSuccess,
+        showError,
+        mensaje,
+        setShowSuccess,
+        setShowError,
+        setMensaje
     };
 };

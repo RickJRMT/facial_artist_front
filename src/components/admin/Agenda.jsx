@@ -1,118 +1,132 @@
-import React from 'react';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
+import React, { useState } from 'react';
 import { useGestionHoraria } from '../../hooks/useGestionHoraria';
 import ModalGestionHoraria from '../layout/ModalGestionHoraria';
+import ModalMensaje from '../layout/ModalMensaje';
+import CalendarioGestionHoraria from '../layout/CalendarioGestionHoraria';
 import './Agenda.css';
 
 const Agenda = () => {
+    const [currentView, setCurrentView] = useState('dayGridMonth');
+    const [currentDate, setCurrentDate] = useState(new Date());
+
     const {
-        eventos, citaSeleccionada, stats, profesionales, showModal, formData, loading, error, // ← FIX: Destructurado profesionales
-        setFormData, handleSelectEvent, openModal, handleGuardarHorario, setShowModal, fetchAllData, initialDate
+        eventos, citaSeleccionada, selectedDateCitas, selectedDateHorarios, stats, profesionales, showModal, formData, setFormData, loading, error,
+        handleSelectEvent, handleDateClick, openModal, handleGuardarHorario, setShowModal,
+        showSuccess, showError, mensaje, setShowSuccess, setShowError, setMensaje
     } = useGestionHoraria();
 
-    if (loading) return <div className="loading">Cargando calendario...</div>;
-    if (error) return <div className="error">Error: {error}</div>;
+    const handleDatesSet = (arg) => {
+        setCurrentView(arg.view.type);
+        setCurrentDate(new Date(arg.start));
+    };
 
-    const handleRecargar = () => fetchAllData();
+    if (loading) return <div className="loading-calendario">Cargando calendario...</div>;
+    if (error) return <div className="error-calendario">Error: {error}</div>;
 
-    const renderEventContent = (eventInfo) => {
-        const { event } = eventInfo;
-        const horaCita = event.extendedProps.horaCita || event.startStr.split('T')[1].slice(0, 5);
-        return (
-            <div className="fc-event-main">
-                <div className="fc-event-title">{event.title}</div>
-                {horaCita && <div className="fc-event-time">{horaCita}</div>}
-            </div>
-        );
+    const mostrarTabla = citaSeleccionada ? [citaSeleccionada] : selectedDateCitas;
+    const hasHorarioInDay = selectedDateHorarios.length > 0;
+
+    // Función safe para hora
+    const formatHora = (hora) => {
+        if (!hora) return 'N/A';
+        const parts = hora.trim().split(':');
+        if (parts.length < 2) return 'N/A';
+        const hh = parts[0].padStart(2, '0');
+        const mm = parts[1].padStart(2, '0');
+        const horaPadded = `${hh}:${mm}:00`;
+        try {
+            return new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horaPadded}`));
+        } catch {
+            return 'N/A';
+        }
+    };
+
+    // Función safe para fecha simple "dia/mes/año"
+    const formatFecha = (fecha) => {
+        if (!fecha) return 'N/A';
+        try {
+            return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(fecha));
+        } catch {
+            return 'N/A';
+        }
+    };
+
+    // Render rows flat array (no inline map, no whitespace)
+    const renderRows = () => {
+        if (!mostrarTabla || mostrarTabla.length === 0) return [];
+        return mostrarTabla.map((cita, index) => {
+            const fecha = cita.fecha || cita.fechaCita;
+            const hora = cita.hora || cita.horaCita;
+            const fechaFormatted = formatFecha(fecha);
+            const horaFormatted = formatHora(hora);
+            return <tr key={cita.idCita || index}><td>{cita.nombreProfesional}</td><td>{fechaFormatted}</td><td>{horaFormatted}</td><td>{cita.descripcion || cita.descripcionServicio || 'N/A'}</td></tr>;
+        });
     };
 
     return (
         <div className="agenda-container">
-            <header className="header">
+            <header className="agenda-header">
                 <h1>Gestión Horaria</h1>
             </header>
 
-            <div className="main-layout">
-                {/* Calendario - Izquierda 50% */}
-                <div className="calendar-section">
-                    {eventos.length === 0 ? (
-                        <div className="empty-calendar">
-                            <p>No hay eventos visibles. Recarga para ver citas.</p>
-                            <button onClick={handleRecargar}>Recargar</button>
-                        </div>
-                    ) : (
-                        <FullCalendar
-                            plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
-                            initialView="dayGridMonth"
-                            initialDate={initialDate}
-                            events={eventos}
-                            eventContent={renderEventContent}
-                            eventClick={handleSelectEvent}
-                            height="100%"
-                            contentHeight="auto"
-                            headerToolbar={{
-                                left: 'prev,next today',
-                                center: 'title',
-                                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                            }}
-                            eventDisplay="block"
-                            slotMinTime="08:00:00"
-                            slotMaxTime="20:00:00"
-                            validRange={{ start: '2025-10-01', end: '2025-11-01' }}
-                            dayCellDidMount={(arg) => {
-                                arg.el.style.cursor = 'pointer';
-                            }}
-                            buttonText={{
-                                today: 'Hoy',
-                                month: 'Mes',
-                                week: 'Semana',
-                                day: 'Día',
-                                list: 'Lista'
-                            }}
-                            locale="es"
-                            titleFormat={{ year: 'numeric', month: 'long' }}
-                        />
-                    )}
+            <div className="agenda-main">
+                <div className="calendario-panel">
+                    <CalendarioGestionHoraria
+                        eventos={eventos}
+                        onEventClick={handleSelectEvent}
+                        onDateClick={handleDateClick}
+                        currentView={currentView}
+                        currentDate={currentDate}
+                        onDatesSet={handleDatesSet}
+                    />
                 </div>
 
-                {/* Panel Derecho - Solo Descripción */}
-                <div className="panel-section">
-                    <h3>Detalles del Evento Seleccionado</h3>
-                    {citaSeleccionada ? (
-                        <div className="panel-detalles">
-                            <p><strong>Profesional:</strong> {citaSeleccionada.nombreProfesional}</p>
-                            <p><strong>Fecha:</strong> {citaSeleccionada.fecha}</p>
-                            <p><strong>Hora:</strong> {citaSeleccionada.hora}</p>
-                            <p><strong>Descripción:</strong> {citaSeleccionada.descripcion}</p>
-                        </div>
+                <div className="panel-descripcion">
+                    <h3 className="panel-titulo">Descripción del Evento</h3>
+                    {mostrarTabla && mostrarTabla.length > 0 ? (
+                        <table className="tabla-visualizacion">
+                            <thead>
+                                <tr>
+                                    <th>Profesional</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>{renderRows()}</tbody>
+                        </table>
                     ) : (
-                        <p>Selecciona un evento en el calendario para ver detalles.</p>
+                        <p className="panel-placeholder">Selecciona un evento o día en el calendario para ver detalles.</p>
                     )}
                     <button
-                        className="btn-gestion"
-                        onClick={() => openModal()}
+                        className="btn-gestion-horaria"
+                        onClick={openModal}
                     >
                         Gestión Horaria
                     </button>
+                    {hasHorarioInDay && (
+                        <button
+                            className="btn-edit-horario"
+                            onClick={() => openModal(selectedDateHorarios[0])}
+                        >
+                            Editar Horario del Día
+                        </button>
+                    )}
                 </div>
             </div>
 
-            {/* Cards Inferiores - Stats */}
-            <footer className="stats-footer">
-                <div className="stat-card">
+            <footer className="agenda-footer">
+                <div className="card-stats">
                     <h4>Total Citas</h4>
-                    <p className="stat-number">{stats.totalCitas}</p>
+                    <p>{stats.totalCitas}</p>
                 </div>
-                <div className="stat-card">
+                <div className="card-stats">
                     <h4>Pendientes</h4>
-                    <p className="stat-number" style={{ color: '#ffc107' }}>{stats.citasPendientes}</p>
+                    <p>{stats.citasPendientes}</p>
                 </div>
-                <div className="stat-card">
+                <div className="card-stats">
                     <h4>Confirmadas</h4>
-                    <p className="stat-number" style={{ color: '#28a745' }}>{stats.citasConfirmadas}</p>
+                    <p>{stats.citasConfirmadas}</p>
                 </div>
             </footer>
 
@@ -124,6 +138,26 @@ const Agenda = () => {
                     handleGuardarHorario={handleGuardarHorario}
                     error={error}
                     onClose={() => setShowModal(false)}
+                />
+            )}
+            {showSuccess && (
+                <ModalMensaje
+                    type="success"
+                    mensaje={mensaje}
+                    onClose={() => {
+                        setShowSuccess(false);
+                        setMensaje('');
+                    }}
+                />
+            )}
+            {showError && (
+                <ModalMensaje
+                    type="error"
+                    mensaje={mensaje}
+                    onClose={() => {
+                        setShowError(false);
+                        setMensaje('');
+                    }}
                 />
             )}
         </div>

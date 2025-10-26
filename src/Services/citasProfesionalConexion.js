@@ -15,15 +15,20 @@ citasProfesionalApi.interceptors.response.use(
     }
 );
 
-export const getCitasByProfesional = async (idProfesional) => {
-    const validId = idProfesional || 1;
-    const response = await citasProfesionalApi.get(`/citas-profesional/profesional/${validId}`);
-    return response.data.citas; // Raw
-};
-
 export const getAllCitas = async () => {
     const response = await citasProfesionalApi.get('/citas-profesional/all');
-    return response.data.citas; // Raw all
+    console.log('DEBUG Service All Citas: Response data:', response.data);
+    return response.data.eventosParaCalendario || [];
+};
+
+export const getCitasByProfesional = async (idProfesional) => {
+    const response = await citasProfesionalApi.get(`/citas-profesional/profesional/${idProfesional}`);
+    return response.data.eventosParaCalendario || [];
+};
+
+export const getCitasByDate = async (fecha) => {
+    const response = await citasProfesionalApi.get(`/citas-profesional/date/${fecha}`);
+    return response.data;
 };
 
 export const getEstadisticasCitas = async () => {

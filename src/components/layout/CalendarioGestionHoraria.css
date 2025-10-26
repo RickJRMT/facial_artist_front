@@ -1,0 +1,170 @@
+.calendario-container {
+    width: 100%;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+}
+
+.calendario-wrapper {
+    position: relative;
+    height: 100%;
+}
+
+.titulo-fecha-dia {
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-bottom: 1px solid #dee2e6;
+    color: #495057;
+}
+
+.ocultar-titulo .titulo-fecha-dia {
+    display: none;
+}
+
+.calendario-citas {
+    height: 100%;
+}
+
+.fc {
+    font-size: 14px;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #212529;
+}
+
+.fc-button {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.fc-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.fc-button-active {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.fc-daygrid-day:hover {
+    background-color: #e9ecef !important;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: background-color 0.2s ease;
+}
+
+.fc-timegrid-slot:hover {
+    background-color: #f8f9fa !important;
+    cursor: pointer;
+}
+
+.fc-event:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.cita-pendiente {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.cita-pendiente:hover {
+    background-color: #e0a800 !important;
+}
+
+.cita-confirmada {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+.cita-confirmada:hover {
+    background-color: #218838 !important;
+}
+
+.cita-cancelada {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+    opacity: 0.7;
+}
+
+.cita-cancelada:hover {
+    opacity: 0.9;
+}
+
+.horario-activo {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+.horario-activo:hover {
+    background-color: #218838 !important;
+}
+
+.horario-inactivo {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+    opacity: 0.8;
+}
+
+.horario-inactivo:hover {
+    opacity: 1;
+}
+
+.cita-solapada-inactiva {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+    opacity: 0.6;
+}
+
+.fc-event-main {
+    display: flex;
+    flex-direction: column;
+    padding: 2px 5px;
+}
+
+.fc-event-title {
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-bottom: 1px;
+}
+
+.fc-event-description {
+    font-size: 0.75em;
+    font-style: italic;
+    color: #6c757d;
+}
+
+.calendario-day {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.calendario-day.fc-day-today {
+    background-color: #e3f2fd !important;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .calendario-container {
+        font-size: 12px;
+    }
+
+    .fc-event-title {
+        font-size: 0.8em;
+    }
+}

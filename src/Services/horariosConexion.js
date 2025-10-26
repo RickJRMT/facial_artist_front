@@ -7,7 +7,6 @@ const horariosApi = axios.create({
     timeout: 5000,
 });
 
-// Opcional: Interceptor para errors globales
 horariosApi.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -16,9 +15,19 @@ horariosApi.interceptors.response.use(
     }
 );
 
+export const getAllHorarios = async () => {
+    const response = await horariosApi.get('/horarios/all');
+    return response.data.eventosParaCalendario || [];
+};
+
+export const getHorariosByDate = async (fecha) => {
+    const response = await horariosApi.get(`/horarios/date/${fecha}`);
+    return response.data; // Raw para prefill
+};
+
 export const getHorariosByProfesional = async (idProfesional) => {
     const response = await horariosApi.get(`/horarios/profesional/${idProfesional}`);
-    return response.data.eventosParaCalendario; // Retorna solo eventos formateados
+    return response.data.eventosParaCalendario || [];
 };
 
 export const createHorario = async (data) => {
