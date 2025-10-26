@@ -8,13 +8,6 @@ const Navbar = ({ onMenuClick }) => {
       <button className="menu-toggle" onClick={onMenuClick}>
         <Menu size={20} />
       </button>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Buscar clientes, servicios, citas..."
-          className="search-input"
-        />
-      </div>
       <div className="user-profile">
         <div className="user-avatar">
           <UserCircle size={24} />
