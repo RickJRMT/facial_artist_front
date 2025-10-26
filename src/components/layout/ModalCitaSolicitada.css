@@ -15,7 +15,7 @@
     --font-principal: 'Segoe UI', sans-serif;
 }
 
-.modal-overlay-exito {
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -25,7 +25,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999 !important;
+    z-index: 9999;
 }
 
 .modal-contenido {
@@ -123,19 +123,6 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s ease;
-}
-
-.whatsapp-link {
-    color: #25D366;
-    /* Verde de WhatsApp */
-    font-weight: bold;
-    text-decoration: underline;
-    transition: color 0.3s ease;
-}
-
-.whatsapp-link:hover {
-    color: #128C7E;
-    text-decoration: none;
 }
 
 .modal-contenido button:hover {
