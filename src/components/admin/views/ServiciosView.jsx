@@ -3,6 +3,7 @@ import { obtenerServicios, crearServicio } from '../../../Services/ServiciosCone
 import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
 import CrearServicioModal from '../modals/CrearServicioModal';
 import DescripcionModal from '../modals/DescripcionModal';
+import ImagenModal from '../modals/ImagenModal';
 import './ServiciosView.css';
 
 /**
@@ -20,6 +21,10 @@ const ServiciosView = () => {
     isOpen: false,
     descripcion: '',
     titulo: ''
+  });
+  const [imagenModal, setImagenModal] = useState({
+    isOpen: false,
+    imagen: null
   });
 
   /**
@@ -109,7 +114,29 @@ const ServiciosView = () => {
   };
 
   const handleVisualizar = (servicio) => {
-    alert(`Visualizar servicio: ${servicio.nombre}`);
+    console.log('Servicio seleccionado:', servicio);
+    
+    // Verificar si existe la imagen
+    if (!servicio.imagen) {
+      alert('Este servicio no tiene imagen disponible');
+      return;
+    }
+
+    // Manejar si la imagen ya viene con el prefijo data:image
+    let imagenUrl;
+    if (servicio.imagen.startsWith('data:image')) {
+      imagenUrl = servicio.imagen;
+    } else {
+      // Si solo viene el base64, agregar el prefijo
+      imagenUrl = `data:image/jpeg;base64,${servicio.imagen}`;
+    }
+
+    console.log('Abriendo modal con imagen:', imagenUrl.substring(0, 50) + '...');
+    
+    setImagenModal({
+      isOpen: true,
+      imagen: imagenUrl
+    });
   };
 
   const handleEditarServicio = (servicio) => {
@@ -262,6 +289,13 @@ const ServiciosView = () => {
           )}
         </div>
       </div>
+      
+      {/* Modal de Imagen */}
+      <ImagenModal 
+        isOpen={imagenModal.isOpen}
+        onClose={() => setImagenModal({ isOpen: false, imagen: null })}
+        imagen={imagenModal.imagen}
+      />
     </div>
   );
 };
