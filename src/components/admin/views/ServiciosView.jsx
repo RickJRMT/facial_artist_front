@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { obtenerServicios, crearServicio } from '../../../Services/ServiciosConexion';
-import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
-import CrearServicioModal from '../modals/CrearServicioModal';
-import DescripcionModal from '../modals/DescripcionModal';import ImagenModal from '../modals/ImagenModal';
-import ImagenModal from '../modals/ImagenModal';
-import './ServiciosView.css';
+// import React, { useState, useEffect } from 'react';
+// import { obtenerServicios, crearServicio } from '../../../Services/ServiciosConexion';
+// import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
+// import CrearServicioModal from '../modals/CrearServicioModal';
+// import DescripcionModal from '../modals/DescripcionModal';import ImagenModal from '../modals/ImagenModal';
+// import ImagenModal from '../modals/ImagenModal';
+// import './ServiciosView.css';
 
 /**
  * Componente principal para la gestión de servicios en el panel de administración
