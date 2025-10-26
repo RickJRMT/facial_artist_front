@@ -129,6 +129,19 @@
     border-radius: var(--radio-borde);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
+
+/* CSS de la seccion tres, donde se muestran los servicios */
+.seccion3 {
+    background-color: var(--color-fondo-seccion);
+    padding: 60px 10%;
+    text-align: center;
+}
+
+.seccion3_container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 .seccion4 {
     background-color: var(--color-fondo-seccion);
     padding: 60px 10%;
@@ -275,7 +288,11 @@
         flex-direction: column;
         align-items: center;
     }
-    .seccion6_container {
+        .seccion6_container {
     grid-template-columns: 1fr;
 }
+    
+    .seccion3 {
+        padding: 40px 5%;
+    }
 }
