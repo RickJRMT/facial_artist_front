@@ -10,11 +10,19 @@ const ModalCitaExitosa = ({ datosCita = {}, onClose }) => {
     const { nombreCliente, fecha, hora, profesional, servicio, costo, numeroReferencia } = datosCita;
 
     return (
-        <div className="modal-overlay">
+        <div className="modal-overlay-exito">
             <div className="modal-contenido">
                 <h2> ¡Cita solicitada con éxito!</h2>
                 <p className="texto-importante">
-                    Recuerda que debes pagar al menos el <strong>50%</strong> del valor del servicio para confirmar tu cita.
+                    Recuerda que debes pagar al menos el <strong>50%</strong> del valor del servicio para confirmar tu cita y enviarlo al número:{' '}
+                    <a
+                        href="https://wa.me/573001234567"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="whatsapp-link"
+                    >
+                        57 300 1234567
+                    </a>.
                 </p>
                 <div className="modal-secciones">
                     <div className="seccion-cita">
