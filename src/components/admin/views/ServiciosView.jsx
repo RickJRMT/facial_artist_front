@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { obtenerServicios, crearServicio } from '../../../Services/ServiciosConexion';
+import { obtenerServicios, crearServicio, eliminarServicio } from '../../../Services/ServiciosConexion';
 import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
 import CrearServicioModal from '../modals/CrearServicioModal';
-import DescripcionModal from '../modals/DescripcionModal';import ImagenModal from '../modals/ImagenModal';
+import DescripcionModal from '../modals/DescripcionModal';
 import ImagenModal from '../modals/ImagenModal';
+import EliminarServicioModal from '../modals/EliminarServicioModal';
 import './ServiciosView.css';
 
 /**
@@ -17,10 +18,21 @@ const ServiciosView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [descripcionModal, setDescripcionModal] = useState({
     isOpen: false,
     descripcion: '',
     titulo: ''
+  });
+  const [imagenModal, setImagenModal] = useState({
+    isOpen: false,
+    imagen: ''
+  });
+  const [eliminarModal, setEliminarModal] = useState({
+    isOpen: false,
+    servicioId: null,
+    servicioNombre: ''
   });
 
   /**
@@ -45,6 +57,87 @@ const ServiciosView = () => {
   const filteredServicios = servicios.filter(servicio =>
     servicio.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Calcular la paginación
+  const totalPages = Math.ceil(filteredServicios.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentServicios = filteredServicios.slice(startIndex, endIndex);
+
+  // Resetear página cuando cambia el filtro de búsqueda
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // Funciones de paginación
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    // Scroll hacia arriba de la tabla
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+
+    if (end - start < maxVisible - 1) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+
+    if (start > 1) {
+      buttons.push(
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          className="pagination-btn"
+        >
+          1
+        </button>
+      );
+      if (start > 2) {
+        buttons.push(
+          <span key="ellipsis-start" className="pagination-ellipsis">
+            ...
+          </span>
+        );
+      }
+    }
+
+    for (let i = start; i <= end; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`pagination-btn ${currentPage === i ? 'active' : ''}`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) {
+        buttons.push(
+          <span key="ellipsis-end" className="pagination-ellipsis">
+            ...
+          </span>
+        );
+      }
+      buttons.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          className="pagination-btn"
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    return buttons;
+  };
 
   const handleNuevoServicio = () => {
     setModalOpen(true);
@@ -110,16 +203,46 @@ const ServiciosView = () => {
   };
 
   const handleVisualizar = (servicio) => {
-    alert(`Visualizar servicio: ${servicio.nombre}`);
+    // Verificar si el servicio tiene imagen
+    if (servicio.imagen) {
+      const imagen = servicio.imagen;
+      // Si la imagen no tiene el prefijo data:image, agregarlo
+      const imagenSrc = imagen.startsWith('data:image') 
+        ? imagen 
+        : `data:image/png;base64,${imagen}`;
+      
+      setImagenModal({
+        isOpen: true,
+        imagen: imagenSrc
+      });
+    } else {
+      alert('Este servicio no tiene imagen disponible');
+    }
   };
 
   const handleEditarServicio = (servicio) => {
     alert(`Editar servicio: ${servicio.nombre}`);
   };
 
-  const handleEliminarServicio = (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
-      setServicios(servicios.filter(s => s.id !== id));
+  const handleEliminarServicio = (servicio) => {
+    setEliminarModal({
+      isOpen: true,
+      servicioId: servicio.id,
+      servicioNombre: servicio.nombre
+    });
+  };
+
+  const handleConfirmarEliminacion = async () => {
+    try {
+      await eliminarServicio(eliminarModal.servicioId);
+      // Actualizar la lista de servicios después de eliminar
+      const nuevosServicios = await obtenerServicios();
+      setServicios(nuevosServicios);
+      setEliminarModal({ isOpen: false, servicioId: null, servicioNombre: '' });
+    } catch (error) {
+      console.error('Error al eliminar el servicio:', error);
+      alert('Error al eliminar el servicio. Por favor, intente nuevamente.');
+      setEliminarModal({ isOpen: false, servicioId: null, servicioNombre: '' });
     }
   };
 
@@ -150,6 +273,21 @@ const ServiciosView = () => {
         onClose={() => setDescripcionModal(prev => ({ ...prev, isOpen: false }))}
         descripcion={descripcionModal.descripcion}
         titulo={descripcionModal.titulo}
+      />
+
+      {/* Modal de Imagen */}
+      <ImagenModal
+        isOpen={imagenModal.isOpen}
+        onClose={() => setImagenModal(prev => ({ ...prev, isOpen: false }))}
+        imagen={imagenModal.imagen}
+      />
+
+      {/* Modal de Eliminar Servicio */}
+      <EliminarServicioModal
+        isOpen={eliminarModal.isOpen}
+        onClose={() => setEliminarModal({ isOpen: false, servicioId: null, servicioNombre: '' })}
+        onConfirm={handleConfirmarEliminacion}
+        servicioNombre={eliminarModal.servicioNombre}
       />
 
       {/* Search Bar */}
@@ -192,7 +330,7 @@ const ServiciosView = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredServicios.map((servicio) => (
+                  {currentServicios.map((servicio) => (
                     <tr key={servicio.id} className="table-row">
                       <td>{servicio.id}</td>
                       <td>
@@ -243,7 +381,7 @@ const ServiciosView = () => {
                           </button>
                           <button 
                             className="btn-delete"
-                            onClick={() => handleEliminarServicio(servicio.id)}
+                            onClick={() => handleEliminarServicio(servicio)}
                             title="Eliminar"
                           >
                             <Trash2 size={16} />
@@ -263,6 +401,32 @@ const ServiciosView = () => {
           )}
         </div>
       </div>
+
+      {/* Paginación */}
+      {!loading && !error && filteredServicios.length > 0 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            Mostrando {startIndex + 1} - {Math.min(endIndex, filteredServicios.length)} de {filteredServicios.length} servicios
+          </div>
+          <div className="pagination-controls">
+            <button
+              className="pagination-btn pagination-nav"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </button>
+            {renderPaginationButtons()}
+            <button
+              className="pagination-btn pagination-nav"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

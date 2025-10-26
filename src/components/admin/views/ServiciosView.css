@@ -10,6 +10,7 @@
 .descripcion-truncada {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -140,7 +141,30 @@
 .servicios-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* Fija el ancho de las columnas */
 }
+
+/* Anchos fijos para las columnas para mantener el espaciado consistente */
+.servicios-table th:nth-child(1),
+.servicios-table td:nth-child(1) { width: 5%; } /* ID */
+
+.servicios-table th:nth-child(2),
+.servicios-table td:nth-child(2) { width: 15%; } /* Servicio */
+
+.servicios-table th:nth-child(3),
+.servicios-table td:nth-child(3) { width: 25%; } /* Descripción */
+
+.servicios-table th:nth-child(4),
+.servicios-table td:nth-child(4) { width: 15%; } /* Imagen */
+
+.servicios-table th:nth-child(5),
+.servicios-table td:nth-child(5) { width: 12%; } /* Costo */
+
+.servicios-table th:nth-child(6),
+.servicios-table td:nth-child(6) { width: 12%; } /* Duración */
+
+.servicios-table th:nth-child(7),
+.servicios-table td:nth-child(7) { width: 16%; } /* Opciones */
 
 .table-header {
   background: #faf9f7;
@@ -154,6 +178,7 @@
   font-weight: 600;
   color: #666;
   white-space: nowrap;
+  box-sizing: border-box; /* Asegura que el padding se mantenga consistente */
 }
 
 .table-row {
@@ -169,6 +194,7 @@
   padding: 16px;
   font-size: 14px;
   color: #1a1a1a;
+  box-sizing: border-box; /* Asegura que el padding se mantenga consistente */
 }
 
 .servicio-nombre {
@@ -266,6 +292,78 @@
   font-size: 16px;
 }
 
+/* Paginación */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 20px;
+}
+
+.pagination-info {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pagination-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: white;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #fafafa;
+  border-color: #d4a017;
+  color: #d4a017;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn.active {
+  background: linear-gradient(135deg, #d4a017 0%, #f4d03f 100%);
+  border-color: #d4a017;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.pagination-btn.pagination-nav {
+  padding: 0 16px;
+  font-weight: 500;
+}
+
+.pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: #999;
+  font-size: 14px;
+}
+
 
 /* Ajustes responsivos */
 @media (max-width: 1024px) {
@@ -327,6 +425,32 @@
     width: 100%;
     justify-content: center;
   }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .pagination-info {
+    order: 2;
+    font-size: 13px;
+  }
+
+  .pagination-controls {
+    order: 1;
+  }
+
+  .pagination-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 13px;
+    padding: 0 8px;
+  }
+
+  .pagination-btn.pagination-nav {
+    padding: 0 12px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -362,4 +486,37 @@
     width: 28px;
     height: 28px;
   }
+
+  .pagination-container {
+    padding: 16px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination-btn {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+    padding: 0 6px;
+  }
+
+  .pagination-btn.pagination-nav {
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .pagination-ellipsis {
+    padding: 0 4px;
+    font-size: 12px;
+  }
 }
+
+
