@@ -71,7 +71,6 @@ const AdminPage = () => {
         {activeMenu === 'clientes' && <ClientesView />}
         {activeMenu === 'servicios' && <ServiciosView />}
         {activeMenu === 'citas' && <CitasAdmin />}
-        {activeMenu == 'cursos' && <Prueba />}
       </div>
     </div>
   );
