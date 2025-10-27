@@ -20,8 +20,8 @@ const Agenda = () => {
         setCurrentDate(new Date(arg.start));
     };
 
-    if (loading) return <div className="loading-calendario">Cargando calendario...</div>;
-    if (error) return <div className="error-calendario">Error: {error}</div>;
+    if (loading) return <div className="gh-carga-calendario">Cargando calendario...</div>;
+    if (error) return <div className="gh-error-calendario">Error: {error}</div>;
 
     const mostrarTabla = citaSeleccionada ? [citaSeleccionada] : selectedDateCitas;
     const hasHorarioInDay = selectedDateHorarios.length > 0;
@@ -64,13 +64,13 @@ const Agenda = () => {
     };
 
     return (
-        <div className="agenda-container">
-            <header className="agenda-header">
+        <div className="gh-contenedor-agenda">
+            <header className="gh-encabezado-agenda">
                 <h1>Gestión Horaria</h1>
             </header>
 
-            <div className="agenda-main">
-                <div className="calendario-panel">
+            <div className="gh-principal-agenda">
+                <div className="gh-panel-calendario">
                     <CalendarioGestionHoraria
                         eventos={eventos}
                         onEventClick={handleSelectEvent}
@@ -81,10 +81,10 @@ const Agenda = () => {
                     />
                 </div>
 
-                <div className="panel-descripcion">
-                    <h3 className="panel-titulo">Descripción del Evento</h3>
+                <div className="gh-panel-descripcion">
+                    <h3 className="gh-titulo-panel">Descripción del Evento</h3>
                     {mostrarTabla && mostrarTabla.length > 0 ? (
-                        <table className="tabla-visualizacion">
+                        <table className="gh-tabla-visualizacion">
                             <thead>
                                 <tr>
                                     <th>Profesional</th>
@@ -96,17 +96,17 @@ const Agenda = () => {
                             <tbody>{renderRows()}</tbody>
                         </table>
                     ) : (
-                        <p className="panel-placeholder">Selecciona un evento o día en el calendario para ver detalles.</p>
+                        <p className="gh-placeholder-panel">Selecciona un evento o día en el calendario para ver detalles.</p>
                     )}
                     <button
-                        className="btn-gestion-horaria"
+                        className="gh-boton-gestion-horaria"
                         onClick={openModal}
                     >
                         Gestión Horaria
                     </button>
                     {hasHorarioInDay && (
                         <button
-                            className="btn-edit-horario"
+                            className="gh-boton-editar-horario"
                             onClick={() => openModal(selectedDateHorarios[0])}
                         >
                             Editar Horario del Día
@@ -115,16 +115,16 @@ const Agenda = () => {
                 </div>
             </div>
 
-            <footer className="agenda-footer">
-                <div className="card-stats">
+            <footer className="gh-pie-agenda">
+                <div className="gh-tarjeta-estadisticas">
                     <h4>Total Citas</h4>
                     <p>{stats.totalCitas}</p>
                 </div>
-                <div className="card-stats">
+                <div className="gh-tarjeta-estadisticas">
                     <h4>Pendientes</h4>
                     <p>{stats.citasPendientes}</p>
                 </div>
-                <div className="card-stats">
+                <div className="gh-tarjeta-estadisticas">
                     <h4>Confirmadas</h4>
                     <p>{stats.citasConfirmadas}</p>
                 </div>

@@ -1,15 +1,15 @@
-.calendario-container {
+.gh-contenedor-calendario {
     width: 100%;
     height: 100%;
     font-family: 'Arial', sans-serif;
 }
 
-.calendario-wrapper {
+.gh-envoltorio-calendario {
     position: relative;
     height: 100%;
 }
 
-.titulo-fecha-dia {
+.gh-titulo-fecha-dia {
     background-color: #f8f9fa;
     padding: 10px;
     text-align: center;
@@ -19,11 +19,11 @@
     color: #495057;
 }
 
-.ocultar-titulo .titulo-fecha-dia {
+.gh-ocultar-titulo .gh-titulo-fecha-dia {
     display: none;
 }
 
-.calendario-citas {
+.gh-calendario-citas {
     height: 100%;
 }
 
@@ -72,59 +72,59 @@
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.cita-pendiente {
+.gh-cita-pendiente {
     background-color: #ffc107 !important;
     border-color: #ffc107 !important;
     color: #212529 !important;
 }
 
-.cita-pendiente:hover {
+.gh-cita-pendiente:hover {
     background-color: #e0a800 !important;
 }
 
-.cita-confirmada {
+.gh-cita-confirmada {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
     color: white !important;
 }
 
-.cita-confirmada:hover {
+.gh-cita-confirmada:hover {
     background-color: #218838 !important;
 }
 
-.cita-cancelada {
+.gh-cita-cancelada {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
     color: white !important;
     opacity: 0.7;
 }
 
-.cita-cancelada:hover {
+.gh-cita-cancelada:hover {
     opacity: 0.9;
 }
 
-.horario-activo {
+.gh-horario-activo {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
     color: white !important;
 }
 
-.horario-activo:hover {
+.gh-horario-activo:hover {
     background-color: #218838 !important;
 }
 
-.horario-inactivo {
+.gh-horario-inactivo {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
     color: white !important;
     opacity: 0.8;
 }
 
-.horario-inactivo:hover {
+.gh-horario-inactivo:hover {
     opacity: 1;
 }
 
-.cita-solapada-inactiva {
+.gh-cita-solapada-inactiva {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
     color: white !important;
@@ -149,18 +149,18 @@
     color: #6c757d;
 }
 
-.calendario-day {
+.gh-dia-calendario {
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.calendario-day.fc-day-today {
+.gh-dia-calendario.fc-day-today {
     background-color: #e3f2fd !important;
     font-weight: bold;
 }
 
 @media (max-width: 768px) {
-    .calendario-container {
+    .gh-contenedor-calendario {
         font-size: 12px;
     }
 

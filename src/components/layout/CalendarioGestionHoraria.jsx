@@ -19,16 +19,16 @@ const CalendarioGestionHoraria = ({ eventos, onEventClick, onDateClick, currentV
     const renderEventContent = (eventInfo) => {
         const { event } = eventInfo;
         const title = event.title;
-        const isHorario = title.includes('Disponible') || title.includes('Agenda Cerrada');
+        const isHorario = title.includes('Activo') || title.includes('Inactivo');
         const isCita = !isHorario;
 
         return (
-            <div className="fc-event-main">
-                <div className="fc-event-title">
+            <div className="gh-contenido-evento">
+                <div className="gh-titulo-evento">
                     {isCita ? event.extendedProps.nombreProfesional || title.split(' - ')[0] : title}
                 </div>
                 {isCita && event.extendedProps.descripcionServicio && (
-                    <div className="fc-event-description" style={{ fontSize: '0.8em', color: '#666' }}>
+                    <div className="gh-descripcion-evento">
                         {event.extendedProps.descripcionServicio}
                     </div>
                 )}
@@ -37,14 +37,14 @@ const CalendarioGestionHoraria = ({ eventos, onEventClick, onDateClick, currentV
     };
 
     return (
-        <div className="calendario-container">
-            <div className="calendario-wrapper">
+        <div className="gh-contenedor-calendario">
+            <div className="gh-envoltorio-calendario">
                 {currentView === 'timeGridDay' && (
-                    <div className="titulo-fecha-dia">
+                    <div className="gh-titulo-fecha-dia">
                         {formatFechaDia(currentDate)}
                     </div>
                 )}
-                <div className={`calendario-citas ${currentView === 'timeGridDay' ? 'ocultar-titulo' : ''}`}>
+                <div className={`gh-calendario-citas ${currentView === 'timeGridDay' ? 'gh-ocultar-titulo' : ''}`}>
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
                         headerToolbar={{
@@ -56,7 +56,7 @@ const CalendarioGestionHoraria = ({ eventos, onEventClick, onDateClick, currentV
                         events={eventos || []}
                         eventContent={renderEventContent}
                         eventClick={onEventClick}
-                        dateClick={onDateClick} // ← FIX: Click día para tabla
+                        dateClick={onDateClick}
                         editable={false}
                         selectable={false}
                         eventOverlap={false}
@@ -73,7 +73,7 @@ const CalendarioGestionHoraria = ({ eventos, onEventClick, onDateClick, currentV
                         }}
                         contentHeight="600px"
                         titleFormat={{ year: 'numeric', month: 'long' }}
-                        dayCellClassNames="calendario-day"
+                        dayCellClassNames="gh-dia-calendario"
                         datesSet={onDatesSet}
                     />
                 </div>

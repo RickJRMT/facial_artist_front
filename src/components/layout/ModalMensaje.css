@@ -1,4 +1,4 @@
-.modal-overlay {
+.gh-superposicion-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,7 +11,7 @@
     z-index: 1001;
 }
 
-.modal-content {
+.gh-contenido-modal {
     background: #d4edda;
     /* Verde éxito default */
     padding: 20px;
@@ -21,34 +21,34 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.modal-content.error {
+.gh-contenido-modal.gh-error {
     background: #f8d7da;
     /* Rojo error */
 }
 
-.modal-titulo {
+.gh-titulo-modal {
     margin-bottom: 10px;
     font-size: 1.3em;
     color: #155724;
     /* Verde éxito */
 }
 
-.modal-content.error .modal-titulo {
+.gh-contenido-modal.gh-error .gh-titulo-modal {
     color: #721c24;
     /* Rojo error */
 }
 
-.modal-mensaje {
+.gh-mensaje-modal {
     margin-bottom: 20px;
     font-size: 1em;
     color: #155724;
 }
 
-.modal-content.error .modal-mensaje {
+.gh-contenido-modal.gh-error .gh-mensaje-modal {
     color: #721c24;
 }
 
-.btn-ok {
+.gh-boton-ok {
     padding: 8px 16px;
     background: #007bff;
     color: white;
@@ -58,12 +58,12 @@
     font-weight: bold;
 }
 
-.btn-ok:hover {
+.gh-boton-ok:hover {
     background: #0056b3;
 }
 
 @media (max-width: 480px) {
-    .modal-content {
+    .gh-contenido-modal {
         width: 90%;
         padding: 15px;
     }
