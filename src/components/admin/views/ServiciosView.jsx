@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { obtenerServicios, crearServicio, eliminarServicio } from '../../../Services/ServiciosConexion';
+import { obtenerServicios, crearServicio, eliminarServicio, actualizarServicio } from '../../../Services/ServiciosConexion';
 import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
 import CrearServicioModal from '../modals/CrearServicioModal';
+import EditarServicioModal from '../modals/EditarServicioModal';
 import DescripcionModal from '../modals/DescripcionModal';
 import ImagenModal from '../modals/ImagenModal';
 import EliminarServicioModal from '../modals/EliminarServicioModal';
@@ -33,6 +34,10 @@ const ServiciosView = () => {
     isOpen: false,
     servicioId: null,
     servicioNombre: ''
+  });
+  const [editarModal, setEditarModal] = useState({
+    isOpen: false,
+    servicio: null
   });
 
   /**
@@ -202,6 +207,73 @@ const ServiciosView = () => {
     }
   };
 
+  const handleSubmitEditarServicio = async (formData) => {
+    try {
+      // Convertir los valores numéricos
+      const servCosto = parseFloat(formData.precio);
+      const servDuracion = parseInt(formData.duracion);
+
+      // Validar que los valores numéricos sean válidos
+      if (isNaN(servCosto) || servCosto <= 0) {
+        throw new Error('El costo debe ser un valor numérico válido mayor a 0');
+      }
+
+      if (isNaN(servDuracion) || servDuracion <= 0) {
+        throw new Error('La duración debe ser un valor numérico válido mayor a 0');
+      }
+
+      let servicioData = new FormData();
+
+      // Agregar los campos básicos
+      servicioData.append('servNombre', formData.nombre);
+      servicioData.append('servDescripcion', formData.descripcion);
+      servicioData.append('servCosto', servCosto);
+      servicioData.append('servDuracion', servDuracion);
+
+      // Si hay una imagen nueva, procesarla
+      if (formData.imagen && formData.hasImageChanged) {
+        servicioData.append('servImagen', formData.imagen);
+      }
+
+      // Convertir FormData a objeto regular
+      const plainData = {};
+      for (let [key, value] of servicioData.entries()) {
+        plainData[key] = value;
+      }
+
+      // Si hay imagen nueva, convertirla a base64
+      if (formData.imagen && formData.hasImageChanged) {
+        const base64Image = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64String = reader.result.split(',')[1];
+            resolve(base64String);
+          };
+          reader.readAsDataURL(formData.imagen);
+        });
+        plainData.servImagen = base64Image;
+      }
+
+      // Actualizar el servicio
+      await actualizarServicio(editarModal.servicio.id, plainData);
+      
+      // Actualizar la lista de servicios
+      const nuevosServicios = await obtenerServicios();
+      setServicios(nuevosServicios);
+      
+      // Cerrar el modal
+      setEditarModal({
+        isOpen: false,
+        servicio: null
+      });
+      
+      alert('Servicio actualizado exitosamente');
+    } catch (error) {
+      console.error('Error al actualizar el servicio:', error);
+      alert('Error al actualizar el servicio. Por favor, intente nuevamente.');
+    }
+  };
+
   const handleVisualizar = (servicio) => {
     // Verificar si el servicio tiene imagen
     if (servicio.imagen) {
@@ -221,7 +293,10 @@ const ServiciosView = () => {
   };
 
   const handleEditarServicio = (servicio) => {
-    alert(`Editar servicio: ${servicio.nombre}`);
+    setEditarModal({
+      isOpen: true,
+      servicio: servicio
+    });
   };
 
   const handleEliminarServicio = (servicio) => {
@@ -265,6 +340,14 @@ const ServiciosView = () => {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmitServicio}
+      />
+
+      {/* Modal de Editar Servicio */}
+      <EditarServicioModal
+        isOpen={editarModal.isOpen}
+        onClose={() => setEditarModal({ isOpen: false, servicio: null })}
+        onSubmit={handleSubmitEditarServicio}
+        servicio={editarModal.servicio}
       />
 
       {/* Modal de Descripción */}
