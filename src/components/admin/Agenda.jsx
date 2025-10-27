@@ -23,7 +23,7 @@ const Agenda = () => {
     if (loading) return <div className="gh-carga-calendario">Cargando calendario...</div>;
     if (error) return <div className="gh-error-calendario">Error: {error}</div>;
 
-    const mostrarTabla = citaSeleccionada ? [citaSeleccionada] : selectedDateCitas;
+    const mostrarDetalle = citaSeleccionada || (selectedDateCitas.length > 0 ? selectedDateCitas[0] : null) || (selectedDateHorarios.length > 0 ? selectedDateHorarios[0] : null);
     const hasHorarioInDay = selectedDateHorarios.length > 0;
 
     // Función safe para hora
@@ -51,18 +51,6 @@ const Agenda = () => {
         }
     };
 
-    // Render rows flat array (no inline map, no whitespace)
-    const renderRows = () => {
-        if (!mostrarTabla || mostrarTabla.length === 0) return [];
-        return mostrarTabla.map((cita, index) => {
-            const fecha = cita.fecha || cita.fechaCita;
-            const hora = cita.hora || cita.horaCita;
-            const fechaFormatted = formatFecha(fecha);
-            const horaFormatted = formatHora(hora);
-            return <tr key={cita.idCita || index}><td>{cita.nombreProfesional}</td><td>{fechaFormatted}</td><td>{horaFormatted}</td><td>{cita.descripcion || cita.descripcionServicio || 'N/A'}</td></tr>;
-        });
-    };
-
     return (
         <div className="gh-contenedor-agenda">
             <header className="gh-encabezado-agenda">
@@ -83,18 +71,25 @@ const Agenda = () => {
 
                 <div className="gh-panel-descripcion">
                     <h3 className="gh-titulo-panel">Descripción del Evento</h3>
-                    {mostrarTabla && mostrarTabla.length > 0 ? (
-                        <table className="gh-tabla-visualizacion">
-                            <thead>
-                                <tr>
-                                    <th>Profesional</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Descripción</th>
-                                </tr>
-                            </thead>
-                            <tbody>{renderRows()}</tbody>
-                        </table>
+                    {mostrarDetalle ? (
+                        <div className="gh-detalle-evento">
+                            <div className="gh-label-detalle">
+                                <span className="gh-label-titulo">Profesional:</span>
+                                <span className="gh-label-valor">{mostrarDetalle.nombreProfesional || 'N/A'}</span>
+                            </div>
+                            <div className="gh-label-detalle">
+                                <span className="gh-label-titulo">Fecha:</span>
+                                <span className="gh-label-valor">{formatFecha(mostrarDetalle.fecha || mostrarDetalle.fechaCita)}</span>
+                            </div>
+                            <div className="gh-label-detalle">
+                                <span className="gh-label-titulo">Hora:</span>
+                                <span className="gh-label-valor">{formatHora(mostrarDetalle.hora || mostrarDetalle.horaCita)}</span>
+                            </div>
+                            <div className="gh-label-detalle">
+                                <span className="gh-label-titulo">Descripción:</span>
+                                <span className="gh-label-valor">{mostrarDetalle.descripcion || mostrarDetalle.descripcionServicio || 'N/A'}</span>
+                            </div>
+                        </div>
                     ) : (
                         <p className="gh-placeholder-panel">Selecciona un evento o día en el calendario para ver detalles.</p>
                     )}

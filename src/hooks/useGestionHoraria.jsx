@@ -52,7 +52,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const finalEvents = combinedEvents.map(ev => {
                 const solapHorario = horariosEventsWithProps.find(h => h.extendedProps.estado === 'inactivo' && h.start <= ev.start && h.end >= ev.end);
                 if (solapHorario && ev.extendedProps?.estado !== 'confirmada') {
-                    return { ...ev, classNames: ['cita-solapada-inactiva'], backgroundColor: '#dc3545' };
+                    return { ...ev, classNames: ['gh-cita-solapada-inactiva'], backgroundColor: '#dc3545' };
                 }
                 return ev;
             });
@@ -75,7 +75,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const citasDia = await getCitasByDate(fecha);
             const formattedCitas = citasDia.map(cita => ({
                 ...cita,
-                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)), // ← FIX: Simple dia/mes/año
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)), // Local time
                 horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${cita.horaCita}`))
             }));
             setSelectedDateCitas(formattedCitas);
@@ -91,7 +91,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const horariosDia = await getHorariosByDate(fecha);
             const formattedHorarios = horariosDia.map(horario => ({
                 ...horario,
-                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(horario.fecha)), // ← FIX: Simple
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(horario.fecha)), // Local time
                 horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horario.hora_inicio}`))
             }));
             setSelectedDateHorarios(formattedHorarios);
@@ -116,10 +116,12 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         if (eventoFull) {
             const title = eventoFull.title || '';
             const isHorario = title.includes('Activo') || title.includes('Inactivo');
-            const fechaLocal = info.event.start.toLocaleDateString('en-CA'); // ← FIX: YYYY-MM-DD local no UTC
-            const horaLocal = info.event.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // ← FIX: HH:MM local
-            const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(info.event.start);
-            const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(info.event.start);
+            // FIX: Usar local time para evitar merma de día
+            const startLocal = new Date(info.event.start); // Convertir a local
+            const fechaLocal = startLocal.toLocaleDateString('en-CA'); // YYYY-MM-DD local
+            const horaLocal = startLocal.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // HH:MM local
+            const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(startLocal); // Local
+            const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(startLocal); // Local
             if (isHorario) {
                 setCitaSeleccionada({
                     nombreProfesional: eventoFull.extendedProps?.nombreProfesional || 'N/A',

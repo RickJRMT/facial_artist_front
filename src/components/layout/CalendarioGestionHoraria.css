@@ -72,37 +72,18 @@
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.gh-cita-pendiente {
-    background-color: #ffc107 !important;
-    border-color: #ffc107 !important;
-    color: #212529 !important;
-}
-
-.gh-cita-pendiente:hover {
-    background-color: #e0a800 !important;
-}
-
-.gh-cita-confirmada {
+/* Citas: Verde */
+.gh-cita-agendada {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
     color: white !important;
 }
 
-.gh-cita-confirmada:hover {
+.gh-cita-agendada:hover {
     background-color: #218838 !important;
 }
 
-.gh-cita-cancelada {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: white !important;
-    opacity: 0.7;
-}
-
-.gh-cita-cancelada:hover {
-    opacity: 0.9;
-}
-
+/* Horarios Activos: Verde */
 .gh-horario-activo {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
@@ -113,6 +94,7 @@
     background-color: #218838 !important;
 }
 
+/* Horarios Inactivos: Rojo forzado */
 .gh-horario-inactivo {
     background-color: #dc3545 !important;
     border-color: #dc3545 !important;
@@ -122,31 +104,24 @@
 
 .gh-horario-inactivo:hover {
     opacity: 1;
-}
-
-.gh-cita-solapada-inactiva {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: white !important;
-    opacity: 0.6;
+    background-color: #c82333 !important;
+    /* Rojo más oscuro en hover */
 }
 
 .fc-event-main {
     display: flex;
     flex-direction: column;
     padding: 2px 5px;
+    overflow: hidden;
 }
 
-.fc-event-title {
+.gh-titulo-evento {
     font-weight: bold;
-    font-size: 0.9em;
-    margin-bottom: 1px;
-}
-
-.fc-event-description {
-    font-size: 0.75em;
-    font-style: italic;
-    color: #6c757d;
+    font-size: 0.85em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0;
 }
 
 .gh-dia-calendario {
@@ -159,12 +134,32 @@
     font-weight: bold;
 }
 
+/* Responsividad */
 @media (max-width: 768px) {
     .gh-contenedor-calendario {
         font-size: 12px;
+        height: auto;
     }
 
-    .fc-event-title {
+    .gh-titulo-evento {
         font-size: 0.8em;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .gh-contenedor-calendario {
+        font-size: 11px;
+    }
+
+    .fc {
+        font-size: 12px;
+    }
+
+    .gh-titulo-evento {
+        font-size: 0.75em;
     }
 }

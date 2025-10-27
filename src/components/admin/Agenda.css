@@ -2,6 +2,8 @@
     display: flex;
     height: 100vh;
     flex-direction: column;
+    overflow-y: auto;
+    /* Scroll vertical si footer se recorta */
 }
 
 .gh-encabezado-agenda {
@@ -17,7 +19,10 @@
 
 .gh-principal-agenda {
     display: flex;
-    flex: 1;
+    flex: 1 1 auto;
+    /* Flex grow para principal, shrink footer si necesario */
+    min-height: 0;
+    /* Permite scroll interno */
     overflow: hidden;
 }
 
@@ -25,6 +30,7 @@
     width: 50%;
     padding: 10px;
     border-right: 1px solid #ddd;
+    overflow-y: auto;
 }
 
 .gh-panel-descripcion {
@@ -32,6 +38,9 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    /* Scroll en panel si detalles largos */
+    height: 100%;
 }
 
 .gh-titulo-panel {
@@ -39,22 +48,33 @@
     font-size: 1.2em;
 }
 
-.gh-tabla-visualizacion {
-    border: 1px solid #ddd;
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.gh-tabla-visualizacion th,
-.gh-tabla-visualizacion td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.gh-tabla-visualizacion th {
+/* Nuevo: Detalle como labels (inspirado en modal de citas) */
+.gh-detalle-evento {
     background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #D4AF37;
+    /* Dorado sutil */
+}
+
+.gh-label-detalle {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 5px 0;
+}
+
+.gh-label-titulo {
+    font-weight: bold;
+    color: #333;
+    min-width: 100px;
+}
+
+.gh-label-valor {
+    color: #555;
+    text-align: right;
+    flex: 1;
 }
 
 .gh-placeholder-panel {
@@ -65,17 +85,26 @@
 
 .gh-boton-gestion-horaria,
 .gh-boton-editar-horario {
-    padding: 10px 20px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-bottom: 10px;
     font-weight: bold;
+    transition: all 0.2s ease;
+    width: 100%;
 }
 
 .gh-boton-gestion-horaria {
-    background: #007bff;
-    color: white;
+    background: linear-gradient(135deg, #D4AF37, #FFD700);
+    /* Dorado como en citas */
+    color: #000;
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+}
+
+.gh-boton-gestion-horaria:hover {
+    background: linear-gradient(135deg, #FFD700, #D4AF37);
+    transform: translateY(-1px);
 }
 
 .gh-boton-editar-horario {
@@ -83,7 +112,6 @@
     color: white;
 }
 
-.gh-boton-gestion-horaria:hover,
 .gh-boton-editar-horario:hover {
     opacity: 0.9;
 }
@@ -94,14 +122,27 @@
     padding: 15px;
     background: #f8f9fa;
     border-top: 1px solid #ddd;
+    flex-shrink: 0;
+    /* Footer no se encoje */
+    min-height: 80px;
+    width: 100%;
+    /* Full width para no recortarse */
 }
 
 .gh-tarjeta-estadisticas {
     text-align: center;
     border: 1px solid #ddd;
     padding: 15px;
-    border-radius: 4px;
-    width: 30%;
+    border-radius: 8px;
+    flex: 1;
+    /* Expande para no recortarse */
+    margin: 0 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 60px;
+    /* Asegura espacio para números */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .gh-tarjeta-estadisticas h4 {
@@ -131,4 +172,111 @@
 
 .gh-error-calendario {
     color: red;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .gh-principal-agenda {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .gh-panel-calendario,
+    .gh-panel-descripcion {
+        width: 100%;
+        height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .gh-pie-agenda {
+        flex-direction: row;
+        overflow-x: auto;
+        /* Scroll horizontal si se cortan */
+        gap: 10px;
+    }
+
+    .gh-tarjeta-estadisticas {
+        min-width: 100px;
+        /* Evita recorte en mobile */
+        margin: 0 5px;
+    }
+
+    .gh-detalle-evento {
+        padding: 10px;
+    }
+
+    .gh-label-detalle {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .gh-label-valor {
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .gh-encabezado-agenda h1 {
+        font-size: 1.2em;
+    }
+
+    .gh-titulo-panel {
+        font-size: 1em;
+    }
+
+    .gh-tarjeta-estadisticas p {
+        font-size: 20px;
+    }
+
+    .gh-panel-calendario,
+    .gh-panel-descripcion {
+        height: 40vh;
+        padding: 5px;
+    }
+
+    .gh-pie-agenda {
+        padding: 10px;
+    }
+}
+
+/* Responsividad: En mobile, scroll full */
+@media (max-width: 768px) {
+    .gh-contenedor-agenda {
+        height: auto;
+        /* Auto height para full scroll */
+        overflow-y: visible;
+    }
+
+    .gh-principal-agenda {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+    }
+
+    .gh-panel-calendario,
+    .gh-panel-descripcion {
+        width: 100%;
+        height: auto;
+        min-height: 300px;
+        /* Mínimo para scroll */
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        overflow-y: auto;
+    }
+
+    .gh-pie-agenda {
+        flex-direction: row;
+        overflow-x: auto;
+        /* Horizontal si cards anchas */
+        padding: 10px;
+        min-height: 70px;
+    }
+
+    .gh-tarjeta-estadisticas {
+        flex: 0 0 120px;
+        /* Fixed width en mobile para scroll */
+        margin: 0 5px;
+    }
 }
