@@ -1,0 +1,106 @@
+.gh-superposicion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.gh-contenido-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.gh-titulo-modal {
+    margin-bottom: 10px;
+    font-size: 1.3em;
+    color: #333;
+}
+
+.gh-error-modal {
+    color: red;
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.gh-formulario-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.gh-etiqueta-form {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    color: #555;
+}
+
+.gh-entrada-form,
+.gh-select-form {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.gh-entrada-form:focus,
+.gh-select-form:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.gh-botones-modal {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.gh-boton-guardar,
+.gh-boton-cancelar {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.gh-boton-guardar {
+    background: #28a745;
+    color: white;
+}
+
+.gh-boton-guardar:hover {
+    background: #218838;
+}
+
+.gh-boton-cancelar {
+    background: #6c757d;
+    color: white;
+}
+
+.gh-boton-cancelar:hover {
+    background: #5a6268;
+}
+
+@media (max-width: 480px) {
+    .gh-contenido-modal {
+        width: 90%;
+        padding: 15px;
+    }
+}

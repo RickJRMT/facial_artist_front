@@ -44,11 +44,10 @@
   margin: 20px auto;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 40px);
-  animation: modalSlideIn 500ms ease-out;
   max-height: 90vh;
-  overflow-y: auto;
+  animation: modalSlideIn 500ms ease-out;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 /* Modal Header */
@@ -91,6 +90,7 @@
   padding: 32px;
   overflow-y: auto;
   flex-grow: 1;
+  max-height: calc(100vh - 200px);
 }
 
 /* Asegurar que el formulario ocupe todo el espacio disponible */

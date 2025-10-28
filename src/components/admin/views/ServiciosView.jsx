@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { obtenerServicios, crearServicio } from '../../../Services/ServiciosConexion';
-import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
+ import React, { useState, useEffect } from 'react';
+ import { obtenerServicios, crearServicio } from '../../../Services/ServiciosConexion';
+ import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
 import CrearServicioModal from '../modals/CrearServicioModal';
-import './ServiciosView.css';
+import DescripcionModal from '../modals/DescripcionModal';
+ import ImagenModal from '../modals/ImagenModal';
+ import './ServiciosView.css';
 
 /**
  * Componente principal para la gestión de servicios en el panel de administración
@@ -15,6 +17,11 @@ const ServiciosView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [descripcionModal, setDescripcionModal] = useState({
+    isOpen: false,
+    descripcion: '',
+    titulo: ''
+  });
 
   /**
    * Efecto para cargar la lista de servicios al montar el componente
@@ -36,8 +43,7 @@ const ServiciosView = () => {
   }, []);
 
   const filteredServicios = servicios.filter(servicio =>
-    servicio.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    servicio.descripcion?.toLowerCase().includes(searchTerm.toLowerCase())
+    servicio.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleNuevoServicio = () => {
@@ -51,8 +57,12 @@ const ServiciosView = () => {
       const servDuracion = parseInt(formData.duracion);
 
       // Validar que los valores numéricos sean válidos
-      if (isNaN(servCosto) || isNaN(servDuracion)) {
-        throw new Error('El costo y la duración deben ser valores numéricos válidos');
+      if (isNaN(servCosto) || servCosto <= 0) {
+        throw new Error('El costo debe ser un valor numérico válido mayor a 0');
+      }
+
+      if (isNaN(servDuracion) || servDuracion <= 0) {
+        throw new Error('La duración debe ser un valor numérico válido mayor a 0');
       }
 
       let servicioData = new FormData();
@@ -134,13 +144,20 @@ const ServiciosView = () => {
         onSubmit={handleSubmitServicio}
       />
 
+      {/* Modal de Descripción */}
+      <DescripcionModal
+        isOpen={descripcionModal.isOpen}
+        onClose={() => setDescripcionModal(prev => ({ ...prev, isOpen: false }))}
+        descripcion={descripcionModal.descripcion}
+        titulo={descripcionModal.titulo}
+      />
+
       {/* Search Bar */}
       <div className="servicios-search-section">
         <div className="servicios-search-bar">
-          <Search size={20} className="search-icon" />
           <input
             type="text"
-            placeholder="Buscar servicios..."
+            placeholder="Buscar servicios por nombre..."
             className="search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -169,7 +186,7 @@ const ServiciosView = () => {
                     <th>Servicio</th>
                     <th>Descripción</th>
                     <th>Imagen</th>
-                    <th>Costo (€)</th>
+                    <th>Costo</th>
                     <th>Duración (min)</th>
                     <th>Opciones</th>
                   </tr>
@@ -182,7 +199,17 @@ const ServiciosView = () => {
                         <span className="servicio-nombre">{servicio.nombre}</span>
                       </td>
                       <td>
-                        <span className="descripcion">{servicio.descripcion}</span>
+                        <span 
+                          className="descripcion-truncada"
+                          onClick={() => setDescripcionModal({
+                            isOpen: true,
+                            descripcion: servicio.descripcion,
+                            titulo: servicio.nombre
+                          })}
+                          title="Click para ver descripción completa"
+                        >
+                          {servicio.descripcion}
+                        </span>
                       </td>
                       <td>
                         <button 
@@ -194,7 +221,11 @@ const ServiciosView = () => {
                         </button>
                       </td>
                       <td>
-                        <span className="costo">€{servicio.costo}</span>
+                        <span className="costo">
+                          ${new Intl.NumberFormat('es-CO', { 
+                            maximumFractionDigits: 0 
+                          }).format(servicio.costo)}
+                        </span>
                       </td>
                       <td>
                         <span className="duracion">

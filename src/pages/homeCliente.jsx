@@ -11,6 +11,7 @@ import puntualidad from '../assets/img/stickers/negocio.png';
 import deposito from '../assets/img/stickers/donacion.png';
 import actualizar from '../assets/img/stickers/actualizar.png';
 import devoluciones from '../assets/img/stickers/devoluciones-faciles.png';
+import ServicioCardGrid from '../components/views/ServicioCard.jsx';
 
 
 const Homecliente = () => {
@@ -51,7 +52,10 @@ const Homecliente = () => {
                         </div>
                     </section>
                     <section className="seccion3">
-                        <h1> aquí irán los servicios</h1>
+                        <h1 className='titulo2'>Nuestros Servicios</h1>
+                        <div className='seccion3_container'>
+                            <ServicioCardGrid />
+                        </div>
                     </section>
                     <section className="seccion4">
                         <h1 className='titulo_seccion4'>Proceso de agendamiento</h1>

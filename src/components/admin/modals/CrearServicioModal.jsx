@@ -34,6 +34,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
       formData.nombre.trim() !== '' &&
       formData.descripcion.length >= 50 &&
       formData.precio.trim() !== '' &&
+      formData.duracion.trim() !== '' &&
       formData.imagen !== null &&
       !Object.values(errors).some(error => error !== '')
     );
@@ -97,8 +98,12 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
         break;
 
       case 'duracion':
-        if (value !== '' && !/^\d+$/.test(value)) {
+        if (value === '') {
+          error = 'La duración es obligatoria';
+        } else if (!/^\d+$/.test(value)) {
           error = 'Ingrese solo números';
+        } else if (parseInt(value) <= 0) {
+          error = 'La duración debe ser mayor a 0';
         }
         break;
 
@@ -176,6 +181,26 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
     onSubmit(submitData);
   };
 
+  // Función para limpiar el formulario
+  const handleCleanForm = () => {
+    setFormData({
+      nombre: '',
+      descripcion: '',
+      duracion: '',
+      precio: '',
+      imagen: null
+    });
+    setPreviewImage(null);
+    setErrors({
+      nombre: '',
+      descripcion: '',
+      precio: '',
+      duracion: '',
+      imagen: ''
+    });
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -183,7 +208,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
       <div className="modal-container">
         <div className="modal-header">
           <h2 className="modal-title">Crear Nuevo Servicio</h2>
-          <button className="modal-close-btn" onClick={onClose}>&times;</button>
+          <button className="modal-close-btn" onClick={handleCleanForm}>&times;</button>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -280,7 +305,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn-cancelar" onClick={onClose}>
+            <button type="button" className="btn-cancelar" onClick={handleCleanForm}>
               Cancelar
             </button>
             <button 

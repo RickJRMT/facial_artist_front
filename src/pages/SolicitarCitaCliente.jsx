@@ -78,10 +78,10 @@ const SolicitarCitaPage = () => {
     setIdServicio(id);
     // Buscamos el nombre del servicio para actualizar el resumen
     const servicioSeleccionado = servicios.find(
-      (s) => s.idServicios === parseInt(id)
+      (s) => s.id === parseInt(id)
     );
-    const nombre = servicioSeleccionado?.servNombre || "";
-    const precio = servicioSeleccionado?.servCosto || "No disponible";
+    const nombre = servicioSeleccionado?.nombre || "";
+    const precio = servicioSeleccionado?.costo || "No disponible";
 
     // Comprobamos si el precio no es igual a 'No disponible'
     // Si el precio es un valor válido, lo formateamos; si no, lo dejamos como 'No disponible'
@@ -172,8 +172,8 @@ const SolicitarCitaPage = () => {
 
     // Verificar si el servicio seleccionado es uno de los prohibidos
     const servicioSeleccionado = servicios.find(
-      (s) => s.idServicios === parseInt(idServicio)
-    )?.servNombre;
+      (s) => s.id === parseInt(idServicio)
+    )?.nombre;
 
     if (
       edadCliente < 18 &&
@@ -285,10 +285,10 @@ const SolicitarCitaPage = () => {
                 {/* Renderizamos todas las opciones de servicios disponibles */}
                 {servicios.map((servicio) => (
                   <option
-                    key={servicio.idServicios}
-                    value={servicio.idServicios}
+                    key={servicio.id}
+                    value={servicio.id}
                   >
-                    {servicio.servNombre}
+                    {servicio.nombre}
                   </option>
                 ))}
               </select>

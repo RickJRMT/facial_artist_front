@@ -1,0 +1,70 @@
+.gh-superposicion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+
+.gh-contenido-modal {
+    background: #d4edda;
+    /* Verde éxito default */
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.gh-contenido-modal.gh-error {
+    background: #f8d7da;
+    /* Rojo error */
+}
+
+.gh-titulo-modal {
+    margin-bottom: 10px;
+    font-size: 1.3em;
+    color: #155724;
+    /* Verde éxito */
+}
+
+.gh-contenido-modal.gh-error .gh-titulo-modal {
+    color: #721c24;
+    /* Rojo error */
+}
+
+.gh-mensaje-modal {
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: #155724;
+}
+
+.gh-contenido-modal.gh-error .gh-mensaje-modal {
+    color: #721c24;
+}
+
+.gh-boton-ok {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.gh-boton-ok:hover {
+    background: #0056b3;
+}
+
+@media (max-width: 480px) {
+    .gh-contenido-modal {
+        width: 90%;
+        padding: 15px;
+    }
+}
