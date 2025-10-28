@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAllCitas, getCitasByDate, getEstadisticasCitas } from '../services/citasProfesionalConexion';
+import { getAllCitas, getCitasByDate, getEstadisticasCitas } from '../Services/citasProfesionalConexion';
 import { getAllHorarios, getHorariosByDate, createHorario, updateHorario } from '../services/horariosConexion';
 import { obtenerProfesionales } from '../services/profesionalesConexion';
 
@@ -31,8 +31,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 getEstadisticasCitas(),
                 getAllProfesionales()
             ]);
-            console.log('DEBUG All Citas raw:', allCitasEvents);
-            console.log('DEBUG All Horarios raw:', allHorariosEvents);
             const citasEventsWithProps = (allCitasEvents || []).filter(ev => ev && ev.title).map(ev => ({
                 ...ev,
                 extendedProps: {
@@ -52,12 +50,11 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const finalEvents = combinedEvents.map(ev => {
                 const solapHorario = horariosEventsWithProps.find(h => h.extendedProps.estado === 'inactivo' && h.start <= ev.start && h.end >= ev.end);
                 if (solapHorario && ev.extendedProps?.estado !== 'confirmada') {
-                    return { ...ev, classNames: ['cita-solapada-inactiva'], backgroundColor: '#dc3545' };
+                    return { ...ev, classNames: ['gh-cita-solapada-inactiva'], backgroundColor: '#dc3545' };
                 }
                 return ev;
             });
             setEventos(finalEvents);
-            console.log('DEBUG Eventos combinados (citas + horarios):', finalEvents);
             setStats(statsData || { totalCitas: 0, citasPendientes: 0, citasConfirmadas: 0 });
             setProfesionales(pros || []);
             const initialPro = (pros || []).find(p => p.idProfesional === idPro) || (pros || [])[0];
@@ -75,11 +72,10 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const citasDia = await getCitasByDate(fecha);
             const formattedCitas = citasDia.map(cita => ({
                 ...cita,
-                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)), // ← FIX: Simple dia/mes/año
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)), // Local time
                 horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${cita.horaCita}`))
             }));
             setSelectedDateCitas(formattedCitas);
-            console.log('DEBUG Citas por fecha formatted:', formattedCitas);
         } catch (err) {
             console.error('Error fetch citas por fecha:', err);
             setSelectedDateCitas([]);
@@ -91,11 +87,10 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const horariosDia = await getHorariosByDate(fecha);
             const formattedHorarios = horariosDia.map(horario => ({
                 ...horario,
-                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(horario.fecha)), // ← FIX: Simple
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(horario.fecha)), // Local time
                 horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horario.hora_inicio}`))
             }));
             setSelectedDateHorarios(formattedHorarios);
-            console.log('DEBUG Horarios por fecha formatted:', formattedHorarios);
         } catch (err) {
             console.error('Error fetch horarios por fecha:', err);
             setSelectedDateHorarios([]);
@@ -116,10 +111,12 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         if (eventoFull) {
             const title = eventoFull.title || '';
             const isHorario = title.includes('Activo') || title.includes('Inactivo');
-            const fechaLocal = info.event.start.toLocaleDateString('en-CA'); // ← FIX: YYYY-MM-DD local no UTC
-            const horaLocal = info.event.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // ← FIX: HH:MM local
-            const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(info.event.start);
-            const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(info.event.start);
+            // FIX: Usar local time para evitar merma de día
+            const startLocal = new Date(info.event.start); // Convertir a local
+            const fechaLocal = startLocal.toLocaleDateString('en-CA'); // YYYY-MM-DD local
+            const horaLocal = startLocal.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // HH:MM local
+            const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(startLocal); // Local
+            const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(startLocal); // Local
             if (isHorario) {
                 setCitaSeleccionada({
                     nombreProfesional: eventoFull.extendedProps?.nombreProfesional || 'N/A',
@@ -128,7 +125,9 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                     fechaFormatted,
                     horaFormatted,
                     descripcion: title,
-                    idHorario: eventoFull.id
+                    idHorario: eventoFull.id,
+                    estado: eventoFull.extendedProps.estado,
+                    hora_fin: eventoFull.end ? new Date(eventoFull.end).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : null
                 });
                 return;
             }
@@ -148,7 +147,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         setCitaSeleccionada(null);
         fetchCitasByDate(fecha);
         fetchHorariosByDate(fecha);
-        console.log('DEBUG Click en día:', fecha);
     };
 
     const openModal = () => {
@@ -164,7 +162,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 hora_fin: horaFin,
                 idHorario: citaSeleccionada.idHorario
             };
-            console.log('DEBUG Prefill form from selección:', initialData);
         } else if (selectedDateHorarios.length > 0) {
             const horario = selectedDateHorarios[0];
             initialData = {
@@ -176,7 +173,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 estado: horario.estado,
                 idHorario: horario.idHorario
             };
-            console.log('DEBUG Prefill from día horario:', initialData);
         }
 
         setFormData(initialData);
@@ -204,7 +200,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         }
 
         const isEdit = formData.idHorario && !isNaN(Number(formData.idHorario)) && Number(formData.idHorario) > 0;
-        console.log('DEBUG isEdit:', isEdit, 'ID:', formData.idHorario);
 
         try {
             setError(null);
@@ -217,13 +212,14 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             setShowModal(false);
             setMensaje('Horario guardado exitosamente');
             setShowSuccess(true);
-            console.log('DEBUG Horario guardado:', responseData);
 
             fetchAllData(selectedPro?.idProfesional);
         } catch (err) {
             const errMsg = err.response?.data?.error || err.message || 'Error al guardar horario';
-            if (errMsg.includes('Solapamiento')) {
-                setMensaje('No se puede guardar: Hay citas existentes en ese horario. Cancela citas primero o elige otro rango.');
+            let variant = null;
+            if (errMsg.includes('Solapamiento') || errMsg.includes('cerrada') || errMsg.includes('inactivo')) {
+                variant = 'agenda-cerrada'; // ← NUEVO: Variant para cierre de agenda
+                setMensaje('No se puede guardar: Hay citas existentes en ese horario o la agenda está cerrada. Cancela citas primero o elige otro rango.');
             } else {
                 setMensaje(errMsg);
             }

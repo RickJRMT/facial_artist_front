@@ -1,15 +1,43 @@
-.gh-contenedor-calendario {
+/* Variables CSS globales exclusivas para este componente (en :root para scope, pero clases "gcal-" evitan conflictos) */
+:root {
+    --gcal-primary-green: #28a745;
+    /* Verde activo */
+    --gcal-primary-red: #dc3545;
+    /* Rojo inactivo */
+    --gcal-hover-green: #218838;
+    /* Verde hover */
+    --gcal-text-white: white;
+    /* Texto en eventos */
+    --gcal-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra hover */
+    --gcal-spacing-sm: 1px;
+    /* Espaciado pequeño */
+    --gcal-spacing-md: 2px;
+    /* Espaciado mediano */
+    --gcal-font-size-sm: 0.75em;
+    /* Font pequeño */
+    --gcal-font-size-xs: 0.65em;
+    /* Font extra pequeño */
+    --gcal-opacity-hover: 0.9;
+    /* Opacidad hover */
+    --gcal-border-radius-event: 3px;
+    /* Radio eventos */
+    --gcal-line-height-compact: 1.1;
+    /* Línea compacta */
+}
+
+.gcal-contenedor-calendario {
     width: 100%;
     height: 100%;
     font-family: 'Arial', sans-serif;
 }
 
-.gh-envoltorio-calendario {
+.gcal-envoltorio-calendario {
     position: relative;
     height: 100%;
 }
 
-.gh-titulo-fecha-dia {
+.gcal-titulo-fecha-dia {
     background-color: #f8f9fa;
     padding: 10px;
     text-align: center;
@@ -19,152 +47,174 @@
     color: #495057;
 }
 
-.gh-ocultar-titulo .gh-titulo-fecha-dia {
+.gcal-ocultar-titulo .gcal-titulo-fecha-dia {
     display: none;
 }
 
-.gh-calendario-citas {
+.gcal-calendario-citas {
     height: 100%;
 }
 
-.fc {
-    font-size: 14px;
+
+
+/* Contenido evento general (para dos líneas) */
+.gcal-contenido-evento {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: var(--gcal-spacing-sm) var(--gcal-spacing-md);
 }
 
-.fc-toolbar-title {
-    font-size: 1.5em;
+.gcal-titulo-evento {
     font-weight: bold;
-    color: #212529;
+    font-size: var(--gcal-font-size-sm);
+    /* Compacto para nombre arriba */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0;
+    color: var(--gcal-text-white);
+    line-height: var(--gcal-line-height-compact);
 }
 
-.fc-button {
-    background-color: #007bff;
-    border-color: #007bff;
-    color: white;
-}
-
-.fc-button:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
-.fc-button-active {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
-.fc-daygrid-day:hover {
-    background-color: #e9ecef !important;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: background-color 0.2s ease;
-}
-
-.fc-timegrid-slot:hover {
-    background-color: #f8f9fa !important;
-    cursor: pointer;
-}
-
-.fc-event:hover {
-    opacity: 0.8;
-    cursor: pointer;
-    transform: scale(1.02);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.gh-cita-pendiente {
-    background-color: #ffc107 !important;
-    border-color: #ffc107 !important;
-    color: #212529 !important;
-}
-
-.gh-cita-pendiente:hover {
-    background-color: #e0a800 !important;
-}
-
-.gh-cita-confirmada {
-    background-color: #28a745 !important;
-    border-color: #28a745 !important;
-    color: white !important;
-}
-
-.gh-cita-confirmada:hover {
-    background-color: #218838 !important;
-}
-
-.gh-cita-cancelada {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: white !important;
-    opacity: 0.7;
-}
-
-.gh-cita-cancelada:hover {
+.gcal-estado-evento {
+    font-size: var(--gcal-font-size-xs);
+    /* Más pequeño para estado abajo */
+    font-style: italic;
+    color: var(--gcal-text-white);
     opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0;
+    line-height: var(--gcal-line-height-compact);
 }
 
-.gh-horario-activo {
-    background-color: #28a745 !important;
-    border-color: #28a745 !important;
-    color: white !important;
+/* Semaforización para Citas Agendadas (verde) */
+.gcal-cita-agendada {
+    background-color: var(--gcal-primary-green) !important;
+    border-color: var(--gcal-primary-green) !important;
+    color: var(--gcal-text-white) !important;
 }
 
-.gh-horario-activo:hover {
-    background-color: #218838 !important;
+.gcal-cita-agendada:hover {
+    background-color: var(--gcal-hover-green) !important;
 }
 
-.gh-horario-inactivo {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: white !important;
-    opacity: 0.8;
+/* Semaforización para Horarios Activos (verde) */
+.gcal-horario-activo {
+    background-color: var(--gcal-primary-green) !important;
+    border-color: var(--gcal-primary-green) !important;
+    color: var(--gcal-text-white) !important;
+    cursor: pointer !important;
 }
 
-.gh-horario-inactivo:hover {
-    opacity: 1;
+.gcal-horario-activo:hover {
+    background-color: var(--gcal-hover-green) !important;
+    opacity: var(--gcal-opacity-hover);
 }
 
-.gh-cita-solapada-inactiva {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: white !important;
+/* Semaforización para Horarios Inactivos/Cerrados (rojo) */
+.gcal-horario-inactivo {
+    background-color: var(--gcal-primary-red) !important;
+    border-color: var(--gcal-primary-red) !important;
+    color: var(--gcal-text-white) !important;
+    opacity: 0.8 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+.gcal-horario-inactivo:hover {
+    opacity: 0.8 !important;
+    /* No cambia en hover */
+}
+
+/* Cita Solapada Inactiva (rojo) */
+.gcal-cita-solapada-inactiva {
+    background-color: var(--gcal-primary-red) !important;
+    border-color: var(--gcal-primary-red) !important;
+    color: var(--gcal-text-white) !important;
     opacity: 0.6;
 }
 
-.fc-event-main {
-    display: flex;
-    flex-direction: column;
-    padding: 2px 5px;
-}
-
-.fc-event-title {
-    font-weight: bold;
-    font-size: 0.9em;
-    margin-bottom: 1px;
-}
-
-.fc-event-description {
-    font-size: 0.75em;
-    font-style: italic;
-    color: #6c757d;
-}
-
-.gh-dia-calendario {
+.gcal-dia-calendario {
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.gh-dia-calendario.fc-day-today {
+.gcal-dia-calendario.fc-day-today {
     background-color: #e3f2fd !important;
     font-weight: bold;
 }
 
+/* Responsividad: Ajustes por vista/tamaño */
 @media (max-width: 768px) {
-    .gh-contenedor-calendario {
+    .gcal-contenedor-calendario {
+        font-size: 12px;
+        height: auto;
+    }
+
+    .fc-event-title {
+        font-size: 0.75em;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.2em;
+    }
+
+    .gcal-titulo-fecha-dia {
+        font-size: 1em;
+        padding: 8px;
+    }
+
+    /* Mes: Más compacto en mobile */
+    .fc-daygrid-event {
+        font-size: 0.7em;
+        padding: var(--gcal-spacing-sm) 2px;
+    }
+
+    /* Lista: Padding reducido */
+    .fc-list-event {
+        padding: 3px 6px;
+        min-height: 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gcal-contenedor-calendario {
+        font-size: 11px;
+    }
+
+    .fc {
         font-size: 12px;
     }
 
     .fc-event-title {
-        font-size: 0.8em;
+        font-size: 0.7em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Semana/Día: Padding reducido */
+    .fc-timegrid-event {
+        padding: var(--gcal-spacing-sm) 3px;
+        min-height: 18px;
+    }
+
+    /* Lista: Ultra compacto */
+    .fc-list-event {
+        padding: 2px 4px;
+        min-height: 30px;
+    }
+
+    .gcal-titulo-evento {
+        font-size: 0.7em;
+    }
+
+    .gcal-estado-evento {
+        font-size: 0.6em;
     }
 }

@@ -4,7 +4,7 @@ const API_BASE = 'http://localhost:3000/api';
 
 const citasProfesionalApi = axios.create({
     baseURL: API_BASE,
-    timeout: 5000,
+    // timeout: 5000,
 });
 
 citasProfesionalApi.interceptors.response.use(
@@ -17,7 +17,6 @@ citasProfesionalApi.interceptors.response.use(
 
 export const getAllCitas = async () => {
     const response = await citasProfesionalApi.get('/citas-profesional/all');
-    console.log('DEBUG Service All Citas: Response data:', response.data);
     return response.data.eventosParaCalendario || [];
 };
 
