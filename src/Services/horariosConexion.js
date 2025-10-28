@@ -4,7 +4,7 @@ const API_BASE = 'http://localhost:3000/api';
 
 const horariosApi = axios.create({
     baseURL: API_BASE,
-    timeout: 5000,
+    // timeout: 5000,
 });
 
 horariosApi.interceptors.response.use(
