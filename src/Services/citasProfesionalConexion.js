@@ -17,7 +17,6 @@ citasProfesionalApi.interceptors.response.use(
 
 export const getAllCitas = async () => {
     const response = await citasProfesionalApi.get('/citas-profesional/all');
-    console.log('DEBUG Service All Citas: Response data:', response.data);
     return response.data.eventosParaCalendario || [];
 };
 

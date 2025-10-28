@@ -2,118 +2,86 @@ import React from 'react';
 import './ModalGestionHoraria.css';
 
 const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuardarHorario, error, onClose }) => {
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const handleClose = (e) => {
+        e.stopPropagation(); // Evita cerrar al click en X
+        onClose();
     };
 
     return (
-        <div className="gh-superposicion-modal">
-            <div className="gh-contenido-modal">
-                {/* Botón X de cerrar */}
-                <button className="gh-boton-cerrar" onClick={onClose}>×</button>
-
-                <div className="gh-formulario-citas">
-                    <h1 className="gh-titulo">Gestión Horaria</h1>
-                    <p className="gh-subtitulo">
-                        Completa los campos para definir el horario del profesional
-                    </p>
-
-                    {error && <p className="gh-error">{error}</p>}
-
-                    <form onSubmit={(e) => { e.preventDefault(); handleGuardarHorario(); }}>
-                        {/* Fila 1: Profesional + Fecha */}
-                        <div className="gh-fila">
-                            <div className="gh-campo">
-                                <label>Profesional</label>
-                                <div className="gh-input-icono">
-                                    <select
-                                        name="idProfesional"
-                                        value={formData.idProfesional || ''}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="" disabled>Selecciona un profesional</option>
-                                        {profesionales.map(pro => (
-                                            <option key={pro.idProfesional} value={pro.idProfesional}>
-                                                {pro.nombreProfesional}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="gh-campo">
-                                <label>Fecha</label>
-                                <div className="gh-input-icono">
-                                    <input
-                                        type="date"
-                                        name="fecha"
-                                        value={formData.fecha}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                    <span className="gh-icono">Calendar</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Fila 2: Hora Inicio + Hora Fin */}
-                        <div className="gh-fila">
-                            <div className="gh-campo">
-                                <label>Hora Inicio</label>
-                                <div className="gh-input-icono">
-                                    <input
-                                        type="time"
-                                        name="hora_inicio"
-                                        value={formData.hora_inicio}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                    <span className="gh-icono">Clock</span>
-                                </div>
-                            </div>
-
-                            <div className="gh-campo">
-                                <label>Hora Fin</label>
-                                <div className="gh-input-icono">
-                                    <input
-                                        type="time"
-                                        name="hora_fin"
-                                        value={formData.hora_fin}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                    <span className="gh-icono">Clock</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Fila 3: Estado (solo) */}
-                        <div className="gh-fila">
-                            <div className="gh-campo">
-                                <label>Estado</label>
-                                <div className="gh-input-icono">
-                                    <select
-                                        name="estado"
-                                        value={formData.estado}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="activo">Activo</option>
-                                        <option value="inactivo">Inactivo</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Botón centrado */}
-                        <div className="gh-boton-centrado">
-                            <button type="submit" className="gh-boton-agendar">
-                                Guardar Horario
-                            </button>
-                        </div>
-                    </form>
+        <div className="gh-superposicion-modal" onClick={onClose}>
+            <div className="gh-contenido-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="gh-header-modal">
+                    <h3 className="gh-titulo-modal">Gestión Horaria</h3>
+                    <button className="gh-boton-cerrar" onClick={handleClose}>×</button>
+                </div>
+                {error && <p className="gh-error-modal">{error}</p>}
+                <div className="gh-formulario-modal">
+                    <div className="gh-row-form">
+                        <label className="gh-etiqueta-form">
+                            Profesional:
+                            <select
+                                value={formData.idProfesional || ''}
+                                onChange={(e) => setFormData({ ...formData, idProfesional: Number(e.target.value) })}
+                                required
+                                className="gh-select-form"
+                            >
+                                <option value="">Selecciona un profesional</option>
+                                {profesionales.map(pro => (
+                                    <option key={pro.idProfesional} value={pro.idProfesional}>
+                                        {pro.nombreProfesional}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <label className="gh-etiqueta-form">
+                            Fecha:
+                            <input
+                                type="date"
+                                value={formData.fecha}
+                                onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+                                required
+                                className="gh-entrada-form"
+                            />
+                        </label>
+                    </div>
+                    <div className="gh-row-form">
+                        <label className="gh-etiqueta-form">
+                            Hora Inicio:
+                            <input
+                                type="time"
+                                value={formData.hora_inicio}
+                                onChange={(e) => setFormData({ ...formData, hora_inicio: e.target.value })}
+                                required
+                                className="gh-entrada-form"
+                            />
+                        </label>
+                        <label className="gh-etiqueta-form">
+                            Hora Fin:
+                            <input
+                                type="time"
+                                value={formData.hora_fin}
+                                onChange={(e) => setFormData({ ...formData, hora_fin: e.target.value })}
+                                required
+                                className="gh-entrada-form"
+                            />
+                        </label>
+                    </div>
+                    <label className="gh-etiqueta-form">
+                        Estado:
+                        <select
+                            value={formData.estado}
+                            onChange={(e) => setFormData({ ...formData, estado: e.target.value })}
+                            className="gh-select-form"
+                        >
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </label>
+                    <div className="gh-botones-modal">
+                        <button type="button" className="gh-boton-guardar" onClick={handleGuardarHorario}>
+                            Guardar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

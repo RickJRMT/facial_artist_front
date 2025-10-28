@@ -1,4 +1,41 @@
-.gh-superposicion-modal {
+/* Variables CSS exclusivas para este modal (scope local) */
+.mm-contenido-modal {
+    --primary-color: #28a745;
+    /* Verde éxito */
+    --error-color: #dc3545;
+    /* Rojo error */
+    --warning-color: #ffc107;
+    /* Amarillo agenda cerrada */
+    --text-color: #333;
+    /* Texto principal */
+    --border-color: #e0e0e0;
+    /* Borde sutil */
+    --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.15);
+    /* Sombra sutil */
+    --spacing-sm: 8px;
+    /* Espaciado pequeño */
+    --spacing-md: 15px;
+    /* Espaciado mediano */
+    --spacing-lg: 20px;
+    /* Espaciado grande */
+    --border-radius: 8px;
+    /* Radio de borde */
+    --font-size-base: 1em;
+    /* Tamaño de fuente base */
+
+    background: #ffffff;
+    /* Blanco puro base */
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    width: 400px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    position: relative;
+    font-size: var(--font-size-base);
+}
+
+.mm-superposicion-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,60 +48,149 @@
     z-index: 1001;
 }
 
-.gh-contenido-modal {
-    background: #d4edda;
-    /* Verde éxito default */
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* Header con icono */
+.mm-header-mensaje {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
 }
 
-.gh-contenido-modal.gh-error {
-    background: #f8d7da;
-    /* Rojo error */
+.mm-icono-mensaje {
+    font-size: 2.5em;
+    /* Icono grande y visible */
 }
 
-.gh-titulo-modal {
-    margin-bottom: 10px;
+.mm-titulo-mensaje {
+    margin: 0;
     font-size: 1.3em;
-    color: #155724;
-    /* Verde éxito */
-}
-
-.gh-contenido-modal.gh-error .gh-titulo-modal {
-    color: #721c24;
-    /* Rojo error */
-}
-
-.gh-mensaje-modal {
-    margin-bottom: 20px;
-    font-size: 1em;
-    color: #155724;
-}
-
-.gh-contenido-modal.gh-error .gh-mensaje-modal {
-    color: #721c24;
-}
-
-.gh-boton-ok {
-    padding: 8px 16px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
     font-weight: bold;
 }
 
-.gh-boton-ok:hover {
-    background: #0056b3;
+/* Mensaje texto */
+.mm-mensaje-texto {
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: 1em;
+    line-height: 1.4;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+}
+
+/* Botón OK */
+.mm-boton-ok {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, var(--primary-color), #20c997);
+    /* Verde suave */
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: var(--font-size-base);
+    transition: all 0.2s ease;
+    min-width: 80px;
+}
+
+.mm-boton-ok:hover {
+    background: linear-gradient(135deg, #20c997, var(--primary-color));
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Variants por type/variant */
+.mm-success {
+    background: #d4edda;
+    /* Fondo verde éxito */
+    border: 1px solid var(--primary-color);
+}
+
+.mm-success .mm-titulo-mensaje,
+.mm-success .mm-mensaje-texto {
+    color: #155724;
+    /* Texto verde oscuro */
+}
+
+.mm-error {
+    background: #f8d7da;
+    /* Fondo rojo error */
+    border: 1px solid var(--error-color);
+}
+
+.mm-error .mm-titulo-mensaje,
+.mm-error .mm-mensaje-texto {
+    color: #721c24;
+    /* Texto rojo oscuro */
+}
+
+.mm-agenda-cerrada {
+    background: #fff3cd;
+    /* Fondo amarillo warning para agenda cerrada */
+    border: 1px solid var(--warning-color);
+}
+
+.mm-agenda-cerrada .mm-icono-mensaje {
+    font-size: 2.2em;
+    /* Icono un poco más pequeño para candado */
+}
+
+.mm-agenda-cerrada .mm-titulo-mensaje,
+.mm-agenda-cerrada .mm-mensaje-texto {
+    color: #856404;
+    /* Texto amarillo oscuro */
+}
+
+.mm-info {
+    background: #d1ecf1;
+    /* Fondo azul info */
+    border: 1px solid #17a2b8;
+}
+
+.mm-info .mm-titulo-mensaje,
+.mm-info .mm-mensaje-texto {
+    color: #0c5460;
+    /* Texto azul oscuro */
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .mm-contenido-modal {
+        width: 95%;
+        padding: var(--spacing-md);
+        margin: var(--spacing-sm);
+    }
+
+    .mm-icono-mensaje {
+        font-size: 2em;
+    }
+
+    .mm-titulo-mensaje {
+        font-size: 1.2em;
+    }
+
+    .mm-mensaje-texto {
+        font-size: 0.95em;
+        padding: var(--spacing-sm);
+    }
+
+    .mm-boton-ok {
+        padding: 8px 20px;
+        width: 100%;
+        min-width: auto;
+    }
 }
 
 @media (max-width: 480px) {
-    .gh-contenido-modal {
-        width: 90%;
-        padding: 15px;
+    .mm-contenido-modal {
+        width: 98%;
+        padding: var(--spacing-sm);
+    }
+
+    .mm-titulo-mensaje {
+        font-size: 1.1em;
+    }
+
+    .mm-mensaje-texto {
+        font-size: 0.9em;
     }
 }

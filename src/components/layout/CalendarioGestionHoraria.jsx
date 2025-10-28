@@ -9,7 +9,6 @@ import './calendarioGestionHoraria.css';
 const CalendarioGestionHoraria = ({ eventos, onEventClick, onDateClick, currentView, currentDate, onDatesSet }) => {
     const formatFechaDia = (date) => {
         if (!date) return '';
-        // Local time explícito
         return new Intl.DateTimeFormat('es-ES', {
             year: 'numeric',
             month: 'long',
@@ -21,37 +20,37 @@ const CalendarioGestionHoraria = ({ eventos, onEventClick, onDateClick, currentV
     const renderEventContent = (eventInfo) => {
         const { event } = eventInfo;
         const extendedProps = event.extendedProps || {};
-        const title = event.title || '';
-
-        // Diferenciar: Horario vs Cita
         const isHorario = extendedProps.estado && (extendedProps.estado === 'activo' || extendedProps.estado === 'inactivo');
-        let bloqueText = '';
+        let nombreText = '';
+        let estadoText = '';
 
         if (isHorario) {
-            // Forzar: Nombre - Estado (incluso si title no lo tiene)
-            const estadoText = extendedProps.estado === 'activo' ? 'Activo' : 'Inactivo';
-            bloqueText = `${extendedProps.nombreProfesional || title.split(' - ')[0] || 'N/A'} - ${estadoText}`;
+            // FIX: Dos líneas: Nombre arriba, Estado abajo
+            nombreText = extendedProps.nombreProfesional || 'N/A';
+            estadoText = extendedProps.estado === 'activo' ? 'Activo' : 'Inactivo (No reservable)';
         } else {
-            // Para citas: Solo nombre profesional
-            bloqueText = extendedProps.nombreProfesional || title.split(' - ')[0] || 'N/A';
+            // Citas: Solo nombre (una línea)
+            nombreText = extendedProps.nombreProfesional || 'N/A';
+            estadoText = '';
         }
 
         return (
-            <div className="gh-contenido-evento">
-                <div className="gh-titulo-evento">{bloqueText}</div>
+            <div className="gcal-contenido-evento">
+                <div className="gcal-titulo-evento">{nombreText}</div>
+                {estadoText && <div className="gcal-estado-evento">{estadoText}</div>}
             </div>
         );
     };
 
     return (
-        <div className="gh-contenedor-calendario">
-            <div className="gh-envoltorio-calendario">
+        <div className="gcal-contenedor-calendario">
+            <div className="gcal-envoltorio-calendario">
                 {currentView === 'timeGridDay' && (
-                    <div className="gh-titulo-fecha-dia">
+                    <div className="gcal-titulo-fecha-dia">
                         {formatFechaDia(currentDate)}
                     </div>
                 )}
-                <div className={`gh-calendario-citas ${currentView === 'timeGridDay' ? 'gh-ocultar-titulo' : ''}`}>
+                <div className={`gcal-calendario-citas ${currentView === 'timeGridDay' ? 'gcal-ocultar-titulo' : ''}`}>
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
                         headerToolbar={{
@@ -80,27 +79,37 @@ const CalendarioGestionHoraria = ({ eventos, onEventClick, onDateClick, currentV
                         }}
                         contentHeight="600px"
                         titleFormat={{ year: 'numeric', month: 'long' }}
-                        dayCellClassNames="gh-dia-calendario"
+                        dayCellClassNames="gcal-dia-calendario"
                         datesSet={onDatesSet}
                         eventDidMount={(info) => {
-                            // Forzar colores directos en mount (para horarios inactivos)
                             const extendedProps = info.event.extendedProps || {};
                             const isHorario = extendedProps.estado && (extendedProps.estado === 'activo' || extendedProps.estado === 'inactivo');
                             if (isHorario) {
+                                // Semaforización: Verde activo (reservable), Rojo inactivo (no reservable)
                                 if (extendedProps.estado === 'activo') {
                                     info.el.style.backgroundColor = '#28a745';
                                     info.el.style.borderColor = '#28a745';
+                                    info.el.style.color = 'white';
+                                    info.el.style.cursor = 'pointer'; // Interactivo
+                                    info.el.title = 'Disponible para citas';
+                                    info.el.classList.add('gcal-horario-activo');
                                 } else {
                                     info.el.style.backgroundColor = '#dc3545';
                                     info.el.style.borderColor = '#dc3545';
-                                    info.el.style.opacity = '0.8';
+                                    info.el.style.color = 'white';
+                                    info.el.style.opacity = '0.7';
+                                    info.el.style.cursor = 'not-allowed'; // No interactivo
+                                    info.el.style.pointerEvents = 'none'; // Bloquea clicks
+                                    info.el.title = 'Agenda cerrada - No reservable';
+                                    info.el.classList.add('gcal-horario-inactivo');
                                 }
-                                info.el.classList.add(extendedProps.estado === 'activo' ? 'gh-horario-activo' : 'gh-horario-inactivo');
                             } else {
-                                // Citas: Verde
+                                // Citas: Verde por default
                                 info.el.style.backgroundColor = '#28a745';
                                 info.el.style.borderColor = '#28a745';
-                                info.el.classList.add('gh-cita-agendada');
+                                info.el.style.color = 'white';
+                                info.el.style.cursor = 'pointer';
+                                info.el.classList.add('gcal-cita-agendada');
                             }
                         }}
                     />

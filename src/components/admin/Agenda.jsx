@@ -4,6 +4,7 @@ import ModalGestionHoraria from '../layout/ModalGestionHoraria';
 import ModalMensaje from '../layout/ModalMensaje';
 import CalendarioGestionHoraria from '../layout/CalendarioGestionHoraria';
 import './Agenda.css';
+import moment from 'moment'; // ← Asegúrate de tenerlo para formateo local
 
 const Agenda = () => {
     const [currentView, setCurrentView] = useState('dayGridMonth');
@@ -23,32 +24,107 @@ const Agenda = () => {
     if (loading) return <div className="gh-carga-calendario">Cargando calendario...</div>;
     if (error) return <div className="gh-error-calendario">Error: {error}</div>;
 
-    const mostrarDetalle = citaSeleccionada || (selectedDateCitas.length > 0 ? selectedDateCitas[0] : null) || (selectedDateHorarios.length > 0 ? selectedDateHorarios[0] : null);
-    const hasHorarioInDay = selectedDateHorarios.length > 0;
+    // FIX: Filtrar por tipo: Citas vs Horarios (sin duplicados)
+    const isBloque = !!citaSeleccionada;
+    let citasItems = [];
+    let horariosItems = [];
+    if (isBloque) {
+        // Bloque: Clasificar el seleccionado
+        const item = citaSeleccionada;
+        if (item.estado && (item.estado === 'activo' || item.estado === 'inactivo')) {
+            horariosItems = [item];
+        } else {
+            citasItems = [item];
+        }
+    } else {
+        // Día: Combina y filtra por tipo/uniques
+        const allCitas = selectedDateCitas || [];
+        const allHorarios = selectedDateHorarios || [];
+        citasItems = allCitas.filter((item, index, self) =>
+            index === self.findIndex((t) => t.idCita === item.idCita)
+        );
+        horariosItems = allHorarios.filter((item, index, self) =>
+            index === self.findIndex((t) => t.idHorario === item.idHorario)
+        );
+    }
+    const hasHorarioInDay = horariosItems.length > 0;
 
-    // Función safe para hora
-    const formatHora = (hora) => {
-        if (!hora) return 'N/A';
-        const parts = hora.trim().split(':');
-        if (parts.length < 2) return 'N/A';
-        const hh = parts[0].padStart(2, '0');
-        const mm = parts[1].padStart(2, '0');
-        const horaPadded = `${hh}:${mm}:00`;
+    // FIX: Formateo prioriza hook/backend, fallback a Moment local (evita merma)
+    const formatFecha = (item) => {
+        if (item.fechaFormatted || item.fechaLocal) {
+            return item.fechaFormatted || item.fechaLocal;
+        }
+        const fechaRaw = item.fecha || item.fechaCita || item.start;
+        if (!fechaRaw) return 'N/A';
         try {
-            return new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horaPadded}`));
+            return moment(fechaRaw).local().format('DD/MM/YYYY');
         } catch {
             return 'N/A';
         }
     };
 
-    // Función safe para fecha simple "dia/mes/año"
-    const formatFecha = (fecha) => {
-        if (!fecha) return 'N/A';
+    // FIX: Hora prioriza hook, fallback a raw; para horarios, soporta rango
+    const formatHora = (item, isRango = false) => {
+        if (item.horaFormatted) {
+            return item.horaFormatted;
+        }
+        let horaInicio = item.hora || item.horaCita || item.hora_inicio || (item.start ? moment(item.start).local().format('HH:mm') : null);
+        if (isRango && item.hora_fin) {
+            const horaFin = moment(`${item.fecha || '2000-01-01'}T${item.hora_fin}`).local().format('h:mm A');
+            const inicioFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horaInicio}:00`));
+            return `${inicioFormatted} - ${horaFin}`;
+        }
+        if (!horaInicio) return 'N/A';
         try {
-            return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(fecha));
+            const horaStr = typeof horaInicio === 'string' ? horaInicio.split('T')[1]?.split(':').slice(0, 2).join(':') :
+                moment(horaInicio).local().format('HH:mm');
+            if (!horaStr) return 'N/A';
+            return new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horaStr}:00`));
         } catch {
             return 'N/A';
         }
+    };
+
+    // Render card para citas (sin editar)
+    const renderCitaCard = (item, index) => (
+        <div key={item.idCita || index} className="gh-card-evento gh-card-cita">
+            <div className="gh-card-header">
+                <span className="gh-estado-icon">📅</span>
+                <h4>{item.nombreProfesional || 'N/A'}</h4>
+            </div>
+            <div className="gh-card-body">
+                <p><strong>Fecha:</strong> {formatFecha(item)}</p>
+                <p><strong>Hora:</strong> {formatHora(item)}</p>
+                <p><strong>Descripción:</strong> {item.descripcion || item.descripcionServicio || 'N/A'}</p>
+            </div>
+        </div>
+    );
+
+    // Render card para horarios (con botón editar)
+    const renderHorarioCard = (item, index) => {
+        const estadoText = item.estado === 'activo' ? 'Activo' : 'Inactivo (No reservable)';
+        const estadoIcon = item.estado === 'activo' ? '🟢' : '🔴';
+        return (
+            <div key={item.idHorario || index} className="gh-card-evento gh-card-horario">
+                <div className="gh-card-header">
+                    <span className="gh-estado-icon">{estadoIcon}</span>
+                    <h4>{item.nombreProfesional || 'N/A'}</h4>
+                </div>
+                <div className="gh-card-body">
+                    <p><strong>Fecha:</strong> {formatFecha(item)}</p>
+                    <p><strong>Hora:</strong> {formatHora(item, true)} {/* ← Rango para horarios */}</p>
+                    <p><strong>Estado:</strong> {estadoText}</p>
+                    <div className="gh-card-actions">
+                        <button
+                            className="gh-boton-editar-card"
+                            onClick={() => openModal(item)} // ← Abre modal prefilled con este horario
+                        >
+                            ✏️ Editar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     return (
@@ -71,24 +147,24 @@ const Agenda = () => {
 
                 <div className="gh-panel-descripcion">
                     <h3 className="gh-titulo-panel">Descripción del Evento</h3>
-                    {mostrarDetalle ? (
-                        <div className="gh-detalle-evento">
-                            <div className="gh-label-detalle">
-                                <span className="gh-label-titulo">Profesional:</span>
-                                <span className="gh-label-valor">{mostrarDetalle.nombreProfesional || 'N/A'}</span>
-                            </div>
-                            <div className="gh-label-detalle">
-                                <span className="gh-label-titulo">Fecha:</span>
-                                <span className="gh-label-valor">{formatFecha(mostrarDetalle.fecha || mostrarDetalle.fechaCita)}</span>
-                            </div>
-                            <div className="gh-label-detalle">
-                                <span className="gh-label-titulo">Hora:</span>
-                                <span className="gh-label-valor">{formatHora(mostrarDetalle.hora || mostrarDetalle.horaCita)}</span>
-                            </div>
-                            <div className="gh-label-detalle">
-                                <span className="gh-label-titulo">Descripción:</span>
-                                <span className="gh-label-valor">{mostrarDetalle.descripcion || mostrarDetalle.descripcionServicio || 'N/A'}</span>
-                            </div>
+                    {(citasItems.length > 0 || horariosItems.length > 0) ? (
+                        <div className="gh-secciones-cards">
+                            {citasItems.length > 0 && (
+                                <div className="gh-seccion-agendamientos">
+                                    <h4 className="gh-seccion-titulo">Agendamientos</h4>
+                                    <div className="gh-contenedor-cards">
+                                        {citasItems.map((item, index) => renderCitaCard(item, index))}
+                                    </div>
+                                </div>
+                            )}
+                            {horariosItems.length > 0 && (
+                                <div className="gh-seccion-estados">
+                                    <h4 className="gh-seccion-titulo">Estados de Agenda</h4>
+                                    <div className="gh-contenedor-cards">
+                                        {horariosItems.map((item, index) => renderHorarioCard(item, index))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <p className="gh-placeholder-panel">Selecciona un evento o día en el calendario para ver detalles.</p>
@@ -102,7 +178,7 @@ const Agenda = () => {
                     {hasHorarioInDay && (
                         <button
                             className="gh-boton-editar-horario"
-                            onClick={() => openModal(selectedDateHorarios[0])}
+                            onClick={() => openModal(horariosItems[0])} // ← Prefill con primer horario del día
                         >
                             Editar Horario del Día
                         </button>
