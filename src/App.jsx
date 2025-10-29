@@ -8,11 +8,14 @@ import CalendarioCitas from './components/layout/calendarioCitas.jsx';
 import ModalCitaExitosa from './components/layout/ModalCitaSolicitada.jsx';
 import Homecliente from './pages/homeCliente.jsx';
 import AdminPage from './pages/AdminPage.jsx';
-import SolicitarCitaCard from './pages/SolicitarCitaAdmin.jsx'; 
+import SolicitarCitaCard from './pages/SolicitarCitaAdmin.jsx';
 
 function App() {
   return (
     <BrowserRouter>
+      {/* Ruta por defecto al entrar a la raiz (/) muestra HomeCliente */}
+      <Routes path='/' element={<Homecliente />} />
+
       {/* Definimos rutas con <Routes> y <Route path="..." element={<Componente />} />
       Cuando la URL coincide con el path, React muestra ese componente. */}
       <Routes>
@@ -22,7 +25,10 @@ function App() {
         <Route path='/modal' element={<ModalCitaExitosa />} />
         <Route path='/homecliente' element={< Homecliente />} />
         <Route path='/admin' element={< AdminPage />} />
-        <Route path='/adminCita' element={< SolicitarCitaCard/>} />
+        <Route path='/adminCita' element={< SolicitarCitaCard />} />
+
+        {/* Opcional: redirección para rutas no encontradas */}
+        <Route path="*" element={<Homecliente />} />
       </Routes>
     </BrowserRouter>
   );

@@ -10,3 +10,21 @@ export const obtenerProfesionales = async () => {
         throw error;
     }
 };
+
+const profesionalesApi = axios.create({
+    baseURL: API_URL_PROFESIONALES,
+    timeout: 5000,
+});
+
+profesionalesApi.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.error('Error en profesionales API:', error.response?.data || error.message);
+        return Promise.reject(error);
+    }
+);
+
+export const getAllProfesionales = async () => {
+    const response = await profesionalesApi.get('/profesionales');
+    return response.data; // Array de pros
+};
