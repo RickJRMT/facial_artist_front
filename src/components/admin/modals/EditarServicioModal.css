@@ -8,7 +8,7 @@
 }
 
 /* Modal Overlay */
-.modal-overlay {
+.servicio-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -36,7 +36,7 @@
 }
 
 /* Modal Container */
-.modal-container {
+.servicio-modal-container {
   background: white;
   border-radius: 8px;
   width: 90%;
@@ -51,7 +51,7 @@
 }
 
 /* Modal Header */
-.modal-header {
+.servicio-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -59,14 +59,14 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.modal-title {
+.servicio-modal-title {
   font-size: 24px;
   font-weight: 400;
   color: #1f2937;
   margin: 0;
 }
 
-.modal-close-btn {
+.servicio-modal-close-btn {
   background: none;
   border: none;
   font-size: 32px;
@@ -81,12 +81,12 @@
   transition: color 0.2s;
 }
 
-.modal-close-btn:hover {
+.servicio-modal-close-btn:hover {
   color: #1f2937;
 }
 
 /* Modal Body */
-.modal-body {
+.servicio-modal-body {
   padding: 32px;
   overflow-y: auto;
   flex-grow: 1;
@@ -101,16 +101,16 @@ form {
 }
 
 /* Form Groups */
-.form-group {
+.servicio-form-group {
   margin-bottom: 24px;
   position: relative;
 }
 
-.form-group:last-child {
+.servicio-form-group:last-child {
   margin-bottom: 0;
 }
 
-.form-label {
+.servicio-form-label {
   display: block;
   font-size: 14px;
   font-weight: 500;
@@ -118,13 +118,13 @@ form {
   margin-bottom: 8px;
 }
 
-.form-label::after {
+.servicio-form-label::after {
   content: ' *';
   color: #dc2626;
 }
 
 /* Form Inputs */
-.form-input {
+.servicio-form-input {
   width: 100%;
   padding: 10px 14px;
   font-size: 15px;
@@ -155,16 +155,16 @@ form {
   font-weight: 500;
 }
 
-.form-input::placeholder {
+.servicio-form-input::placeholder {
   color: #9ca3af;
 }
 
-.form-input:focus {
+.servicio-form-input:focus {
   border-color: #3b82f6;
 }
 
 /* Textarea */
-.form-textarea {
+.servicio-form-textarea {
   width: 100%;
   padding: 10px 14px;
   font-size: 15px;
@@ -178,11 +178,11 @@ form {
   box-sizing: border-box;
 }
 
-.form-textarea::placeholder {
+.servicio-form-textarea::placeholder {
   color: #9ca3af;
 }
 
-.form-textarea:focus {
+.servicio-form-textarea:focus {
   border-color: #3b82f6;
 }
 
@@ -241,7 +241,7 @@ form {
 }
 
 /* Modal Footer */
-.modal-footer {
+.servicio-modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -250,7 +250,7 @@ form {
 }
 
 /* Buttons */
-.btn-cancelar {
+.servicio-btn-cancelar {
   padding: 10px 20px;
   font-size: 15px;
   font-weight: 500;
@@ -262,11 +262,11 @@ form {
   transition: background-color 0.2s;
 }
 
-.btn-cancelar:hover {
+.servicio-btn-cancelar:hover {
   background-color: #e5e7eb;
 }
 
-.btn-crear {
+.servicio-btn-crear {
   padding: 10px 24px;
   font-size: 15px;
   font-weight: 500;
@@ -278,34 +278,34 @@ form {
   transition: background-color 0.2s;
 }
 
-.btn-crear:hover {
+.servicio-btn-crear:hover {
   background-color: #b45309;
 }
 
-.btn-crear.btn-disabled {
+.servicio-btn-crear.btn-disabled {
   background-color: #9ca3af;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.btn-crear.btn-disabled:hover {
+.servicio-btn-crear.btn-disabled:hover {
   background-color: #9ca3af;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .modal-container {
+  .servicio-modal-container {
     width: 95%;
     margin: 20px;
   }
 
-  .modal-header,
-  .modal-body,
-  .modal-footer {
+  .servicio-modal-header,
+  .servicio-modal-body,
+  .servicio-modal-footer {
     padding: 20px;
   }
 
-  .modal-title {
+  .servicio-modal-title {
     font-size: 20px;
   }
 }

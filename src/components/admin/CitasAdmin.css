@@ -82,11 +82,13 @@
 
 .modal-content {
   background: var(--color-fondo); /* Usa el fondo del tema principal */
-  padding: 1rem; /* Reduce padding para que el formulario ocupe más espacio */
+  padding: 2rem 1.5rem 1.5rem 1.5rem; /* Agregar padding superior para el botón cerrar */
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  max-width: 700px; /* Ajusta para que sea más armónico con el formulario */
+  max-width: 800px; /* Aumentar ancho máximo */
   width: 90%;
+  max-height: 90vh; /* Evitar que el modal sea demasiado alto */
+  overflow-y: auto; /* Permitir scroll si es necesario */
   position: relative;
   animation: slideIn 0.3s ease-in-out;
 }
@@ -113,4 +115,11 @@
   height: auto;
   line-height: 1;
   padding: 5px;
+}
+
+@media (max-width: 720px) {
+  .modal-content {
+    max-width: 95%;
+    padding: 1.5rem 1rem 1rem 1rem;
+  }
 }

@@ -96,14 +96,14 @@ const ServiciosView = () => {
         <button
           key={1}
           onClick={() => handlePageChange(1)}
-          className="pagination-btn"
+          className="servicios-pagination-btn"
         >
           1
         </button>
       );
       if (start > 2) {
         buttons.push(
-          <span key="ellipsis-start" className="pagination-ellipsis">
+          <span key="ellipsis-start" className="servicios-pagination-ellipsis">
             ...
           </span>
         );
@@ -115,7 +115,7 @@ const ServiciosView = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`pagination-btn ${currentPage === i ? 'active' : ''}`}
+          className={`servicios-pagination-btn ${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -125,7 +125,7 @@ const ServiciosView = () => {
     if (end < totalPages) {
       if (end < totalPages - 1) {
         buttons.push(
-          <span key="ellipsis-end" className="pagination-ellipsis">
+          <span key="ellipsis-end" className="servicios-pagination-ellipsis">
             ...
           </span>
         );
@@ -134,7 +134,7 @@ const ServiciosView = () => {
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className="pagination-btn"
+          className="servicios-pagination-btn"
         >
           {totalPages}
         </button>
@@ -379,7 +379,7 @@ const ServiciosView = () => {
           <input
             type="text"
             placeholder="Buscar servicios por nombre..."
-            className="search-input"
+            className="servicios-search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -387,22 +387,22 @@ const ServiciosView = () => {
       </div>
 
       {/* Servicios Table */}
-      <div className="table-card">
-        <h3 className="table-title">Lista de Servicios</h3>
-        <div className="table-wrapper">
+      <div className="servicios-table-card">
+        <h3 className="servicios-table-title">Lista de Servicios</h3>
+        <div className="servicios-table-wrapper">
           {loading ? (
-            <div className="empty-state">
+            <div className="servicios-empty-state">
               <p>Cargando servicios...</p>
             </div>
           ) : error ? (
-            <div className="empty-state">
+            <div className="servicios-empty-state">
               <p>{error}</p>
             </div>
           ) : (
             <>
               <table className="servicios-table">
                 <thead>
-                  <tr className="table-header">
+                  <tr className="servicios-table-header">
                     <th>ID</th>
                     <th>Servicio</th>
                     <th>Descripción</th>
@@ -414,7 +414,7 @@ const ServiciosView = () => {
                 </thead>
                 <tbody>
                   {currentServicios.map((servicio) => (
-                    <tr key={servicio.id} className="table-row">
+                    <tr key={servicio.id} className="servicios-table-row">
                       <td>{servicio.id}</td>
                       <td>
                         <span className="servicio-nombre">{servicio.nombre}</span>
@@ -434,7 +434,7 @@ const ServiciosView = () => {
                       </td>
                       <td>
                         <button 
-                          className="btn-visualizar"
+                          className="servicios-btn-visualizar"
                           onClick={() => handleVisualizar(servicio)}
                         >
                           <Eye size={16} />
@@ -454,16 +454,16 @@ const ServiciosView = () => {
                         </span>
                       </td>
                       <td>
-                        <div className="action-buttons">
+                        <div className="servicios-action-buttons">
                           <button 
-                            className="btn-edit"
+                            className="servicios-btn-edit"
                             onClick={() => handleEditarServicio(servicio)}
                             title="Editar"
                           >
                             <Edit size={16} />
                           </button>
                           <button 
-                            className="btn-delete"
+                            className="servicios-btn-delete"
                             onClick={() => handleEliminarServicio(servicio)}
                             title="Eliminar"
                           >
@@ -476,7 +476,7 @@ const ServiciosView = () => {
                 </tbody>
               </table>
               {filteredServicios.length === 0 && (
-                <div className="empty-state">
+                <div className="servicios-empty-state">
                   <p>No se encontraron servicios</p>
                 </div>
               )}
@@ -487,13 +487,13 @@ const ServiciosView = () => {
 
       {/* Paginación */}
       {!loading && !error && filteredServicios.length > 0 && (
-        <div className="pagination-container">
-          <div className="pagination-info">
+        <div className="servicios-pagination-container">
+          <div className="servicios-pagination-info">
             Mostrando {startIndex + 1} - {Math.min(endIndex, filteredServicios.length)} de {filteredServicios.length} servicios
           </div>
-          <div className="pagination-controls">
+          <div className="servicios-pagination-controls">
             <button
-              className="pagination-btn pagination-nav"
+              className="servicios-pagination-btn servicios-pagination-nav"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
@@ -501,7 +501,7 @@ const ServiciosView = () => {
             </button>
             {renderPaginationButtons()}
             <button
-              className="pagination-btn pagination-nav"
+              className="servicios-pagination-btn servicios-pagination-nav"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >

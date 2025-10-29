@@ -23,13 +23,23 @@ export function useHorariosDisponibles(idProfesional, idServicio, fecha) {
             }
 
             try {
-                const horarios = await obtenerHorariosDisponibles({
+                const datosEnvio = {
                     idProfesional,
                     idServicios: idServicio,
                     fechaCita: fecha,
-                });
-                setHorariosDisponibles(horarios);
-                setError(horarios.length === 0 ? 'No hay horarios disponibles para esta fecha' : null);
+                };
+                console.log('Enviando datos para horarios:', datosEnvio);
+                const horarios = await obtenerHorariosDisponibles(datosEnvio);
+                console.log('Horarios disponibles cargados:', horarios);
+                console.log('Tipo de datos recibidos:', typeof horarios);
+                console.log('Es array?:', Array.isArray(horarios));
+                
+                // Verificar si los horarios vienen en un formato diferente
+                const horariosArray = Array.isArray(horarios) ? horarios : (horarios?.horarios || []);
+                console.log('Horarios procesados:', horariosArray);
+                
+                setHorariosDisponibles(horariosArray);
+                setError(horariosArray.length === 0 ? 'No hay horarios disponibles para esta fecha' : null);
             } catch (error) {
                 console.error('Error al cargar horarios:', error);
                 setHorariosDisponibles([]);

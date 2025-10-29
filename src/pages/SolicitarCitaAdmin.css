@@ -13,20 +13,21 @@
   background: var(--color-fondo-card); /* Fondo consistente con el modal */
   border-radius: 0; /* Elimina bordes redondeados para que se fusione con el modal */
   box-shadow: none; /* Elimina sombra para que no parezca un contenedor separado */
-  padding: 0 1rem 1rem; /* Ajusta padding solo en la base y lados */
+  padding: 0; /* Sin padding extra, el modal ya tiene padding */
   font-family: "Montserrat", sans-serif;
   color: var(--color-texto-card);
 }
 
 .solicitar-cita-card__title {
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.75rem;
   margin-bottom: 10px;
+  margin-top: 0;
 }
 
 .solicitar-cita-card__subtitle {
   font-weight: 400;
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-bottom: 30px;
   color: #555;
 }
@@ -68,8 +69,8 @@
 
 .solicitar-cita-card button {
   margin-top: 30px;
-  padding: 12px 25px;
-  font-size: 1.1rem;
+  padding: 14px 30px;
+  font-size: 1rem;
   font-weight: 700;
   border-radius: var(--radio-borde);
   border: none;
@@ -78,6 +79,8 @@
   cursor: pointer;
   align-self: flex-start;
   transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 300px;
 }
 
 .solicitar-cita-card button:hover {
@@ -87,5 +90,13 @@
 @media (max-width: 720px) {
   .solicitar-cita-card__form {
     flex-direction: column;
+  }
+  
+  .solicitar-cita-card__title {
+    font-size: 1.5rem;
+  }
+  
+  .solicitar-cita-card button {
+    max-width: 100%;
   }
 }

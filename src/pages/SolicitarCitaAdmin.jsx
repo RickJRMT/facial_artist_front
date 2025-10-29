@@ -31,6 +31,14 @@ const SolicitarCitaCard = () => {
         formData.fechaCita
     );
 
+    // Debug: Mostrar valores para horarios
+    console.log('Valores para cargar horarios:', {
+        idProfesional,
+        idServicio,
+        fecha: formData.fechaCita,
+        horariosDisponibles
+    });
+
     const { modalVisible, mostrarModal, cerrarModal, datosCita } =
         useModalCitaExitosa();
 
@@ -102,8 +110,8 @@ const SolicitarCitaCard = () => {
         ];
 
         const servicioSeleccionado = servicios.find(
-            (s) => s.idServicios === parseInt(idServicio)
-        )?.servNombre;
+            (s) => s.id === parseInt(idServicio)
+        )?.nombre;
 
         if (
             edadCliente < 18 &&
@@ -141,8 +149,8 @@ const SolicitarCitaCard = () => {
                     )?.nombreProfesional || "",
                 servicio: servicioSeleccionado || "",
                 costo:
-                    servicios.find((s) => s.idServicios === datosCita.idServicios)
-                        ?.servCosto || "No disponible",
+                    servicios.find((s) => s.id === datosCita.idServicios)
+                        ?.costo || "No disponible",
                 numeroReferencia: datosCita.numeroReferencia,
             });
 
@@ -208,13 +216,15 @@ const SolicitarCitaCard = () => {
                             <option value="" disabled>
                                 Seleccione el tipo de servicio
                             </option>
-                            {servicios.map((servicio) => (
-                                <option
-                                    key={servicio.idServicios}
-                                    value={servicio.idServicios}
-                                >
-                                    {servicio.servNombre}
-                                </option>
+                            {servicios && servicios.length > 0 && servicios.map((servicio) => (
+                                servicio && servicio.id && (
+                                    <option
+                                        key={servicio.id}
+                                        value={servicio.id}
+                                    >
+                                        {servicio.nombre}
+                                    </option>
+                                )
                             ))}
                         </select>
                     </div>
@@ -231,10 +241,12 @@ const SolicitarCitaCard = () => {
                             <option value="" disabled>
                                 Por seleccionar
                             </option>
-                            {profesionales.map((prof) => (
-                                <option key={prof.idProfesional} value={prof.idProfesional}>
-                                    {prof.nombreProfesional}
-                                </option>
+                            {profesionales && profesionales.length > 0 && profesionales.map((prof) => (
+                                prof && prof.idProfesional && (
+                                    <option key={prof.idProfesional} value={prof.idProfesional}>
+                                        {prof.nombreProfesional}
+                                    </option>
+                                )
                             ))}
                         </select>
 
@@ -256,14 +268,21 @@ const SolicitarCitaCard = () => {
                             onChange={handleInputChange}
                             value={formData.horaCita || ""}
                             required
+                            disabled={!horariosDisponibles || horariosDisponibles.length === 0}
                         >
                             <option value="" disabled>
-                                Seleccione la hora
+                                {!idProfesional || !idServicio || !formData.fechaCita 
+                                    ? "Complete los campos anteriores primero"
+                                    : (!horariosDisponibles || horariosDisponibles.length === 0
+                                        ? "No hay horarios disponibles"
+                                        : "Seleccione la hora")}
                             </option>
-                            {horariosDisponibles.map((horario) => (
-                                <option key={horario.horaInicio24} value={horario.horaInicio24}>
-                                    {horario.horaInicio} - {horario.horaFin}
-                                </option>
+                            {horariosDisponibles && horariosDisponibles.length > 0 && horariosDisponibles.map((horario, index) => (
+                                horario && horario.horaInicio24 && (
+                                    <option key={`${horario.horaInicio24}-${index}`} value={horario.horaInicio24}>
+                                        {horario.horaInicio} - {horario.horaFin}
+                                    </option>
+                                )
                             ))}
                         </select>
                     </div>

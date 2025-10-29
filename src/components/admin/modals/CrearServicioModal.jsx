@@ -204,21 +204,21 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-container">
-        <div className="modal-header">
-          <h2 className="modal-title">Crear Nuevo Servicio</h2>
-          <button className="modal-close-btn" onClick={handleCleanForm}>&times;</button>
+    <div className="servicio-modal-overlay">
+      <div className="servicio-modal-container">
+        <div className="servicio-modal-header">
+          <h2 className="servicio-modal-title">Crear Nuevo Servicio</h2>
+          <button className="servicio-modal-close-btn" onClick={handleCleanForm}>&times;</button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="modal-body">
-            <div className="form-group">
-              <label className="form-label">Nombre del Servicio *</label>
+          <div className="servicio-modal-body">
+            <div className="servicio-form-group">
+              <label className="servicio-form-label">Nombre del Servicio *</label>
               <input
                 type="text"
                 name="nombre"
-                className={`form-input ${errors.nombre ? 'input-error' : ''}`}
+                className={`servicio-form-input ${errors.nombre ? 'input-error' : ''}`}
                 placeholder="Ingrese el nombre del servicio"
                 value={formData.nombre}
                 onChange={handleChange}
@@ -226,11 +226,11 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
               {errors.nombre && <span className="error-message">{errors.nombre}</span>}
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Descripción *</label>
+            <div className="servicio-form-group">
+              <label className="servicio-form-label">Descripción *</label>
               <textarea
                 name="descripcion"
-                className={`form-textarea ${errors.descripcion ? 'input-error' : ''}`}
+                className={`servicio-form-textarea ${errors.descripcion ? 'input-error' : ''}`}
                 placeholder="Ingrese la descripción del servicio (mínimo 50 caracteres)"
                 value={formData.descripcion}
                 onChange={handleChange}
@@ -239,12 +239,12 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
               {errors.descripcion && <span className="error-message">{errors.descripcion}</span>}
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Duración (minutos)</label>
+            <div className="servicio-form-group">
+              <label className="servicio-form-label">Duración (minutos)</label>
               <input
                 type="text"
                 name="duracion"
-                className={`form-input ${errors.duracion ? 'input-error' : ''}`}
+                className={`servicio-form-input ${errors.duracion ? 'input-error' : ''}`}
                 placeholder="Ej: 60"
                 value={formData.duracion}
                 onChange={handleChange}
@@ -252,12 +252,12 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
               {errors.duracion && <span className="error-message">{errors.duracion}</span>}
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Precio *</label>
+            <div className="servicio-form-group">
+              <label className="servicio-form-label">Precio *</label>
               <input
                 type="text"
                 name="precio"
-                className={`form-input ${errors.precio ? 'input-error' : ''}`}
+                className={`servicio-form-input ${errors.precio ? 'input-error' : ''}`}
                 placeholder="Ingrese el precio del servicio"
                 value={formData.precio}
                 onChange={handleChange}
@@ -265,8 +265,8 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
               {errors.precio && <span className="error-message">{errors.precio}</span>}
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Imagen del Servicio</label>
+            <div className="servicio-form-group">
+              <label className="servicio-form-label">Imagen del Servicio</label>
               <div className="image-upload-container">
                 <label className="image-upload-label">
                   <input
@@ -304,13 +304,13 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
             </div>
           </div>
 
-          <div className="modal-footer">
-            <button type="button" className="btn-cancelar" onClick={handleCleanForm}>
+          <div className="servicio-modal-footer">
+            <button type="button" className="servicio-btn-cancelar" onClick={handleCleanForm}>
               Cancelar
             </button>
             <button 
               type="submit" 
-              className={`btn-crear ${!isFormValid() ? 'btn-disabled' : ''}`}
+              className={`servicio-btn-crear ${!isFormValid() ? 'btn-disabled' : ''}`}
               disabled={!isFormValid()}
             >
               Crear Servicio
