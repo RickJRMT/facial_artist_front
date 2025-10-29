@@ -39,7 +39,7 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                                 type="date"
                                 value={formData.fecha}
                                 onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
-                                min={new Date().toISOString().split("T")[0]}
+                                // min={new Date().toISOString().split("T")[0]} se a comentado por el momento ya que no permitia cerrar el horario del dia actual "hoy"
                                 required
                                 className="gh-entrada-form"
                             />

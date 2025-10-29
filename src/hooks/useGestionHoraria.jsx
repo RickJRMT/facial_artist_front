@@ -150,7 +150,14 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
     };
 
     const openModal = () => {
-        let initialData = { idProfesional: '', fecha: '', hora_inicio: '', hora_fin: '', estado: 'activo', idHorario: null };
+        let initialData = {
+            idProfesional: '',
+            fecha: '',
+            hora_inicio: '',
+            hora_fin: '',
+            estado: 'activo',
+            idHorario: null
+        };
 
         if (citaSeleccionada) {
             const horaFin = citaSeleccionada.idHorario ? '' : new Date(new Date(`2000-01-01T${citaSeleccionada.hora.replace(' ', '')}`).getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
