@@ -39,6 +39,7 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                                 type="date"
                                 value={formData.fecha}
                                 onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+                                min={new Date().toISOString().split("T")[0]}
                                 required
                                 className="gh-entrada-form"
                             />
