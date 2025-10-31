@@ -10,6 +10,7 @@
 .descripcion-truncada {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -35,23 +36,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .servicios-title-container {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .servicios-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: #1a1a1a;
 }
 
 .servicios-subtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
 }
 
@@ -78,7 +79,7 @@
 }
 
 .servicios-search-section {
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .servicios-search-bar {
@@ -94,7 +95,7 @@
   color: #999;
 }
 
-.search-input {
+.servicios-search-input {
   width: 100%;
   padding: 14px 16px 14px 48px;
   border: 1px solid #e5e5e5;
@@ -104,32 +105,32 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.search-input:focus {
+.servicios-search-input:focus {
   outline: none;
   border-color: #d4a017;
   box-shadow: 0 2px 8px rgba(212, 160, 23, 0.2);
 }
 
-.table-card {
+.servicios-table-card {
   background: white;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
-.table-title {
-  font-size: 18px;
+.servicios-table-title {
+  font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
-.table-wrapper {
+.servicios-table-wrapper {
   overflow-x: auto;
   flex: 1;
   min-height: 0;
@@ -140,35 +141,60 @@
 .servicios-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* Fija el ancho de las columnas */
 }
 
-.table-header {
+/* Anchos fijos para las columnas para mantener el espaciado consistente */
+.servicios-table th:nth-child(1),
+.servicios-table td:nth-child(1) { width: 5%; } /* ID */
+
+.servicios-table th:nth-child(2),
+.servicios-table td:nth-child(2) { width: 15%; } /* Servicio */
+
+.servicios-table th:nth-child(3),
+.servicios-table td:nth-child(3) { width: 25%; } /* Descripción */
+
+.servicios-table th:nth-child(4),
+.servicios-table td:nth-child(4) { width: 15%; } /* Imagen */
+
+.servicios-table th:nth-child(5),
+.servicios-table td:nth-child(5) { width: 12%; } /* Costo */
+
+.servicios-table th:nth-child(6),
+.servicios-table td:nth-child(6) { width: 12%; } /* Duración */
+
+.servicios-table th:nth-child(7),
+.servicios-table td:nth-child(7) { width: 16%; } /* Opciones */
+
+.servicios-table-header {
   background: #faf9f7;
   border-bottom: 2px solid #e5e5e5;
 }
 
 .servicios-table th {
-  padding: 16px;
+  padding: 12px;
   text-align: left;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #666;
   white-space: nowrap;
+  box-sizing: border-box; /* Asegura que el padding se mantenga consistente */
 }
 
-.table-row {
+.servicios-table-row {
   border-bottom: 1px solid #f0f0f0;
   transition: background 0.2s ease;
 }
 
-.table-row:hover {
+.servicios-table-row:hover {
   background: #fafafa;
 }
 
 .servicios-table td {
-  padding: 16px;
-  font-size: 14px;
+  padding: 12px;
+  font-size: 13px;
   color: #1a1a1a;
+  box-sizing: border-box; /* Asegura que el padding se mantenga consistente */
 }
 
 .servicio-nombre {
@@ -183,7 +209,7 @@
   display: block;
 }
 
-.btn-visualizar {
+.servicios-btn-visualizar {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -198,7 +224,7 @@
   transition: all 0.3s ease;
 }
 
-.btn-visualizar:hover {
+.servicios-btn-visualizar:hover {
   background: #e5e5e5;
   color: #1a1a1a;
 }
@@ -228,14 +254,14 @@
   color: #dc2626;
 }
 
-.action-buttons {
+.servicios-action-buttons {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.btn-edit,
-.btn-delete {
+.servicios-btn-edit,
+.servicios-btn-delete {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,21 +275,93 @@
   transition: all 0.2s ease;
 }
 
-.btn-edit:hover {
+.servicios-btn-edit:hover {
   background: #e5e5e5;
   color: #1a1a1a;
 }
 
-.btn-delete:hover {
+.servicios-btn-delete:hover {
   background: #fee2e2;
   color: #dc2626;
 }
 
-.empty-state {
+.servicios-empty-state {
   text-align: center;
   padding: 48px 24px;
   color: #999;
   font-size: 16px;
+}
+
+/* Paginación */
+.servicios-pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 12px;
+}
+
+.servicios-pagination-info {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.servicios-pagination-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.servicios-pagination-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: white;
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.servicios-pagination-btn:hover:not(:disabled) {
+  background: #fafafa;
+  border-color: #d4a017;
+  color: #d4a017;
+}
+
+.servicios-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.servicios-pagination-btn.active {
+  background: linear-gradient(135deg, #d4a017 0%, #f4d03f 100%);
+  border-color: #d4a017;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.servicios-pagination-btn.servicios-pagination-nav {
+  padding: 0 12px;
+  font-weight: 500;
+}
+
+.servicios-pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: #999;
+  font-size: 14px;
 }
 
 
@@ -274,15 +372,15 @@
   }
   
   .servicios-title {
-    font-size: 28px;
+    font-size: 24px;
   }
   
   .servicios-subtitle {
-    font-size: 15px;
+    font-size: 13px;
   }
   
-  .table-card {
-    padding: 16px;
+  .servicios-table-card {
+    padding: 12px;
   }
 }
 
@@ -298,27 +396,27 @@
   }
   
   .servicios-title {
-    font-size: 24px;
+    font-size: 22px;
   }
   
   .servicios-subtitle {
-    font-size: 14px;
+    font-size: 13px;
   }
   
   .descripcion {
     max-width: 200px;
   }
   
-  .btn-visualizar {
+  .servicios-btn-visualizar {
     padding: 6px 12px;
   }
   
-  .action-buttons {
+  .servicios-action-buttons {
     gap: 4px;
   }
   
-  .btn-edit,
-  .btn-delete {
+  .servicios-btn-edit,
+  .servicios-btn-delete {
     width: 32px;
     height: 32px;
   }
@@ -326,6 +424,33 @@
   .btn-nuevo-servicio {
     width: 100%;
     justify-content: center;
+  }
+
+  .servicios-pagination-container {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+  }
+
+  .servicios-pagination-info {
+    order: 2;
+    font-size: 12px;
+  }
+
+  .servicios-pagination-controls {
+    order: 1;
+  }
+
+  .servicios-pagination-btn {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+    padding: 0 6px;
+  }
+
+  .servicios-pagination-btn.servicios-pagination-nav {
+    padding: 0 10px;
   }
 }
 
@@ -335,17 +460,17 @@
   }
   
   .servicios-title {
-    font-size: 22px;
+    font-size: 20px;
   }
   
-  .table-card {
-    padding: 12px;
+  .servicios-table-card {
+    padding: 10px;
   }
   
   .servicios-table th,
   .servicios-table td {
-    padding: 12px 8px;
-    font-size: 13px;
+    padding: 10px 6px;
+    font-size: 12px;
   }
   
   .descripcion {
@@ -357,9 +482,42 @@
     font-size: 11px;
   }
   
-  .btn-edit,
-  .btn-delete {
+  .servicios-btn-edit,
+  .servicios-btn-delete {
     width: 28px;
     height: 28px;
   }
+
+  .servicios-pagination-container {
+    padding: 8px 10px;
+  }
+
+  .servicios-pagination-info {
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .servicios-pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .servicios-pagination-btn {
+    min-width: 24px;
+    height: 24px;
+    font-size: 11px;
+    padding: 0 4px;
+  }
+
+  .servicios-pagination-btn.servicios-pagination-nav {
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .servicios-pagination-ellipsis {
+    padding: 0 2px;
+    font-size: 11px;
+  }
 }
+
+

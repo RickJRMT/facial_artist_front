@@ -294,7 +294,7 @@ form {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .modal-container {
+  .servicio-modal-container {
     width: 95%;
     margin: 20px;
   }

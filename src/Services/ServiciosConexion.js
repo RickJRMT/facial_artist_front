@@ -21,7 +21,13 @@ export const obtenerServicios = async () => {
                 descripcion: s.servDescripcion,
                 costo: s.servCosto,
                 imagen: s.servImagen,
-                servDuracion: s.servDuracion
+                servDuracion: s.servDuracion,
+                // Mantener también las propiedades originales para compatibilidad
+                idServicios: s.idServicios,
+                servNombre: s.servNombre,
+                servDescripcion: s.servDescripcion,
+                servCosto: s.servCosto,
+                servImagen: s.servImagen
             }))
             : [];
         return servicios;

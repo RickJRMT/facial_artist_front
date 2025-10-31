@@ -1,15 +1,16 @@
-import { useState } from 'react';
-import './CrearServicioModal.css';
+import { useState, useEffect } from 'react';
+import './EditarServicioModal.css';
 
 /**
- * Modal para crear un nuevo servicio
+ * Modal para editar un servicio existente
  * @component
  * @param {Object} props - Propiedades del componente
  * @param {boolean} props.isOpen - Controla la visibilidad del modal
  * @param {Function} props.onClose - Función para cerrar el modal
  * @param {Function} props.onSubmit - Función que maneja el envío del formulario
+ * @param {Object} props.servicio - Datos del servicio a editar
  */
-const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
+const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -27,7 +28,40 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
   });
 
   const [previewImage, setPreviewImage] = useState(null);
+  const [hasImageChanged, setHasImageChanged] = useState(false);
   
+  // Cargar datos del servicio cuando se abre el modal
+  useEffect(() => {
+    if (isOpen && servicio) {
+      setFormData({
+        nombre: servicio.nombre || '',
+        descripcion: servicio.descripcion || '',
+        duracion: servicio.duracion ? servicio.duracion.toString() : '',
+        precio: servicio.precio ? formatCurrency(servicio.precio.toString()) : '',
+        imagen: null
+      });
+
+      // Si el servicio tiene imagen, mostrarla como preview
+      if (servicio.imagen) {
+        const imagenSrc = servicio.imagen.startsWith('data:image') 
+          ? servicio.imagen 
+          : `data:image/png;base64,${servicio.imagen}`;
+        setPreviewImage(imagenSrc);
+      } else {
+        setPreviewImage(null);
+      }
+
+      setHasImageChanged(false);
+      setErrors({
+        nombre: '',
+        descripcion: '',
+        precio: '',
+        duracion: '',
+        imagen: ''
+      });
+    }
+  }, [isOpen, servicio]);
+
   // Verificar si el formulario es válido
   const isFormValid = () => {
     return (
@@ -35,7 +69,6 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
       formData.descripcion.length >= 50 &&
       formData.precio.trim() !== '' &&
       formData.duracion.trim() !== '' &&
-      formData.imagen !== null &&
       !Object.values(errors).some(error => error !== '')
     );
   };
@@ -147,6 +180,8 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
         imagen: file
       }));
 
+      setHasImageChanged(true);
+
       // Crear preview de la imagen
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -166,7 +201,9 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
       // Convertir el precio: primero limpiar el formato y luego convertir a número
       precio: parseInt(cleanCurrencyFormat(formData.precio)),
       // Convertir la duración a número si existe
-      duracion: formData.duracion ? parseInt(formData.duracion) : 60
+      duracion: formData.duracion ? parseInt(formData.duracion) : 60,
+      // Incluir información sobre si la imagen cambió
+      hasImageChanged: hasImageChanged
     };
 
     // Validación final del precio
@@ -191,6 +228,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
       imagen: null
     });
     setPreviewImage(null);
+    setHasImageChanged(false);
     setErrors({
       nombre: '',
       descripcion: '',
@@ -207,7 +245,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
     <div className="servicio-modal-overlay">
       <div className="servicio-modal-container">
         <div className="servicio-modal-header">
-          <h2 className="servicio-modal-title">Crear Nuevo Servicio</h2>
+          <h2 className="servicio-modal-title">Editar Servicio</h2>
           <button className="servicio-modal-close-btn" onClick={handleCleanForm}>&times;</button>
         </div>
 
@@ -274,7 +312,6 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
                     className="image-input"
                     accept="image/*"
                     onChange={handleImageChange}
-                    required
                   />
                   {previewImage ? (
                     <img src={previewImage} alt="Preview" className="image-preview" />
@@ -295,7 +332,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
                         />
                       </svg>
                       <p className="upload-text">
-                        Arrastra una imagen aquí o haz clic para seleccionar
+                        {servicio?.imagen ? 'Cambiar imagen' : 'Arrastra una imagen aquí o haz clic para seleccionar'}
                       </p>
                     </>
                   )}
@@ -313,7 +350,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
               className={`servicio-btn-crear ${!isFormValid() ? 'btn-disabled' : ''}`}
               disabled={!isFormValid()}
             >
-              Crear Servicio
+              Actualizar Servicio
             </button>
           </div>
         </form>
@@ -322,4 +359,4 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
-export default CrearServicioModal;
+export default EditarServicioModal;

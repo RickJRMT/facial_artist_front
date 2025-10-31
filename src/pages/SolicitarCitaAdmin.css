@@ -1,91 +1,53 @@
 :root {
-  --color-fondo-card: var(--color-fondo); /* Usa el mismo fondo que el modal */
-  --color-texto-card: var(--color-texto); /* Usa el color de texto del tema */
-  --color-borde-card: #ddd;
-  --color-boton-fondo: var(--color-primario); /* Usa el color primario del tema */
-  --color-boton-texto: white;
-  --radio-borde: 8px;
+  --form-primary: #c89400;
+  --form-primary-hover: #b07f00;
+  --form-radius: 8px;
 }
 
-.solicitar-cita-card {
-  width: 100%; /* Ocupa todo el ancho del modal-content */
-  margin: 0; /* Elimina márgenes para que no se separe */
-  background: var(--color-fondo-card); /* Fondo consistente con el modal */
-  border-radius: 0; /* Elimina bordes redondeados para que se fusione con el modal */
-  box-shadow: none; /* Elimina sombra para que no parezca un contenedor separado */
-  padding: 0 1rem 1rem; /* Ajusta padding solo en la base y lados */
-  font-family: "Montserrat", sans-serif;
-  color: var(--color-texto-card);
-}
-
-.solicitar-cita-card__title {
-  font-weight: 700;
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-
-.solicitar-cita-card__subtitle {
-  font-weight: 400;
-  font-size: 1.1rem;
-  margin-bottom: 30px;
-  color: #555;
-}
-
-.solicitar-cita-card__form {
-  display: flex;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-
-.solicitar-cita-card__column {
-  flex: 1;
-  min-width: 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.solicitar-cita-card label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-}
-
-.solicitar-cita-card input,
-.solicitar-cita-card select {
-  padding: 10px 12px;
+/* Botón principal */
+.formButton {
+  margin-top: 2rem;
+  padding: 0.875rem 1.5rem;
   font-size: 1rem;
-  border-radius: 7px;
-  border: 1.5px solid var(--color-borde-card);
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.solicitar-cita-card input:focus,
-.solicitar-cita-card select:focus {
-  border-color: var(--color-boton-fondo);
-}
-
-.solicitar-cita-card button {
-  margin-top: 30px;
-  padding: 12px 25px;
-  font-size: 1.1rem;
   font-weight: 700;
-  border-radius: var(--radio-borde);
+  background: var(--form-primary);
+  color: white;
   border: none;
-  background-color: var(--color-boton-fondo);
-  color: var(--color-boton-texto);
+  border-radius: var(--form-radius);
   cursor: pointer;
-  align-self: flex-start;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s ease;
+  width: 100%;
 }
 
-.solicitar-cita-card button:hover {
-  background-color: var(--color-primario-hover);
+.formButton:hover {
+  background: var(--form-primary-hover);
 }
 
-@media (max-width: 720px) {
-  .solicitar-cita-card__form {
-    flex-direction: column;
+.btn-cerrar-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 26px;
+  background: transparent; /* fondo totalmente transparente */
+  border: none;
+  cursor: pointer;
+  color: #444; /* gris oscuro, elegante */
+  width: 32px;
+  height: 32px;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-cerrar-modal:hover {
+  transform: scale(1.15);
+  background-color: transparent;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .formButton {
+    max-width: 100%;
   }
 }

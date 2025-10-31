@@ -1,69 +1,137 @@
+/* Variables CSS para colores y estilos globales usados en todo el proyecto */
 :root {
   --color-fondo: #faf8f3;
-  --color-primario: #c89400; /* amarillo oscuro */
+  /* Color de fondo principal */
+  --color-primario: #c89400;
+  /* Color principal (amarillo/dorado) */
   --color-primario-hover: #b07f00;
+  /* Color principal para hover (oscurecido) */
   --color-texto: #333;
+  /* Color principal del texto (gris oscuro) */
   --color-texto-secundario: #555;
+  /* Color secundario para textos menos importantes */
   --color-boton-texto: white;
+  /* Color del texto de los botones */
   --color-boton-borde: transparent;
+  /* Borde transparente para botones */
+  --color-pagado: #d4edda;
+  /* Fondo verde claro para estado "pagado" */
+  --color-pendiente: #fff3cd;
+  /* Fondo amarillo claro para estado "pendiente" */
+  --color-texto-pagado: #155724;
+  /* Texto verde oscuro para estado "pagado" */
+  --color-texto-pendiente: #856404;
+  /* Texto amarillo oscuro para estado "pendiente" */
+  --color-boton-admin: #c9a56a;
+--color-boton-admin-hover: #b8945a;
 }
 
+/* Contenedor principal donde están las citas */
 .citas-container {
   padding: 2rem;
+  /* Espacio interno alrededor del contenido */
   font-family: sans-serif;
+  /* Fuente sans-serif para legibilidad */
   background: var(--color-fondo);
+  /* Fondo claro definido en variable */
   color: var(--color-texto);
-  position: relative; /* para el posicionamiento absoluto del botón */
+  /* Color de texto principal */
+  position: relative;
+  /* Para posicionar elementos hijos con position absoluta */
+  max-width: 100%;
+  /* No se sale del ancho del contenedor padre */
+  overflow-x: auto;
+  /* Permite scroll horizontal si el contenido es muy ancho */
 }
 
+/* Cabecera de la sección citas */
 .citas-header {
   position: relative;
+  /* Para posicionar elementos internos */
   margin-bottom: 1.5rem;
+  /* Espacio debajo para separar del contenido siguiente */
 }
 
+/* Título principal dentro de la cabecera */
 .citas-header h1 {
   margin: 0;
+  /* Sin margen para un control exacto */
+  font-size: 1.5rem;
+  /* Tamaño del texto grande para título */
 }
 
+/* Texto secundario dentro de la cabecera */
 .citas-header p {
   color: var(--color-texto-secundario);
+  /* Color más suave para texto secundario */
+  font-size: 0.9rem;
+  /* Texto un poco más pequeño */
 }
 
-/* Botón + Nueva Cita a la derecha arriba */
+/* Botón para crear nueva cita */
 .btn-nueva-cita {
   position: absolute;
+  /* Posicionado respecto a .citas-header */
   right: 0;
+  /* Alineado a la derecha */
   top: 0;
+  /* En la parte superior */
   background-color: var(--color-primario);
+  /* Color dorado */
   color: var(--color-boton-texto);
+  /* Texto blanco */
   border: none;
+  /* Sin borde */
   padding: 0.75rem 1.5rem;
+  /* Relleno interno para tamaño del botón */
   border-radius: 12px;
+  /* Bordes redondeados */
   cursor: pointer;
+  /* Cursor pointer para indicar clickeable */
   font-weight: bold;
+  /* Texto en negrita */
   box-shadow: 0 4px 8px rgba(197, 148, 0, 0.5);
+  /* Sombra amarilla para efecto */
   transition: background-color 0.3s ease;
-  width: auto; /* Evitar que tome todo el ancho */
+  /* Transición suave al cambiar color */
+  width: auto;
+  /* Ancho automático */
   max-width: none;
+  /* Sin límite máximo */
   display: inline-block;
+  /* Para que se comporte como botón */
 }
 
+/* Estado hover para el botón */
 .btn-nueva-cita:hover {
   background-color: var(--color-primario-hover);
+  /* Color más oscuro cuando se pasa el mouse */
 }
 
+
+/* Contenedor para filtros de búsqueda o selección */
 .filtros {
   display: flex;
+  /* Mostrar en línea con flexbox */
   gap: 1rem;
+  /* Espacio entre los filtros */
   margin-bottom: 1rem;
+  /* Espacio debajo */
 }
 
+/* Estilos para inputs y selects dentro de filtros */
 .filtros input,
 .filtros select {
   padding: 0.5rem;
+  /* Espacio interno */
   border-radius: 8px;
+  /* Bordes redondeados */
   border: 1px solid #ccc;
+  /* Borde gris claro */
   flex: 1;
+  /* Crece para llenar espacio disponible */
+  font-size: 0.9rem;
+  /* Tamaño de fuente */
 }
 
 .modal-overlay {
@@ -81,23 +149,41 @@
 }
 
 .modal-content {
-  background: var(--color-fondo); /* Usa el fondo del tema principal */
-  padding: 1rem; /* Reduce padding para que el formulario ocupe más espacio */
+  background: var(--color-fondo);
+  /* Usa el fondo del tema principal */
+  padding: 1rem;
+  /* Reduce padding para que el formulario ocupe más espacio */
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  max-width: 700px; /* Ajusta para que sea más armónico con el formulario */
+  max-width: 700px;
+  /* Ajusta para que sea más armónico con el formulario */
   width: 90%;
+  max-height: 90vh; /* Evitar que el modal sea demasiado alto */
+  overflow-y: auto; /* Permitir scroll si es necesario */
   position: relative;
   animation: slideIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
+
 @keyframes slideIn {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .btn-cerrar-modal {
@@ -114,3 +200,292 @@
   line-height: 1;
   padding: 5px;
 }
+
+/* Tabla donde se listan las citas */
+.lista-citas table {
+  width: 100%;
+  /* Ocupa todo el ancho */
+  border-collapse: collapse;
+  /* Colapsa bordes para mejor apariencia */
+  margin-top: 1rem;
+  /* Margen superior */
+  table-layout: fixed;
+  /* Ancho fijo para columnas */
+  word-wrap: break-word;
+  /* Permite romper palabras largas */
+  background-color: white;
+  /* Fondo blanco para tabla */
+  border-radius: 20px;
+  /* Bordes redondeados */
+}
+
+/* Estilos para encabezados de tabla */
+.lista-citas th {
+  background-color: transparent;
+  /* Fondo transparente */
+  border: none;
+  /* Sin borde */
+  border-bottom: 2px solid #ccc;
+  /* Línea inferior para separar */
+  color: var(--color-texto);
+  /* Color del texto */
+  font-weight: bold;
+  /* Negrita */
+  text-align: center;
+  /* Centrado del texto */
+  padding: 0.75rem;
+  /* Espacio interno */
+}
+
+/* Celdas de la tabla */
+.lista-citas td {
+  border: none;
+  /* Sin borde */
+  border-bottom: 1px solid #ddd;
+  /* Línea fina debajo */
+  padding: 0.75rem;
+  /* Espacio interno */
+  text-align: center;
+  /* Texto centrado */
+  white-space: nowrap;
+  /* No permite que el texto se divida en varias líneas */
+  overflow: hidden;
+  /* Oculta contenido que sobrepasa el tamaño */
+  text-overflow: ellipsis;
+  /* Agrega "..." si el texto es demasiado largo */
+  background-color: white;
+  /* Fondo blanco */
+}
+.lista-citas td:not(:last-child) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Última celda de cada fila */
+.lista-citas td:last-child {
+  border-right: 1px solid #ddd !important;
+  /* Línea a la derecha importante */
+  overflow: visible; 
+  white-space: normal;
+}
+
+/* Filas pares para mejorar legibilidad */
+.lista-citas tbody tr:nth-child(even) {
+  background-color: white;
+  /* Fondo blanco alternado */
+}
+
+/* Estilos para los spans dentro de las celdas (usados para estados) */
+.lista-citas td span {
+  display: inline-block;
+  /* Mostrar como bloque en línea */
+  padding: 0.25rem 0.5rem;
+  /* Espacio interno pequeño */
+  border-radius: 12px;
+  /* Bordes redondeados */
+  font-size: 0.9rem;
+  /* Tamaño de texto */
+}
+
+/* Estado pagado: fondo verde claro y texto verde oscuro */
+.lista-citas td span.pagado {
+  background-color: var(--color-pagado);
+  color: var(--color-texto-pagado);
+}
+
+/* Estado pendiente: fondo amarillo claro y texto amarillo oscuro */
+.lista-citas td span.pendiente {
+  background-color: var(--color-pendiente);
+  color: var(--color-texto-pendiente);
+}
+
+/* Botones dentro de la lista de citas */
+.lista-citas button {
+  margin: 0 0.25rem;
+  /* Margen horizontal pequeño */
+  cursor: pointer;
+  /* Cursor pointer */
+  border: none;
+  /* Sin borde */
+  /* Fondo transparente */
+  font-size: 1.1rem;
+  /* Tamaño del icono/texto */
+  padding: 0.25rem;
+  /* Espacio interno pequeño */
+  border-radius: 4px;
+  /* Bordes ligeramente redondeados */
+}
+
+/* Hover para botones de acciones */
+.lista-citas button:hover {
+  color: var(--color-primario-hover);
+  /* Cambia color a amarillo oscuro */
+  background-color: rgba(200, 148, 0, 0.1);
+  /* Fondo amarillo muy claro */
+}
+
+/* Contenedor para la paginación */
+.paginacion {
+  display: flex;
+  /* Flexbox para alinear los botones */
+  justify-content: center;
+  /* Centrar los botones */
+  gap: 8px;
+  /* Espacio entre botones */
+  margin-top: 1rem;
+  /* Margen superior */
+  flex-wrap: nowrap;
+  /* No permite que los botones se rompan a otra línea */
+}
+
+/* Botones de paginación */
+.paginacion button {
+  background-color: var(--color-primario);
+  /* Fondo amarillo dorado */
+  border: none;
+  /* Sin borde */
+  color: var(--color-boton-texto);
+  /* Texto blanco */
+  padding: 0.5rem 0.9rem;
+  /* Espacio interno */
+  border-radius: 6px;
+  /* Bordes redondeados */
+  cursor: pointer;
+  /* Cursor pointer */
+  font-weight: bold;
+  /* Texto en negrita */
+  width: 46px;
+  text-align: center;
+  /* Centrado */
+  transition: background-color 0.3s ease;
+  /* Transición suave */
+}
+
+/* Hover para botones de paginación */
+.paginacion button:hover {
+  background-color: var(--color-primario-hover);
+  color: #222;
+}
+
+/* Botón activo en paginación (página actual) */
+.paginacion button.activo {
+  background-color: #7a5c00;
+  /* Amarillo más oscuro */
+  cursor: default;
+  /* Cursor normal para indicar que no es clickeable */
+}
+
+/* Repetición de estilos para estados, para asegurar que tienen el mismo aspecto */
+/* Estado pagado */
+.lista-citas td span.pagado {
+  background-color: #d4edda;
+  /* verde claro */
+  color: #155724;
+  /* verde oscuro */
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* Estado pendiente */
+.lista-citas td span.pendiente {
+  background-color: #fff3cd;
+  /* amarillo claro */
+  color: #856404;
+  /* amarillo oscuro */
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* Estado confirmada */
+.lista-citas td span.confirmada {
+  background-color: #d4edda;
+  /* verde claro */
+  color: #155724;
+  /* verde oscuro */
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* Estado cancelada */
+.lista-citas td span.cancelada {
+  background-color: #f8d7da;
+  /* rojo claro */
+  color: #721c24;
+  /* rojo oscuro */
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* Estado por defecto para otros estados */
+.lista-citas td span.otroEstado {
+  background-color: #e2e3e5;
+  /* gris claro */
+  color: #6c757d;
+  /* gris oscuro */
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.lista-citas tbody tr {
+  transition: background-color 0.25s ease, transform 0.15s ease;
+  /* Transiciones suaves */
+  cursor: pointer;
+  /* Indica que la fila es interactiva */
+}
+
+.lista-citas tbody tr:hover {
+  background-color: rgba(200, 148, 0, 0.08);
+  /* Fondo dorado muy suave */
+  transform: scale(1.01);
+  /* Ligeramente más grande para dar efecto "elevado" */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  /* Sombra ligera */
+}
+/* Botón EDITAR en la tabla de citas */
+/* Botón EDITAR en la tabla de citas */
+.btn-editar-cita {
+  background-color: #a8d5e2; /* Azul pastel */
+  color: #084c61; /* Texto azul oscuro */
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-editar-cita:hover {
+  background-color: #92c9d6; /* Azul pastel un poco más oscuro */
+  transform: translateY(-1px);
+}
+
+/* Botón ELIMINAR en la tabla de citas */
+.btn-eliminar-cita {
+  background-color: #f6b6b6; /* Rojo pastel */
+  color: #7a1f1f; /* Texto rojo oscuro */
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-eliminar-cita:hover {
+  background-color: #f29a9a; /* Rojo pastel más oscuro */
+  transform: translateY(-1px);
+}
+

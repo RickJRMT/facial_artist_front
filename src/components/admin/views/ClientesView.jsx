@@ -1,115 +1,202 @@
-import React, { useState } from 'react';
-import { Search, Eye, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import './ClientesView.css';
-import ModalHojasVida from '../modals/ModalHojasVida';
 
+/**
+ * Componente principal para la gestión de clientes en el panel de administración
+ * Permite listar y buscar clientes
+ */
 const ClientesView = () => {
+  // Estados para el manejo de datos y UI
   const [searchTerm, setSearchTerm] = useState('');
+  const [clientes, setClientes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
-  const [pageInputValue, setPageInputValue] = useState('1');
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedCliente, setSelectedCliente] = useState(null);
-  const [clientes, setClientes] = useState([
+  const itemsPerPage = 10;
+
+  // Datos de ejemplo basados en la estructura de la base de datos
+  const [clientesData] = useState([
     {
-      id: 1,
-      nombre: 'María González',
-      telefono: '+34 612 345 678',
-      email: 'maria.gonzalez@email.com',
-      historias: 2,
-      fechaNacimiento: '1985-03-15',
-      foto: 'https://i.pravatar.cc/150?img=1'
+      idCliente: 1,
+      nombreCliente: 'María González',
+      celularCliente: '+57 300 123 4567',
+      fechaNacCliente: '1985-03-15',
+      fechaRegistro: '2024-01-15 10:30:00'
     },
     {
-      id: 2,
-      nombre: 'Carmen López',
-      telefono: '+34 623 456 789',
-      email: 'carmen.lopez@email.com',
-      historias: 0,
-      fechaNacimiento: '1990-07-22',
-      foto: 'https://i.pravatar.cc/150?img=5'
+      idCliente: 2,
+      nombreCliente: 'Carmen López',
+      celularCliente: '+57 301 234 5678',
+      fechaNacCliente: '1990-07-22',
+      fechaRegistro: '2024-01-20 14:15:00'
     },
     {
-      id: 3,
-      nombre: 'Ana Rodríguez',
-      telefono: '+34 634 567 890',
-      email: 'ana.rodriguez@email.com',
-      historias: 0,
-      fechaNacimiento: '1988-11-10',
-      foto: 'https://i.pravatar.cc/150?img=9'
+      idCliente: 3,
+      nombreCliente: 'Ana Rodríguez',
+      celularCliente: '+57 302 345 6789',
+      fechaNacCliente: '1988-11-10',
+      fechaRegistro: '2024-02-01 09:45:00'
     },
     {
-      id: 4,
-      nombre: 'Laura Martín',
-      telefono: '+34 645 678 901',
-      email: 'laura.martin@email.com',
-      historias: 0,
-      fechaNacimiento: '1992-02-28',
-      foto: 'https://i.pravatar.cc/150?img=10'
+      idCliente: 4,
+      nombreCliente: 'Laura Martín',
+      celularCliente: '+57 303 456 7890',
+      fechaNacCliente: '1992-02-28',
+      fechaRegistro: '2024-02-10 16:20:00'
+    },
+    {
+      idCliente: 5,
+      nombreCliente: 'Sofia García',
+      celularCliente: '+57 304 567 8901',
+      fechaNacCliente: '1995-05-12',
+      fechaRegistro: '2024-02-15 11:30:00'
+    },
+    {
+      idCliente: 6,
+      nombreCliente: 'Isabella Torres',
+      celularCliente: '+57 305 678 9012',
+      fechaNacCliente: '1987-09-08',
+      fechaRegistro: '2024-02-20 13:45:00'
     }
   ]);
 
+  /**
+   * Efecto para cargar la lista de clientes al montar el componente
+   */
+  useEffect(() => {
+    const fetchClientes = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // Simular carga de datos
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setClientes(clientesData);
+      } catch (err) {
+        setError('Error al cargar los clientes');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchClientes();
+  }, [clientesData]);
+
   const filteredClientes = clientes.filter(cliente =>
-    cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cliente.telefono.includes(searchTerm) ||
-    cliente.email.toLowerCase().includes(searchTerm.toLowerCase())
+    cliente.nombreCliente?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cliente.celularCliente?.includes(searchTerm)
   );
 
-  // Lógica de paginación
+  // Calcular la paginación
   const totalPages = Math.ceil(filteredClientes.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredClientes.slice(indexOfFirstItem, indexOfLastItem);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentClientes = filteredClientes.slice(startIndex, endIndex);
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-      setPageInputValue(pageNumber.toString());
+  // Resetear página cuando cambia el filtro de búsqueda
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // Funciones de paginación
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    // Scroll hacia arriba de la tabla
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+
+    if (end - start < maxVisible - 1) {
+      start = Math.max(1, end - maxVisible + 1);
     }
-  };
 
-  const handlePageInputChange = (e) => {
-    const value = e.target.value;
-    setPageInputValue(value);
-    
-    const pageNumber = parseInt(value);
-    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+    if (start > 1) {
+      buttons.push(
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          className="pagination-btn"
+        >
+          1
+        </button>
+      );
+      if (start > 2) {
+        buttons.push(
+          <span key="ellipsis-start" className="pagination-ellipsis">
+            ...
+          </span>
+        );
+      }
     }
-  };
 
-  const handleVerHistorias = (cliente) => {
-    setSelectedCliente(cliente);
-    setModalOpen(true);
-  };
-
-  const handleEditarCliente = (cliente) => {
-    alert(`Editar cliente: ${cliente.nombre}`);
-  };
-
-  const handleEliminarCliente = (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
-      setClientes(clientes.filter(c => c.id !== id));
+    for (let i = start; i <= end; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`pagination-btn ${currentPage === i ? 'active' : ''}`}
+        >
+          {i}
+        </button>
+      );
     }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) {
+        buttons.push(
+          <span key="ellipsis-end" className="pagination-ellipsis">
+            ...
+          </span>
+        );
+      }
+      buttons.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          className="pagination-btn"
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    return buttons;
+  };
+
+  // Función para formatear fecha
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-CO');
+  };
+
+  // Función para formatear fecha y hora
+  const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString) return '-';
+    const date = new Date(dateTimeString);
+    return date.toLocaleString('es-CO');
   };
 
   return (
     <div className="clientes-container">
       {/* Header */}
       <div className="clientes-header">
-        <div>
+        <div className="clientes-title-container">
           <h1 className="clientes-title">Clientes</h1>
-          <p className="clientes-subtitle">Gestión de clientes e historias clínicas</p>
+          <p className="clientes-subtitle">Listado de clientes registrados</p>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="search-section">
-        <div className="search-bar">
-          <Search size={20} className="search-icon" />
+      <div className="clientes-search-section">
+        <div className="clientes-search-bar">
           <input
             type="text"
-            placeholder="Buscar clientes por nombre, teléfono o email..."
+            placeholder="Buscar clientes por nombre o celular..."
             className="search-input"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -120,124 +207,86 @@ const ClientesView = () => {
       {/* Clientes Table */}
       <div className="table-card">
         <h3 className="table-title">Lista de Clientes</h3>
-        
         <div className="table-wrapper">
+          {loading ? (
+            <div className="empty-state">
+              <p>Cargando clientes...</p>
+            </div>
+          ) : error ? (
+            <div className="empty-state">
+              <p>{error}</p>
+            </div>
+          ) : (
+            <>
           <table className="clientes-table">
             <thead>
               <tr className="table-header">
                 <th>ID</th>
-                <th>Foto</th>
-                <th>Cliente</th>
-                <th>Teléfono</th>
-                <th>Email</th>
-                <th>H/V</th>
+                    <th>Nombre</th>
+                    <th>Celular</th>
                 <th>Fecha Nacimiento</th>
-                <th>Opciones</th>
+                    <th>Fecha Registro</th>
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((cliente) => (
-                <tr key={cliente.id} className="table-row">
-                  <td className="table-cell">{cliente.id}</td>
-                  <td className="table-cell">
-                    <div className="avatar-wrapper">
-                      <img 
-                        src={cliente.foto} 
-                        alt={cliente.nombre}
-                        className="avatar"
-                      />
-                    </div>
+                  {currentClientes.map((cliente) => (
+                    <tr key={cliente.idCliente} className="table-row">
+                      <td>{cliente.idCliente}</td>
+                      <td>
+                        <span className="cliente-nombre">{cliente.nombreCliente}</span>
                   </td>
-                  <td className="table-cell">
-                    <span className="cliente-name">{cliente.nombre}</span>
+                      <td>
+                        <span className="celular">{cliente.celularCliente}</span>
                   </td>
-                  <td className="table-cell">{cliente.telefono}</td>
-                  <td className="table-cell">{cliente.email}</td>
-                  <td className="table-cell">
-                    <button 
-                      className="btn-historias"
-                      onClick={() => handleVerHistorias(cliente)}
-                    >
-                      <Eye size={16} />
-                      <span>Ver ({cliente.historias})</span>
-                    </button>
+                      <td>
+                        <span className="fecha-nacimiento">
+                          {formatDate(cliente.fechaNacCliente)}
+                        </span>
                   </td>
-                  <td className="table-cell">{cliente.fechaNacimiento}</td>
-                  <td className="table-cell">
-                    <div className="action-buttons">
-                      <button 
-                        className="btn-edit"
-                        onClick={() => handleEditarCliente(cliente)}
-                        title="Editar"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button 
-                        className="btn-delete"
-                        onClick={() => handleEliminarCliente(cliente.id)}
-                        title="Eliminar"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                      <td>
+                        <span className="fecha-registro">
+                          {formatDateTime(cliente.fechaRegistro)}
+                        </span>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-
           {filteredClientes.length === 0 && (
             <div className="empty-state">
               <p>No se encontraron clientes</p>
             </div>
           )}
+            </>
+          )}
+        </div>
         </div>
 
         {/* Paginación */}
-        {filteredClientes.length > 0 && (
-          <div className="pagination">
+      {!loading && !error && filteredClientes.length > 0 && (
+        <div className="pagination-container">
+          <div className="pagination-info">
+            Mostrando {startIndex + 1} - {Math.min(endIndex, filteredClientes.length)} de {filteredClientes.length} clientes
+          </div>
+          <div className="pagination-controls">
             <button
-              className="pagination-button"
+              className="pagination-btn pagination-nav"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
-              <ChevronLeft size={20} />
+              Anterior
             </button>
-            
-            <div className="page-numbers">
-              <span>Página</span>
-              <input
-                type="text"
-                value={pageInputValue}
-                onChange={handlePageInputChange}
-                className="page-input"
-                onBlur={() => {
-                  const pageNumber = parseInt(pageInputValue);
-                  if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > totalPages) {
-                    setPageInputValue(currentPage.toString());
-                  }
-                }}
-              />
-              <span>de {totalPages}</span>
-            </div>
-
+            {renderPaginationButtons()}
             <button
-              className="pagination-button"
+              className="pagination-btn pagination-nav"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              <ChevronRight size={20} />
+              Siguiente
             </button>
           </div>
+          </div>
         )}
-      </div>
-
-      {/* Modal de Hojas de Vida */}
-      <ModalHojasVida
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        cliente={selectedCliente}
-      />
     </div>
   );
 };

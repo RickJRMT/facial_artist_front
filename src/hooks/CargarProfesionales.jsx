@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 
 // Importamos la función que hace la llamada al backend para obtener los profesionales.
-import { obtenerProfesionales } from '../services/profesionalesConexion';
+import { obtenerProfesionales } from '../Services/profesionalesConexion';
 
 // Definimos un custom hook llamado useProfesionales.
 // Los custom hooks son funciones que nos permiten encapsular lógica reutilizable relacionada con React (como manejo de estado o efectos).
@@ -20,6 +20,9 @@ export function useProfesionales() {
       try {
         // Llamamos a la función que consulta la API o base de datos y trae los profesionales.
         const data = await obtenerProfesionales();
+
+        // Debug: Mostrar profesionales cargados
+        console.log('Profesionales cargados:', data);
 
         // Guardamos la lista de profesionales en el estado local.
         setProfesionales(data);

@@ -1,22 +1,16 @@
 import React, { useState } from "react";
-
 import "./SolicitarCitaAdmin.css";
-
 import { crearCita } from "../Services/citasClientesConexion";
-
 import ModalErrorEdad from "../components/layout/ModalErrorEdad.jsx";
 import ModalErrorEdadMenor from "../components/layout/ModalEdadMenor.jsx";
 import ModalErrorCaracteres from "../components/layout/ModalNombreIncompleto.jsx";
 import ModalErrorTelefono from "../components/layout/ModalTelefonoIncompleto.jsx";
-import ModalCitaExitosa from "../components/layout/ModalCitaSolicitada.jsx";
-
 import { useValidacionFormulario } from "../hooks/ValidarFormCitaCliente.jsx";
 import { useProfesionales } from "../hooks/CargarProfesionales.jsx";
 import { UseServicios } from "../hooks/CargarServicios.jsx";
 import { useHorariosDisponibles } from "../hooks/CargarHorarios.jsx";
-import useModalCitaExitosa from "../hooks/useModalCitaExitosa";
 
-const SolicitarCitaCard = () => {
+const SolicitarCitaCard = ({ onCitaCreada }) => {
     const { formData, handleInputChange, limpiarFormulario } =
         useValidacionFormulario();
 
@@ -30,22 +24,16 @@ const SolicitarCitaCard = () => {
         idServicio,
         formData.fechaCita
     );
-
-    const { modalVisible, mostrarModal, cerrarModal, datosCita } =
-        useModalCitaExitosa();
-
     const [mostrarModalEdad, setMostrarModalEdad] = useState(false);
     const [mostrarModalEdadMenor, setMostrarModalEdadMenor] = useState(false);
     const [mostrarModalNombreIncompleto, setMostrarModalNombreIncompleto] =
         useState(false);
     const [mostrarModalTelefonoIncompleto, setMostrarModalTelefonoIncompleto] =
         useState(false);
-
     const handleProfesionalChange = (e) => {
         const id = e.target.value;
         setIdProfesional(id);
     };
-
     const handleServicioChange = (e) => {
         const id = e.target.value;
         setIdServicio(id);
@@ -102,8 +90,8 @@ const SolicitarCitaCard = () => {
         ];
 
         const servicioSeleccionado = servicios.find(
-            (s) => s.idServicios === parseInt(idServicio)
-        )?.servNombre;
+            (s) => s.id === parseInt(idServicio)
+        )?.nombre;
 
         if (
             edadCliente < 18 &&
@@ -130,25 +118,28 @@ const SolicitarCitaCard = () => {
         };
 
         try {
-            await crearCita(datosCita);
-            mostrarModal({
+await crearCita(datosCita);
+
+            // Preparar datos para el modal de éxito
+            const datosParaModal = {
                 nombreCliente: datosCita.nombreCliente,
                 fecha: datosCita.fechaCita,
                 hora: datosCita.horaCita,
-                profesional:
-                    profesionales.find(
-                        (p) => p.idProfesional === datosCita.idProfesional
-                    )?.nombreProfesional || "",
-                servicio: servicioSeleccionado || "",
-                costo:
-                    servicios.find((s) => s.idServicios === datosCita.idServicios)
-                        ?.servCosto || "No disponible",
+                profesional: profesionales.find(p => p.idProfesional === datosCita.idProfesional)?.nombreProfesional || "No asignado",
+                servicio: servicioSeleccionado || "No disponible",
+                costo: servicios.find(s => s.idServicios === datosCita.idServicios)?.servCosto || "No disponible",
                 numeroReferencia: datosCita.numeroReferencia,
-            });
+            };
 
+            // Limpiar formulario
             limpiarFormulario();
             setIdProfesional("");
             setIdServicio("");
+
+            // Llamar al padre
+            if (onCitaCreada) {
+                onCitaCreada(datosParaModal);
+            }
         } catch (error) {
             console.error("Error al enviar cita:", error);
             alert(error.message || "Error al solicitar cita");
@@ -208,13 +199,15 @@ const SolicitarCitaCard = () => {
                             <option value="" disabled>
                                 Seleccione el tipo de servicio
                             </option>
-                            {servicios.map((servicio, index) => (
-                                <option
-                                    key={`${servicio.idServicios || "serv"}-${index}`}
-                                    value={servicio.idServicios}
-                                >
-                                    {servicio.servNombre}
-                                </option>
+                            {servicios && servicios.length > 0 && servicios.map((servicio) => (
+                                servicio && servicio.id && (
+                                    <option
+                                        key={servicio.id}
+                                        value={servicio.id}
+                                    >
+                                        {servicio.nombre}
+                                    </option>
+                                )
                             ))}
                         </select>
                     </div>
@@ -231,10 +224,12 @@ const SolicitarCitaCard = () => {
                             <option value="" disabled>
                                 Por seleccionar
                             </option>
-                            {profesionales.map((prof) => (
-                                <option key={prof.idProfesional} value={prof.idProfesional}>
-                                    {prof.nombreProfesional}
-                                </option>
+                            {profesionales && profesionales.length > 0 && profesionales.map((prof) => (
+                                prof && prof.idProfesional && (
+                                    <option key={prof.idProfesional} value={prof.idProfesional}>
+                                        {prof.nombreProfesional}
+                                    </option>
+                                )
                             ))}
                         </select>
 
@@ -256,45 +251,42 @@ const SolicitarCitaCard = () => {
                             onChange={handleInputChange}
                             value={formData.horaCita || ""}
                             required
+                            disabled={!horariosDisponibles || horariosDisponibles.length === 0}
                         >
                             <option value="" disabled>
-                                Seleccione la hora
+                                {!idProfesional || !idServicio || !formData.fechaCita 
+                                    ? "Complete los campos anteriores primero"
+                                    : (!horariosDisponibles || horariosDisponibles.length === 0
+                                        ? "No hay horarios disponibles"
+                                        : "Seleccione la hora")}
                             </option>
-                            {horariosDisponibles.map((horario) => (
-                                <option key={horario.horaInicio24} value={horario.horaInicio24}>
-                                    {horario.horaInicio} - {horario.horaFin}
-                                </option>
+                            {horariosDisponibles && horariosDisponibles.length > 0 && horariosDisponibles.map((horario, index) => (
+                                horario && horario.horaInicio24 && (
+                                    <option key={`${horario.horaInicio24}-${index}`} value={horario.horaInicio24}>
+                                        {horario.horaInicio} - {horario.horaFin}
+                                    </option>
+                                )
                             ))}
                         </select>
                     </div>
 
-                    <button type="submit">Solicitar Cita</button>
+                    <button type="submit" className="formButton" >Agendar Cita</button>
                 </form>
             </div>
 
-            {modalVisible && (
-                <ModalCitaExitosa datosCita={datosCita} onClose={cerrarModal} />
-            )}
-            {mostrarModalEdad && (
-                <ModalErrorEdad onClose={() => setMostrarModalEdad(false)} />
-            )}
-            {mostrarModalEdadMenor && (
-                <ModalErrorEdadMenor
-                    onClose={() => setMostrarModalEdadMenor(false)}
-                />
-            )}
-            {mostrarModalNombreIncompleto && (
-                <ModalErrorCaracteres
-                    onClose={() => setMostrarModalNombreIncompleto(false)}
-                />
-            )}
-            {mostrarModalTelefonoIncompleto && (
-                <ModalErrorTelefono
-                    onClose={() => setMostrarModalTelefonoIncompleto(false)}
-                />
-            )}
-        </>
-    );
-};
-
+        {mostrarModalEdad && (
+            <ModalErrorEdad onClose={() => setMostrarModalEdad(false)} />
+        )}
+        {mostrarModalEdadMenor && (
+            <ModalErrorEdadMenor onClose={() => setMostrarModalEdadMenor(false)} />
+        )}
+        {mostrarModalNombreIncompleto && (
+            <ModalErrorCaracteres onClose={() => setMostrarModalNombreIncompleto(false)} />
+        )}
+        {mostrarModalTelefonoIncompleto && (
+            <ModalErrorTelefono onClose={() => setMostrarModalTelefonoIncompleto(false)} />
+        )}
+    </>
+);
+}; 
 export default SolicitarCitaCard;
