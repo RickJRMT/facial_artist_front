@@ -13,12 +13,12 @@ import SolicitarCitaCard from './pages/SolicitarCitaAdmin.jsx';
 function App() {
   return (
     <BrowserRouter>
-      {/* Ruta por defecto al entrar a la raiz (/) muestra HomeCliente */}
-      <Routes path='/' element={<Homecliente />} />
-
       {/* Definimos rutas con <Routes> y <Route path="..." element={<Componente />} />
       Cuando la URL coincide con el path, React muestra ese componente. */}
       <Routes>
+        {/* Ruta por defecto al entrar a la raiz (/) muestra HomeCliente */}
+        <Route path='/' element={<Homecliente />} />
+
         <Route path="/cursos" element={<CursosPage />} />
         <Route path='/cita' element={< SolicitarCitaPage />} />
         <Route path='/calendario' element={< CalendarioCitas />} />

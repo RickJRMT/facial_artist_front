@@ -72,6 +72,7 @@
   padding: 14px 30px;
   font-size: 1rem;
   font-weight: 700;
+  width: 100%;
   border-radius: var(--radio-borde);
   border: none;
   background-color: var(--color-boton-fondo);
@@ -86,6 +87,7 @@
 .solicitar-cita-card button:hover {
   background-color: var(--color-primario-hover);
 }
+
 
 @media (max-width: 720px) {
   .solicitar-cita-card__form {
