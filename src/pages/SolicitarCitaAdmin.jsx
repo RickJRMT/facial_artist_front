@@ -208,9 +208,9 @@ const SolicitarCitaCard = () => {
                             <option value="" disabled>
                                 Seleccione el tipo de servicio
                             </option>
-                            {servicios.map((servicio) => (
+                            {servicios.map((servicio, index) => (
                                 <option
-                                    key={servicio.idServicios}
+                                    key={`${servicio.idServicios || "serv"}-${index}`}
                                     value={servicio.idServicios}
                                 >
                                     {servicio.servNombre}
