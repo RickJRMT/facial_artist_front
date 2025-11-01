@@ -9,11 +9,12 @@ import { useValidacionFormulario } from "../hooks/ValidarFormCitaCliente.jsx";
 import { useProfesionales } from "../hooks/CargarProfesionales.jsx";
 import { UseServicios } from "../hooks/CargarServicios.jsx";
 import { useHorariosDisponibles } from "../hooks/CargarHorarios.jsx";
+import { useAutoCompletarFechaNacimiento } from "../hooks/CompletarFechaNacimiento.jsx";
 
 const SolicitarCitaCard = ({ onCitaCreada }) => {
     const { formData, handleInputChange, limpiarFormulario } =
         useValidacionFormulario();
-
+    useAutoCompletarFechaNacimiento(formData.celularCliente, handleInputChange);
     const [idProfesional, setIdProfesional] = useState("");
     const [idServicio, setIdServicio] = useState("");
 
@@ -118,7 +119,7 @@ const SolicitarCitaCard = ({ onCitaCreada }) => {
         };
 
         try {
-await crearCita(datosCita);
+            await crearCita(datosCita);
 
             // Preparar datos para el modal de éxito
             const datosParaModal = {
@@ -165,18 +166,6 @@ await crearCita(datosCita);
                             placeholder="Ingresa tu nombre completo"
                             required
                         />
-
-                        <label htmlFor="fechaNacCliente">Fecha de Nacimiento</label>
-                        <input
-                            type="date"
-                            id="fechaNacCliente"
-                            name="fechaNacCliente"
-                            value={formData.fechaNacCliente}
-                            onChange={handleInputChange}
-                            max={new Date().toISOString().split("T")[0]}
-                            required
-                        />
-
                         <label htmlFor="celularCliente">Teléfono</label>
                         <input
                             type="text"
@@ -187,7 +176,16 @@ await crearCita(datosCita);
                             placeholder="3224567687"
                             required
                         />
-
+                        <label htmlFor="fechaNacCliente">Fecha de Nacimiento</label>
+                        <input
+                            type="date"
+                            id="fechaNacCliente"
+                            name="fechaNacCliente"
+                            value={formData.fechaNacCliente}
+                            onChange={handleInputChange}
+                            max={new Date().toISOString().split("T")[0]}
+                            required
+                        />
                         <label htmlFor="servicio">Servicio</label>
                         <select
                             id="servicio"
@@ -254,7 +252,7 @@ await crearCita(datosCita);
                             disabled={!horariosDisponibles || horariosDisponibles.length === 0}
                         >
                             <option value="" disabled>
-                                {!idProfesional || !idServicio || !formData.fechaCita 
+                                {!idProfesional || !idServicio || !formData.fechaCita
                                     ? "Complete los campos anteriores primero"
                                     : (!horariosDisponibles || horariosDisponibles.length === 0
                                         ? "No hay horarios disponibles"
@@ -274,19 +272,19 @@ await crearCita(datosCita);
                 </form>
             </div>
 
-        {mostrarModalEdad && (
-            <ModalErrorEdad onClose={() => setMostrarModalEdad(false)} />
-        )}
-        {mostrarModalEdadMenor && (
-            <ModalErrorEdadMenor onClose={() => setMostrarModalEdadMenor(false)} />
-        )}
-        {mostrarModalNombreIncompleto && (
-            <ModalErrorCaracteres onClose={() => setMostrarModalNombreIncompleto(false)} />
-        )}
-        {mostrarModalTelefonoIncompleto && (
-            <ModalErrorTelefono onClose={() => setMostrarModalTelefonoIncompleto(false)} />
-        )}
-    </>
-);
-}; 
+            {mostrarModalEdad && (
+                <ModalErrorEdad onClose={() => setMostrarModalEdad(false)} />
+            )}
+            {mostrarModalEdadMenor && (
+                <ModalErrorEdadMenor onClose={() => setMostrarModalEdadMenor(false)} />
+            )}
+            {mostrarModalNombreIncompleto && (
+                <ModalErrorCaracteres onClose={() => setMostrarModalNombreIncompleto(false)} />
+            )}
+            {mostrarModalTelefonoIncompleto && (
+                <ModalErrorTelefono onClose={() => setMostrarModalTelefonoIncompleto(false)} />
+            )}
+        </>
+    );
+};
 export default SolicitarCitaCard;

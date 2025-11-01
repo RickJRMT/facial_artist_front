@@ -14,9 +14,6 @@ import { useResumenCita } from "../hooks/Solicitar_Cita_Cliente.jsx";
 // Componente que renderiza un calendario para seleccionar fechas
 import CalendarioCitas from "../components/layout/calendarioCitas.jsx";
 
-// Función que se conecta con el backend para crear una cita
-import { crearCita } from "../Services/citasClientesConexion";
-
 // Modales de error
 import ModalErrorEdad from "../components/layout/ModalErrorEdad.jsx";
 import ModalErrorEdadMenor from "../components/layout/ModalEdadMenor.jsx";
@@ -30,12 +27,15 @@ import { useProfesionales } from "../hooks/CargarProfesionales.jsx";
 import { UseServicios } from "../hooks/CargarServicios.jsx";
 import { useHorariosDisponibles } from "../hooks/CargarHorarios.jsx";
 import useModalCitaExitosa from "../hooks/useModalCitaExitosa";
+// Función que se conecta con el backend para crear una cita
+import { crearCita } from "../Services/citasClientesConexion";
+import { useAutoCompletarFechaNacimiento } from "../hooks/CompletarFechaNacimiento.jsx";
 
 const SolicitarCitaPage = () => {
   // Hook para manejar los datos del formulario y su validación (nombre, teléfono, etc.)
   const { formData, handleInputChange, limpiarFormulario } =
     useValidacionFormulario();
-
+  useAutoCompletarFechaNacimiento(formData.celularCliente, handleInputChange);
   // Hook para manejar y actualizar un resumen visible de la cita que se va configurando
   const { resumen, actualizarResumen } = useResumenCita();
 
@@ -59,6 +59,7 @@ const SolicitarCitaPage = () => {
   const [mostrarModalEdadMenor, setMostrarModalEdadMenor] = useState(false);
   const [mostrarModalNombreIncompleto, setmostrarModalNombreIncompleto] = useState(false);
   const [mostrarModalTelefonoIncompleto, setmostrarModalTelefonoIncompleto] = useState(false);
+
 
   // Función que se ejecuta cuando cambia la selección del profesional en el formulario
   // Actualiza el id en el estado local y también actualiza el resumen con el nombre del profesional
@@ -248,17 +249,6 @@ const SolicitarCitaPage = () => {
                 placeholder="Ingresa tu nombre completo"
                 required
               />
-              {/* Campo para fecha de nacimiento */}
-              <label htmlFor="fechaNacCliente">Fecha de Nacimiento</label>
-              <input
-                type="date"
-                id="fechaNacCliente"
-                name="fechaNacCliente"
-                value={formData.fechaNacCliente}
-                onChange={handleInputChange}
-                max={new Date().toISOString().split("T")[0]}
-                required
-              />
               {/* Campo para teléfono */}
               <label htmlFor="celularCliente">Teléfono</label>
               <input
@@ -268,6 +258,17 @@ const SolicitarCitaPage = () => {
                 value={formData.celularCliente}
                 onChange={handleInputChange}
                 placeholder="3224567687"
+                required
+              />
+              {/* Campo para fecha de nacimiento */}
+              <label htmlFor="fechaNacCliente">Fecha de Nacimiento</label>
+              <input
+                type="date"
+                id="fechaNacCliente"
+                name="fechaNacCliente"
+                value={formData.fechaNacCliente}
+                onChange={handleInputChange}
+                max={new Date().toISOString().split("T")[0]}
                 required
               />
               {/* Selector de servicio */}

@@ -18,7 +18,6 @@ function App() {
       <Routes>
         {/* Ruta por defecto al entrar a la raiz (/) muestra HomeCliente */}
         <Route path='/' element={<Homecliente />} />
-
         <Route path="/cursos" element={<CursosPage />} />
         <Route path='/cita' element={< SolicitarCitaPage />} />
         <Route path='/calendario' element={< CalendarioCitas />} />
@@ -26,7 +25,6 @@ function App() {
         <Route path='/homecliente' element={< Homecliente />} />
         <Route path='/admin' element={< Adminpage />} />
         <Route path='/adminCita' element={< SolicitarCitaCard />} />
-
         {/* Opcional: redirección para rutas no encontradas */}
         <Route path="*" element={<Homecliente />} />
       </Routes>

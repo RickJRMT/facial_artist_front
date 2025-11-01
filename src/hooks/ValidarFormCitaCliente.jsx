@@ -1,5 +1,5 @@
 // Importamos useState para manejar estado local dentro del hook
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 // Definimos y exportamos un hook personalizado llamado useValidacionFormulario
 export const useValidacionFormulario = () => {
@@ -13,7 +13,7 @@ export const useValidacionFormulario = () => {
 
     // Función que se ejecuta cada vez que un input del formulario cambia (evento onChange)
     // Recibe el evento y actualiza el estado formData con el valor nuevo
-    const handleInputChange = (e) => {
+    const handleInputChange = useCallback((e) => {
         // Extraemos el nombre del campo y el valor que se ingresó
         const { name, value } = e.target;
         // Validación para el campo nombreCliente:
@@ -23,7 +23,7 @@ export const useValidacionFormulario = () => {
             const trimmedValue = value.trim();
             // Verificamos que el campo no esté vacío
             if (trimmedValue === '') {
-                   setFormData((prev) => ({ ...prev, [name]: '' })); // Dejamos el campo vacío
+                setFormData((prev) => ({ ...prev, [name]: '' })); // Dejamos el campo vacío
                 return; // Si es vacío (solo espacios), no actualizamos el estado
             }
             const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
@@ -35,14 +35,13 @@ export const useValidacionFormulario = () => {
         if (name === 'celularCliente') {
             const regex = /^[0-9]*$/;
             if (!regex.test(value)) return;  // Si no es número, no actualiza
-            if (value.length > 11) return;   // Limita la longitud máxima a 11 dígitos
+            if (value.length > 10) return;   // Limita la longitud máxima a 10 dígitos
         }
 
         // Si pasa las validaciones, actualiza el estado formData
         // Usamos el callback para obtener el estado previo y actualizamos solo el campo que cambió
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
+        setFormData(prev => ({ ...prev, [name]: value }));
+    }, []); // ← Vacío: nunca cambia
     // Función para limpiar (resetear) el formulario, dejando todos los campos vacíos
     const limpiarFormulario = () => {
         setFormData({
