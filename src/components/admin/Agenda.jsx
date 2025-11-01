@@ -176,7 +176,7 @@ const Agenda = () => {
             </div>
 
             {showModal && (
-                <ModalGestiónHoraria
+                <ModalGestionHoraria
                     formData={formData}
                     setFormData={setFormData}
                     profesionales={profesionales}
