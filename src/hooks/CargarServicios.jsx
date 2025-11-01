@@ -9,7 +9,6 @@ export function UseServicios() {
         async function cargarServicios() {
             try {
                 const data = await obtenerServicios();
-                console.log('Servicios cargados:', data);
                 setServicios(data);
             } catch (error) {
                 console.error('Error al cargar servicios:', error);

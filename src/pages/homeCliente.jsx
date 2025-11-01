@@ -40,7 +40,7 @@ const Homecliente = () => {
                     <section className='seccion2'>
                         <div className='titulo2'> Sobre Nosotros</div>
                         <div className='seccion2_container'>
-                            <div className='descripcion'> En Facial Artist nos especializamos en realzar tu belleza natural
+                            <div className='descripcion_home'> En Facial Artist nos especializamos en realzar tu belleza natural
                                 a través de técnicas avanzadas y tratamientos personalizados. Ofrecemos servicios profesionales de micropigmentación de cejas,
                                 perfilado de labios, lifting de pestañas y estética facial, combinando arte y precisión en cada detalle.
                             </div>

@@ -1,128 +1,239 @@
+/* Variables CSS globales exclusivas para este modulo (en :root para scope local) */
+:root {
+    --gh-primary-gold: #D4AF37; /* Dorado principal */
+    --gh-secondary-gold: #FFD700; /* Dorado secundario */
+    --gh-text-dark: #333; /* Texto oscuro */
+    --gh-text-light: #666; /* Texto claro */
+    --gh-border-light: #ddd; /* Borde claro */
+    --gh-shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    --gh-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra hover */
+    --gh-background: #faf8f3; /* Fondo general del modulo #faf8f3 */
+    --gh-green: #28a745; /* Verde para citas */
+    --gh-yellow: #ffc107; /* Amarillo para pendientes */
+    --gh-spacing-sm: 8px; /* Espaciado pequeño */
+    --gh-spacing-md: 12px; /* Espaciado mediano */
+    --gh-spacing-lg: 20px; /* Espaciado grande */
+    --gh-border-radius: 6px; /* Radio de borde */
+    --gh-font-size-base: 1em; /* Fuente base */
+    --gh-font-size-sm: 0.85em; /* Fuente pequeña */
+    --gh-line-height: 1.3; /* Altura de línea */
+    --gh-min-height-day: 300px; /* Altura mínima paneles */
+    --gh-scrollbar-width: 4px; /* Ancho scrollbar minimalista */
+    --gh-scrollbar-track: #f1f1f1; /* Fondo track claro */
+    --gh-scrollbar-thumb: rgba(0, 0, 0, 0.2); /* Color thumb sutil, semi-transparente */
+    --gh-scrollbar-thumb-hover: rgba(0, 0, 0, 0.4); /* Hover thumb más visible pero suave */
+}
+
 .gh-contenedor-agenda {
     display: flex;
     height: 100vh;
     flex-direction: column;
-    overflow-y: auto;
-    /* Scroll vertical si footer se recorta */
+    overflow-y: auto; /* Scroll vertical completo, no rígido */
+    background-color: var(--gh-background); /* Fondo #faf8f3 para todo el modulo */
+}
+
+/* Scrollbar global para el contenedor principal */
+.gh-contenedor-agenda::-webkit-scrollbar {
+    width: var(--gh-scrollbar-width);
+}
+
+.gh-contenedor-agenda::-webkit-scrollbar-track {
+    background: var(--gh-scrollbar-track);
+}
+
+.gh-contenedor-agenda::-webkit-scrollbar-thumb {
+    background: var(--gh-scrollbar-thumb);
+    border-radius: var(--gh-scrollbar-width);
+}
+
+.gh-contenedor-agenda::-webkit-scrollbar-thumb:hover {
+    background: var(--gh-scrollbar-thumb-hover);
+}
+
+/* Firefox fallback global */
+.gh-contenedor-agenda {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
 }
 
 .gh-encabezado-agenda {
-    padding: 10px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #ddd;
-    flex-shrink: 0;
-    /* Encabezado fijo */
+    padding: var(--gh-spacing-md);
+    background: var(--gh-background);
+    border-bottom: 1px solid var(--gh-border-light);
+    flex-shrink: 0; /* Encabezado fijo */
 }
 
 .gh-encabezado-agenda h1 {
     margin: 0;
     font-size: 1.5em;
-    color: #333;
+    color: var(--gh-text-dark);
 }
 
 .gh-principal-agenda {
     display: flex;
-    flex: 1 1 auto;
-    /* Flex grow para principal, shrink footer si necesario */
-    min-height: 0;
-    /* Permite scroll interno */
+    flex: 1 1 auto; /* Flex grow para principal */
+    min-height: 0; /* Permite scroll interno */
     overflow: hidden;
 }
 
 .gh-panel-calendario {
     width: 50%;
-    padding: 10px;
-    border-right: 1px solid #ddd;
-    overflow-y: auto;
-    /* Scroll en calendario si muchos eventos */
+    padding: var(--gh-spacing-md);
+    border-right: 1px solid var(--gh-border-light);
+    overflow-y: auto; /* Scroll en calendario si muchos eventos */
     height: 100%;
-    background: #fff;
+    background: var(--gh-background);
 }
 
-.gh-panel-descripcion {
+/* Scrollbar para panel calendario */
+.gh-panel-calendario::-webkit-scrollbar {
+    width: var(--gh-scrollbar-width);
+}
+
+.gh-panel-calendario::-webkit-scrollbar-track {
+    background: var(--gh-scrollbar-track);
+}
+
+.gh-panel-calendario::-webkit-scrollbar-thumb {
+    background: var(--gh-scrollbar-thumb);
+    border-radius: var(--gh-scrollbar-width);
+}
+
+.gh-panel-calendario::-webkit-scrollbar-thumb:hover {
+    background: var(--gh-scrollbar-thumb-hover);
+}
+
+.gh-panel-calendario {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
+}
+
+.gh-panel-descripción {
     width: 50%;
-    padding: 10px;
+    padding: var(--gh-spacing-md);
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    /* Scroll en panel si detalles largos */
+    overflow-y: auto; /* Scroll en panel si detalles largos */
     height: 100%;
-    background: #f8f9fa;
+    background: var(--gh-background);
 }
 
-.gh-titulo-panel {
-    margin-bottom: 10px;
+/* Scrollbar para panel descripción */
+.gh-panel-descripción::-webkit-scrollbar {
+    width: var(--gh-scrollbar-width);
+}
+
+.gh-panel-descripción::-webkit-scrollbar-track {
+    background: var(--gh-scrollbar-track);
+}
+
+.gh-panel-descripción::-webkit-scrollbar-thumb {
+    background: var(--gh-scrollbar-thumb);
+    border-radius: var(--gh-scrollbar-width);
+}
+
+.gh-panel-descripción::-webkit-scrollbar-thumb:hover {
+    background: var(--gh-scrollbar-thumb-hover);
+}
+
+.gh-panel-descripción {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
+}
+
+.gh-título-panel {
+    margin-bottom: var(--gh-spacing-md);
     font-size: 1.2em;
-    color: #333;
+    color: var(--gh-text-dark);
     font-weight: bold;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #ddd;
+    padding-bottom: var(--gh-spacing-sm);
+    border-bottom: 1px solid var(--gh-border-light);
 }
 
 /* Secciones de Cards */
 .gh-secciones-cards {
     display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
+    gap: var(--gh-spacing-lg);
+    margin-bottom: var(--gh-spacing-lg);
     flex: 1;
 }
 
-.gh-seccion-agendamientos,
-.gh-seccion-estados {
+.gh-sección-agendamientos,
+.gh-sección-estados {
     flex: 1;
     background: #fff;
-    border-radius: 8px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: var(--gh-border-radius);
+    padding: var(--gh-spacing-md);
+    border: 1px solid var(--gh-border-light);
+    box-shadow: var(--gh-shadow-light);
 }
 
-.gh-seccion-titulo {
-    margin: 0 0 10px 0;
-    font-size: 1em;
-    color: #333;
+.gh-sección-título {
+    margin: 0 0 var(--gh-spacing-md) 0;
+    font-size: var(--gh-font-size-base);
+    color: var(--gh-text-dark);
     font-weight: bold;
-    padding-bottom: 5px;
+    padding-bottom: var(--gh-spacing-sm);
     border-bottom: 1px solid #eee;
 }
 
 .gh-contenedor-cards {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-height: 50vh;
-    /* Ajusta según secciones */
+    gap: var(--gh-spacing-sm);
+    max-height: 50vh; /* Ajusta según secciones */
     overflow-y: auto;
+}
+
+/* Scrollbar minimalista para contenedores de cards */
+.gh-contenedor-cards::-webkit-scrollbar {
+    width: var(--gh-scrollbar-width);
+}
+
+.gh-contenedor-cards::-webkit-scrollbar-track {
+    background: var(--gh-scrollbar-track);
+}
+
+.gh-contenedor-cards::-webkit-scrollbar-thumb {
+    background: var(--gh-scrollbar-thumb);
+    border-radius: var(--gh-scrollbar-width);
+}
+
+.gh-contenedor-cards::-webkit-scrollbar-thumb:hover {
+    background: var(--gh-scrollbar-thumb-hover);
+}
+
+.gh-contenedor-cards {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
 }
 
 .gh-card-evento {
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--gh-border-light);
+    border-radius: var(--gh-border-radius);
+    padding: var(--gh-spacing-md);
+    box-shadow: var(--gh-shadow-light);
     transition: box-shadow 0.2s ease;
 }
 
 .gh-card-evento:hover {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--gh-shadow-hover);
 }
 
 .gh-card-cita {
-    border-left: 4px solid #28a745;
-    /* Verde para citas */
+    border-left: 4px solid var(--gh-green); /* Verde para citas */
 }
 
 .gh-card-horario {
-    border-left: 4px solid #28a745;
-    /* Verde por default; rojo via JS si inactivo */
+    border-left: 4px solid var(--gh-green); /* Verde por default; rojo via JS si inactivo */
 }
 
 .gh-card-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: var(--gh-spacing-sm);
+    margin-bottom: var(--gh-spacing-sm);
 }
 
 .gh-estado-icon {
@@ -131,165 +242,96 @@
 
 .gh-card-header h4 {
     margin: 0;
-    font-size: 0.95em;
-    color: #333;
+    font-size: var(--gh-font-size-base);
+    color: var(--gh-text-dark);
     flex: 1;
 }
 
 .gh-card-body p {
-    margin: 4px 0;
-    font-size: 0.85em;
-    line-height: 1.3;
+    margin: var(--gh-spacing-sm) 0;
+    font-size: var(--gh-font-size-sm);
+    line-height: var(--gh-line-height);
 }
 
 .gh-card-body strong {
-    color: #555;
+    color: var(--gh-text-light);
 }
 
-/* Botón editar en cards de horarios */
+/* Botón editar en cards de horarios (clase única para evitar herencia) */
 .gh-card-actions {
-    margin-top: 8px;
+    margin-top: var(--gh-spacing-sm);
     text-align: right;
 }
 
-.gh-boton-editar-card {
+.gh-boton-editar-horario-card {
     background: none;
-    border: 1px solid #D4AF37;
-    /* Dorado sutil */
-    color: #D4AF37;
-    padding: 4px 8px;
-    border-radius: 4px;
+    border: 1px solid var(--gh-primary-gold); /* Dorado sutil */
+    color: var(--gh-primary-gold);
+    padding: 4px 8px; /* Compacto, no ancho */
+    border-radius: var(--gh-border-radius);
     cursor: pointer;
-    font-size: 0.8em;
+    font-size: var(--gh-font-size-sm);
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gh-spacing-sm);
     transition: all 0.2s ease;
     font-weight: bold;
+    width: auto; /* No hereda ancho */
+    min-width: auto; /* No mínimo ancho */
 }
 
-.gh-boton-editar-card:hover {
-    background: #D4AF37;
+.gh-boton-editar-horario-card:hover {
+    background: var(--gh-primary-gold);
     color: #000;
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+    box-shadow: var(--gh-shadow-hover);
 }
 
 .gh-placeholder-panel {
-    color: #666;
-    margin-bottom: 20px;
+    color: var(--gh-text-light);
+    margin-bottom: var(--gh-spacing-lg);
     font-style: italic;
     text-align: center;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 6px;
+    padding: var(--gh-spacing-lg);
+    background: var(--gh-background);
+    border-radius: var(--gh-border-radius);
 }
 
-.gh-boton-gestion-horaria,
-.gh-boton-editar-horario {
-    padding: 12px 24px;
+.gh-boton-gestión-horaria {
+    padding: var(--gh-spacing-md) var(--gh-spacing-lg);
     border: none;
-    border-radius: 6px;
+    border-radius: var(--gh-border-radius);
     cursor: pointer;
-    margin-bottom: 10px;
+    margin-bottom: var(--gh-spacing-md);
     font-weight: bold;
     transition: all 0.2s ease;
     width: 100%;
-}
-
-.gh-boton-gestion-horaria {
-    background: linear-gradient(135deg, #D4AF37, #FFD700);
-    /* Dorado como en citas */
+    background: linear-gradient(135deg, var(--gh-primary-gold), var(--gh-secondary-gold)); /* Dorado como en citas */
     color: #000;
-    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+    box-shadow: var(--gh-shadow-light);
 }
 
-.gh-boton-gestion-horaria:hover {
-    background: linear-gradient(135deg, #FFD700, #D4AF37);
+.gh-boton-gestión-horaria:hover {
+    background: linear-gradient(135deg, var(--gh-secondary-gold), var(--gh-primary-gold));
     transform: translateY(-1px);
-}
-
-.gh-boton-editar-horario {
-    background: #6c757d;
-    color: white;
-}
-
-.gh-boton-editar-horario:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-}
-
-.gh-pie-agenda {
-    display: flex;
-    justify-content: space-around;
-    padding: 15px;
-    background: #f8f9fa;
-    border-top: 1px solid #ddd;
-    flex-shrink: 0;
-    /* Footer no se encoje */
-    min-height: 80px;
-    width: 100%;
-    /* Full width para no recortarse */
-}
-
-.gh-tarjeta-estadisticas {
-    text-align: center;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    flex: 1;
-    /* Expande para no recortarse */
-    margin: 0 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    min-height: 60px;
-    /* Asegura espacio para números */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: transform 0.2s ease;
-}
-
-.gh-tarjeta-estadisticas:hover {
-    transform: translateY(-2px);
-}
-
-.gh-tarjeta-estadisticas h4 {
-    margin: 0 0 10px 0;
-    font-size: 1em;
-    color: #666;
-}
-
-.gh-tarjeta-estadisticas p {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-}
-
-.gh-tarjeta-estadisticas:nth-child(2) p {
-    color: #ffc107;
-}
-
-.gh-tarjeta-estadisticas:nth-child(3) p {
-    color: #28a745;
 }
 
 .gh-carga-calendario,
 .gh-error-calendario {
-    padding: 20px;
+    padding: var(--gh-spacing-lg);
     text-align: center;
-    color: #666;
+    color: var(--gh-text-light);
 }
 
 .gh-error-calendario {
     color: red;
 }
 
-/* Responsividad */
+/* Responsividad: Flexible y no rígida */
 @media (max-width: 768px) {
     .gh-contenedor-agenda {
-        height: auto;
-        /* Auto height para full scroll */
-        overflow-y: visible;
+        height: auto; /* Auto height para full scroll, no rígido */
+        overflow-y: auto; /* Scroll vertical completo */
     }
 
     .gh-principal-agenda {
@@ -299,54 +341,38 @@
     }
 
     .gh-panel-calendario,
-    .gh-panel-descripcion {
+    .gh-panel-descripción {
         width: 100%;
         height: auto;
-        min-height: 300px;
+        min-height: var(--gh-min-height-day); /* Mínimo, pero auto si más contenido */
         border-right: none;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--gh-border-light);
         overflow-y: auto;
+        padding: var(--gh-spacing-sm);
     }
 
     .gh-secciones-cards {
         flex-direction: column;
-        gap: 15px;
+        gap: var(--gh-spacing-md);
     }
 
-    .gh-seccion-agendamientos,
-    .gh-seccion-estados {
+    .gh-sección-agendamientos,
+    .gh-sección-estados {
         flex: none;
-        padding: 10px;
+        padding: var(--gh-spacing-sm);
     }
 
     .gh-contenedor-cards {
-        max-height: 30vh;
+        max-height: 30vh; /* Mínimo, scroll si más */
     }
 
     .gh-card-evento {
-        padding: 8px;
+        padding: var(--gh-spacing-sm);
     }
 
-    .gh-pie-agenda {
-        flex-direction: row;
-        overflow-x: auto;
-        /* Horizontal si cards anchas */
-        gap: 10px;
+    .gh-boton-gestión-horaria {
         padding: 10px;
-        min-height: 70px;
-    }
-
-    .gh-tarjeta-estadisticas {
-        min-width: 100px;
-        /* Evita recorte en mobile */
-        margin: 0 5px;
-        padding: 10px;
-    }
-
-    .gh-boton-gestion-horaria,
-    .gh-boton-editar-horario {
-        padding: 10px;
-        font-size: 0.9em;
+        font-size: var(--gh-font-size-sm);
     }
 }
 
@@ -355,35 +381,25 @@
         font-size: 1.2em;
     }
 
-    .gh-titulo-panel {
+    .gh-título-panel {
         font-size: 1em;
     }
 
-    .gh-tarjeta-estadisticas p {
+    .gh-panel-calendario,
+    .gh-panel-descripción {
+        padding: var(--gh-spacing-sm);
+        min-height: 250px; /* Mínimo, auto si más */
+    }
+
+    .gh-tarjeta-estadísticas p {
         font-size: 20px;
     }
 
-    .gh-panel-calendario,
-    .gh-panel-descripcion {
-        padding: 5px;
-        min-height: 250px;
-    }
-
-    .gh-pie-agenda {
-        padding: 8px;
-        gap: 5px;
-    }
-
-    .gh-tarjeta-estadisticas {
-        padding: 8px;
-        min-width: 80px;
-    }
-
     .gh-card-body p {
-        font-size: 0.8em;
+        font-size: var(--gh-font-size-sm);
     }
 
-    .gh-boton-editar-card {
+    .gh-boton-editar-horario-card {
         padding: 3px 6px;
         font-size: 0.75em;
     }

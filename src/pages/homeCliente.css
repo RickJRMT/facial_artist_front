@@ -106,7 +106,7 @@
     flex-wrap: wrap;
 }
 
-.descripcion {
+.descripcion_home {
     flex: 1 1 45%;
     font-size: 1.1rem;
     color: var(--color-secundario);
@@ -273,7 +273,7 @@
         text-align: center;
     }
 
-    .descripcion {
+    .descripcion_home {
         flex: 1 1 100%;
     }
 

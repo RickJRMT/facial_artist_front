@@ -7,17 +7,15 @@ import './Agenda.css';
 import moment from 'moment'; // ← Asegúrate de tenerlo para formateo local
 
 const Agenda = () => {
-    const [currentView, setCurrentView] = useState('dayGridMonth');
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const {
-        eventos, citaSeleccionada, selectedDateCitas, selectedDateHorarios, stats, profesionales, showModal, formData, setFormData, loading, error,
+        eventos, citaSeleccionada, selectedDateCitas, selectedDateHorarios, profesionales, showModal, formData, setFormData, loading, error,
         handleSelectEvent, handleDateClick, openModal, handleGuardarHorario, setShowModal,
         showSuccess, showError, mensaje, setShowSuccess, setShowError, setMensaje
     } = useGestionHoraria();
 
     const handleDatesSet = (arg) => {
-        setCurrentView(arg.view.type);
         setCurrentDate(new Date(arg.start));
     };
 
@@ -116,7 +114,7 @@ const Agenda = () => {
                     <p><strong>Estado:</strong> {estadoText}</p>
                     <div className="gh-card-actions">
                         <button
-                            className="gh-boton-editar-card"
+                            className="gh-boton-editar-horario-card"
                             onClick={() => openModal(item)} // ← Abre modal prefilled con este horario
                         >
                             ✏️ Editar
@@ -139,27 +137,26 @@ const Agenda = () => {
                         eventos={eventos}
                         onEventClick={handleSelectEvent}
                         onDateClick={handleDateClick}
-                        currentView={currentView}
-                        currentDate={currentDate}
+                        currentView={currentDate}
                         onDatesSet={handleDatesSet}
                     />
                 </div>
 
-                <div className="gh-panel-descripcion">
-                    <h3 className="gh-titulo-panel">Descripción del Evento</h3>
+                <div className="gh-panel-descripción">
+                    <h3 className="gh-título-panel">Descripción del Evento</h3>
                     {(citasItems.length > 0 || horariosItems.length > 0) ? (
                         <div className="gh-secciones-cards">
                             {citasItems.length > 0 && (
-                                <div className="gh-seccion-agendamientos">
-                                    <h4 className="gh-seccion-titulo">Agendamientos</h4>
+                                <div className="gh-sección-agendamientos">
+                                    <h4 className="gh-sección-título">Agendamientos</h4>
                                     <div className="gh-contenedor-cards">
                                         {citasItems.map((item, index) => renderCitaCard(item, index))}
                                     </div>
                                 </div>
                             )}
                             {horariosItems.length > 0 && (
-                                <div className="gh-seccion-estados">
-                                    <h4 className="gh-seccion-titulo">Estados de Agenda</h4>
+                                <div className="gh-sección-estados">
+                                    <h4 className="gh-sección-título">Estados de Agenda</h4>
                                     <div className="gh-contenedor-cards">
                                         {horariosItems.map((item, index) => renderHorarioCard(item, index))}
                                     </div>
@@ -170,39 +167,16 @@ const Agenda = () => {
                         <p className="gh-placeholder-panel">Selecciona un evento o día en el calendario para ver detalles.</p>
                     )}
                     <button
-                        className="gh-boton-gestion-horaria"
+                        className="gh-boton-gestión-horaria"
                         onClick={openModal}
                     >
                         Gestión Horaria
                     </button>
-                    {hasHorarioInDay && (
-                        <button
-                            className="gh-boton-editar-horario"
-                            onClick={() => openModal(horariosItems[0])} // ← Prefill con primer horario del día
-                        >
-                            Editar Horario del Día
-                        </button>
-                    )}
                 </div>
             </div>
 
-            <footer className="gh-pie-agenda">
-                <div className="gh-tarjeta-estadisticas">
-                    <h4>Total Citas</h4>
-                    <p>{stats.totalCitas}</p>
-                </div>
-                <div className="gh-tarjeta-estadisticas">
-                    <h4>Pendientes</h4>
-                    <p>{stats.citasPendientes}</p>
-                </div>
-                <div className="gh-tarjeta-estadisticas">
-                    <h4>Confirmadas</h4>
-                    <p>{stats.citasConfirmadas}</p>
-                </div>
-            </footer>
-
             {showModal && (
-                <ModalGestionHoraria
+                <ModalGestiónHoraria
                     formData={formData}
                     setFormData={setFormData}
                     profesionales={profesionales}
