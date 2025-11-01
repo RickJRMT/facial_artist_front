@@ -1,9 +1,11 @@
 import React from 'react';
 import './ModalGestionHoraria.css';
 
-const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuardarHorario, error, onClose }) => {
+const ModalGestionHoraria = ({
+    formData, setFormData, profesionales, handleGuardarHorario, error, onClose, isEditMode
+}) => {
     const handleClose = (e) => {
-        e.stopPropagation(); // Evita cerrar al click en X
+        e.stopPropagation();
         onClose();
     };
 
@@ -11,10 +13,14 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
         <div className="gh-superposicion-modal" onClick={onClose}>
             <div className="gh-contenido-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="gh-header-modal">
-                    <h3 className="gh-titulo-modal">Gestión Horaria</h3>
+                    <h3 className="gh-titulo-modal">
+                        {isEditMode ? 'Editar Horario' : 'Crear Horario'}
+                    </h3>
                     <button className="gh-boton-cerrar" onClick={handleClose}>×</button>
                 </div>
+
                 {error && <p className="gh-error-modal">{error}</p>}
+
                 <div className="gh-formulario-modal">
                     <div className="gh-row-form">
                         <label className="gh-etiqueta-form">
@@ -33,18 +39,19 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                                 ))}
                             </select>
                         </label>
+
                         <label className="gh-etiqueta-form">
                             Fecha:
                             <input
                                 type="date"
                                 value={formData.fecha}
                                 onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
-                                // min={new Date().toISOString().split("T")[0]} se a comentado por el momento ya que no permitia cerrar el horario del dia actual "hoy"
                                 required
                                 className="gh-entrada-form"
                             />
                         </label>
                     </div>
+
                     <div className="gh-row-form">
                         <label className="gh-etiqueta-form">
                             Hora Inicio:
@@ -56,6 +63,7 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                                 className="gh-entrada-form"
                             />
                         </label>
+
                         <label className="gh-etiqueta-form">
                             Hora Fin:
                             <input
@@ -67,6 +75,7 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                             />
                         </label>
                     </div>
+
                     <label className="gh-etiqueta-form">
                         Estado:
                         <select
@@ -78,9 +87,10 @@ const ModalGestionHoraria = ({ formData, setFormData, profesionales, handleGuard
                             <option value="inactivo">Inactivo</option>
                         </select>
                     </label>
+
                     <div className="gh-botones-modal">
                         <button type="button" className="gh-boton-guardar" onClick={handleGuardarHorario}>
-                            Guardar
+                            {isEditMode ? 'Actualizar' : 'Crear'}
                         </button>
                     </div>
                 </div>

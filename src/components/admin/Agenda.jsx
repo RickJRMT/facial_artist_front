@@ -11,7 +11,7 @@ const Agenda = () => {
 
     const {
         eventos, citaSeleccionada, selectedDateCitas, selectedDateHorarios, profesionales, showModal, formData, setFormData, loading, error,
-        handleSelectEvent, handleDateClick, openModal, handleGuardarHorario, setShowModal,
+        handleSelectEvent, handleDateClick, openModal, openEditModal, handleGuardarHorario, setShowModal, isEditMode,
         showSuccess, showError, mensaje, setShowSuccess, setShowError, setMensaje
     } = useGestionHoraria();
 
@@ -102,6 +102,17 @@ const Agenda = () => {
     const renderHorarioCard = (item, index) => {
         const estadoText = item.estado === 'activo' ? 'Activo' : 'Inactivo (No reservable)';
         const estadoIcon = item.estado === 'activo' ? '🟢' : '🔴';
+
+        const horarioNormalizado = {
+            idHorario: item.idHorario,
+            idProfesional: profesionales.find(p => p.nombreProfesional === item.nombreProfesional)?.idProfesional || '',
+            fecha: item.fecha || item.fechaFormatted?.split('/').reverse().join('-') || '',
+            hora_inicio: item.hora_inicio || item.horaFormatted?.split(' ')[0] || '',
+            hora_fin: item.hora_fin || '',
+            estado: item.estado,
+            nombreProfesional: item.nombreProfesional
+        };
+
         return (
             <div key={item.idHorario || index} className="gh-card-evento gh-card-horario">
                 <div className="gh-card-header">
@@ -115,7 +126,7 @@ const Agenda = () => {
                     <div className="gh-card-actions">
                         <button
                             className="gh-boton-editar-horario-card"
-                            onClick={() => openModal(item)} // ← Abre modal prefilled con este horario
+                            onClick={() => openEditModal(horarioNormalizado)}
                         >
                             ✏️ Editar
                         </button>
@@ -183,6 +194,7 @@ const Agenda = () => {
                     handleGuardarHorario={handleGuardarHorario}
                     error={error}
                     onClose={() => setShowModal(false)}
+                    isEditMode={isEditMode}
                 />
             )}
             {showSuccess && (

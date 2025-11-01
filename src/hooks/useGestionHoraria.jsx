@@ -3,6 +3,14 @@ import { getAllCitas, getCitasByDate, getEstadisticasCitas } from '../Services/c
 import { getAllHorarios, getHorariosByDate, createHorario, updateHorario } from '../services/horariosConexion';
 import { obtenerProfesionales } from '../services/profesionalesConexion';
 
+const padTime = (time) => {
+    if (!time) return '';
+    const [hour, minute] = time.split(':');
+    const h = hour.padStart(2, '0');
+    const m = minute ? minute.padStart(2, '0') : '00';
+    return `${h}:${m}`;
+};
+
 const getAllProfesionales = async () => obtenerProfesionales();
 
 export const useGestionHoraria = (idProfesionalInicial = 1) => {
@@ -14,7 +22,15 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
     const [profesionales, setProfesionales] = useState([]);
     const [selectedPro, setSelectedPro] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({ idProfesional: '', fecha: '', hora_inicio: '', hora_fin: '', estado: 'activo', idHorario: null });
+    const [formData, setFormData] = useState({
+        idProfesional: '',
+        fecha: '',
+        hora_inicio: '',
+        hora_fin: '',
+        estado: 'activo',
+        idHorario: null
+    });
+    const [isEditMode, setIsEditMode] = useState(false); // NUEVO: Controla POST vs PUT
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
     const [mensaje, setMensaje] = useState('');
@@ -72,7 +88,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const citasDia = await getCitasByDate(fecha);
             const formattedCitas = citasDia.map(cita => ({
                 ...cita,
-                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)), // Local time
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)),
                 horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${cita.horaCita}`))
             }));
             setSelectedDateCitas(formattedCitas);
@@ -87,8 +103,10 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const horariosDia = await getHorariosByDate(fecha);
             const formattedHorarios = horariosDia.map(horario => ({
                 ...horario,
-                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(horario.fecha)), // Local time
-                horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horario.hora_inicio}`))
+                fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(horario.fecha)),
+                horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${horario.hora_inicio}`)),
+                hora_inicio: padTime(horario.hora_inicio),
+                hora_fin: padTime(horario.hora_fin)
             }));
             setSelectedDateHorarios(formattedHorarios);
         } catch (err) {
@@ -111,12 +129,11 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         if (eventoFull) {
             const title = eventoFull.title || '';
             const isHorario = title.includes('Activo') || title.includes('Inactivo');
-            // FIX: Usar local time para evitar merma de día
-            const startLocal = new Date(info.event.start); // Convertir a local
-            const fechaLocal = startLocal.toLocaleDateString('en-CA'); // YYYY-MM-DD local
-            const horaLocal = startLocal.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // HH:MM local
-            const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(startLocal); // Local
-            const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(startLocal); // Local
+            const startLocal = new Date(info.event.start);
+            const fechaLocal = startLocal.toLocaleDateString('en-CA');
+            const horaLocal = startLocal.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(startLocal);
+            const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(startLocal);
             if (isHorario) {
                 setCitaSeleccionada({
                     nombreProfesional: eventoFull.extendedProps?.nombreProfesional || 'N/A',
@@ -149,40 +166,40 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         fetchHorariosByDate(fecha);
     };
 
+    // ABRIR MODAL PARA CREAR NUEVO (POST)
     const openModal = () => {
-        let initialData = {
+        setFormData({
             idProfesional: '',
             fecha: '',
             hora_inicio: '',
             hora_fin: '',
             estado: 'activo',
             idHorario: null
-        };
+        });
+        setIsEditMode(false); // SOLO POST
+        setShowModal(true);
+        setError(null);
+    };
 
-        if (citaSeleccionada) {
-            const horaFin = citaSeleccionada.idHorario ? '' : new Date(new Date(`2000-01-01T${citaSeleccionada.hora.replace(' ', '')}`).getTime() + 60 * 60 * 1000).toTimeString().slice(0, 5);
-            initialData = {
-                ...initialData,
-                idProfesional: profesionales.find(p => p.nombreProfesional === citaSeleccionada.nombreProfesional)?.idProfesional || '',
-                fecha: citaSeleccionada.fecha,
-                hora_inicio: citaSeleccionada.hora.replace(' ', ''), // HH:MM
-                hora_fin: horaFin,
-                idHorario: citaSeleccionada.idHorario
-            };
-        } else if (selectedDateHorarios.length > 0) {
-            const horario = selectedDateHorarios[0];
-            initialData = {
-                ...initialData,
-                idProfesional: horario.idProfesional || '',
-                fecha: horario.fecha.split('T')[0] || '',
-                hora_inicio: horario.hora_inicio,
-                hora_fin: horario.hora_fin,
-                estado: horario.estado,
-                idHorario: horario.idHorario
-            };
-        }
+    // ABRIR MODAL PARA EDITAR (PUT)
+    const openEditModal = (horario) => {
 
-        setFormData(initialData);
+        const idProfesional = horario.idProfesional ||
+            profesionales.find(p => p.nombreProfesional === horario.nombreProfesional)?.idProfesional || '';
+
+        const fecha = horario.fecha
+            ? (typeof horario.fecha === 'string' ? horario.fecha.split('T')[0] : new Date(horario.fecha).toISOString().split('T')[0])
+            : '';
+
+        setFormData({
+            idProfesional: idProfesional,
+            fecha: fecha,
+            hora_inicio: padTime(horario.hora_inicio) || '',
+            hora_fin: padTime(horario.hora_fin) || '',
+            estado: horario.estado || 'activo',
+            idHorario: horario.idHorario
+        });
+        setIsEditMode(true); // SOLO PUT
         setShowModal(true);
         setError(null);
     };
@@ -198,6 +215,13 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
     };
 
     const handleGuardarHorario = async () => {
+
+        const payload = {
+            ...formData,
+            hora_inicio: formData.hora_inicio, // ← Ya está en HH:mm
+            hora_fin: formData.hora_fin
+        };
+
         const validationError = validateForm();
         if (validationError) {
             setMensaje(validationError);
@@ -206,27 +230,29 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             return;
         }
 
-        const isEdit = formData.idHorario && !isNaN(Number(formData.idHorario)) && Number(formData.idHorario) > 0;
-
         try {
             setError(null);
             let responseData;
-            if (isEdit) {
-                responseData = await updateHorario(formData.idHorario, formData);
-            } else {
-                responseData = await createHorario(formData);
-            }
-            setShowModal(false);
-            setMensaje('Horario guardado exitosamente');
-            setShowSuccess(true);
 
+            if (isEditMode && formData.idHorario) {
+                // PUT: Actualizar
+                responseData = await updateHorario(formData.idHorario, formData);
+                setMensaje('Horario actualizado correctamente');
+            } else {
+                // POST: Crear nuevo
+                responseData = await createHorario(formData);
+                setMensaje('Horario creado correctamente');
+            }
+
+            setShowModal(false);
+            setShowSuccess(true);
             fetchAllData(selectedPro?.idProfesional);
         } catch (err) {
             const errMsg = err.response?.data?.error || err.message || 'Error al guardar horario';
             let variant = null;
             if (errMsg.includes('Solapamiento') || errMsg.includes('cerrada') || errMsg.includes('inactivo')) {
-                variant = 'agenda-cerrada'; // ← NUEVO: Variant para cierre de agenda
-                setMensaje('No se puede guardar: Hay citas existentes en ese horario o la agenda está cerrada. Cancela citas primero o elige otro rango.');
+                variant = 'agenda-cerrada';
+                setMensaje('No se puede guardar: Hay citas existentes o la agenda está cerrada.');
             } else {
                 setMensaje(errMsg);
             }
@@ -247,11 +273,13 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         showModal,
         formData,
         setFormData,
+        isEditMode, // NUEVO: para el modal
         loading,
         error,
         handleSelectEvent,
         handleDateClick,
-        openModal,
+        openModal,        // SOLO POST
+        openEditModal,    // SOLO PUT
         handleGuardarHorario,
         setShowModal,
         fetchAllData,
