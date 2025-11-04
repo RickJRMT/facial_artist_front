@@ -22,12 +22,14 @@ export const obtenerServicios = async () => {
                 costo: s.servCosto,
                 imagen: s.servImagen,
                 servDuracion: s.servDuracion,
+                estado: s.servEstado,
                 // Mantener también las propiedades originales para compatibilidad
                 idServicios: s.idServicios,
                 servNombre: s.servNombre,
                 servDescripcion: s.servDescripcion,
                 servCosto: s.servCosto,
-                servImagen: s.servImagen
+                servImagen: s.servImagen,
+                servEstado: s.servEstado
             }))
             : [];
         return servicios;
@@ -45,6 +47,7 @@ export const obtenerServicios = async () => {
  * @param {number} servicioData.servCosto - Costo del servicio
  * @param {number} servicioData.servDuracion - Duración en minutos
  * @param {string} [servicioData.servImagen] - Imagen en base64 (opcional)
+ * @param {string} [servicioData.servEstado] - Estado del servicio ('activo' o 'inactivo', por defecto 'activo')
  * @returns {Promise<Object>} Datos del servicio creado
  * @throws {Error} Si hay un error en la creación
  */
@@ -66,6 +69,12 @@ export const crearServicio = async (servicioData) => {
  * Actualiza un servicio existente
  * @param {number} id - ID del servicio a actualizar
  * @param {Object} servicioData - Datos actualizados del servicio
+ * @param {string} [servicioData.servNombre] - Nombre del servicio (opcional)
+ * @param {string} [servicioData.servDescripcion] - Descripción del servicio (opcional)
+ * @param {number} [servicioData.servCosto] - Costo del servicio (opcional)
+ * @param {number} [servicioData.servDuracion] - Duración en minutos (opcional)
+ * @param {string} [servicioData.servImagen] - Imagen en base64 (opcional)
+ * @param {string} [servicioData.servEstado] - Estado del servicio ('activo' o 'inactivo') (opcional)
  * @returns {Promise<Object>} Datos del servicio actualizado
  * @throws {Error} Si hay un error en la actualización
  */

@@ -8,11 +8,13 @@ import ServiciosView from '../components/admin/views/ServiciosView';
 import './AdminPage.css';
 import CitasAdmin from '../components/admin/CitasAdmin';
 import Agenda from '../components/admin/Agenda';
+import { useClientes } from '../hooks/CargarClientes';
 
 
 const AdminPage = () => {
   const [activeMenu, setActiveMenu] = useState('inicio');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { clientes } = useClientes();
 
 
   const handleMenuClick = () => {
@@ -53,9 +55,9 @@ const AdminPage = () => {
                 iconColor="icon-yellow"
               />
               <StatCard
-                title="Clientes Activos"
-                value="156"
-                subtitle="+12 este mes"
+                title="Clientes Registrados"
+                value={clientes.length || 0}
+                subtitle="Total de clientes"
                 icon={TrendingUp}
                 iconColor="icon-green"
               />

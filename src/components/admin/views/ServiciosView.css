@@ -155,16 +155,19 @@
 .servicios-table td:nth-child(3) { width: 25%; } /* Descripción */
 
 .servicios-table th:nth-child(4),
-.servicios-table td:nth-child(4) { width: 15%; } /* Imagen */
+.servicios-table td:nth-child(4) { width: 12%; } /* Imagen */
 
 .servicios-table th:nth-child(5),
-.servicios-table td:nth-child(5) { width: 12%; } /* Costo */
+.servicios-table td:nth-child(5) { width: 10%; } /* Costo */
 
 .servicios-table th:nth-child(6),
-.servicios-table td:nth-child(6) { width: 12%; } /* Duración */
+.servicios-table td:nth-child(6) { width: 10%; } /* Duración */
 
 .servicios-table th:nth-child(7),
-.servicios-table td:nth-child(7) { width: 16%; } /* Opciones */
+.servicios-table td:nth-child(7) { width: 10%; } /* Estado */
+
+.servicios-table th:nth-child(8),
+.servicios-table td:nth-child(8) { width: 18%; } /* Opciones */
 
 .servicios-table-header {
   background: #faf9f7;
@@ -247,6 +250,30 @@
   content: ' min';
   color: #6b7280;
   margin-left: 2px;
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.estado-activo {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.estado-inactivo {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .badge-inactivo {

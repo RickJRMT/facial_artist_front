@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Plus, Edit, Trash2, Calendar, Clock, User } from 'lucide-react';
+import { X, Edit, Trash2, Calendar, Clock, User } from 'lucide-react';
 import './ModalHojasVida.css';
 
 const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
@@ -24,10 +24,6 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
     }
   ]);
 
-  const handleCrearNueva = () => {
-    alert('Abrir formulario para crear nueva hoja de vida');
-  };
-
   const handleEditar = (hoja) => {
     alert(`Editar: ${hoja.titulo}`);
   };
@@ -42,73 +38,67 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}></div>
-      <div className="modal-hv">
-        <div className="modal-header">
-          <h2 className="modal-title">
-            Hoja de Vida - {cliente?.nombre}
+      <div className="mhv-overlay" onClick={onClose}></div>
+      <div className="mhv-modal">
+        <div className="mhv-header">
+          <h2 className="mhv-title">
+            Hoja de Vida - {cliente?.nombreCliente || 'Cliente'}
           </h2>
-          <button className="modal-close" onClick={onClose}>
-            <X size={24} />
+          <button className="mhv-close" onClick={onClose}>
+            <X size={18} />
           </button>
         </div>
 
-        <div className="modal-content">
-          <div className="action-bar">
-            <button className="btn-crear" onClick={handleCrearNueva}>
-              <Plus size={20} />
-              <span>Crear Nueva H/V</span>
-            </button>
-          </div>
-
-          <div className="lista-container">
+        <div className="mhv-content">
+          <div className="mhv-lista-container">
             {hojasVida.map((hoja) => (
-              <div key={hoja.id} className="hoja-card">
-                <div className="card-header">
-                  <div className="card-header-left">
-                    <h3 className="card-titulo">{hoja.titulo}</h3>
-                    <div className="action-buttons">
-                      <button
-                        className="btn-edit"
-                        onClick={() => handleEditar(hoja)}
-                        title="Editar"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleEliminar(hoja.id)}
-                        title="Eliminar"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+              <div key={hoja.id} className="mhv-hoja-card">
+                <div className="mhv-card-header">
+                  <div className="mhv-card-header-left">
+                    <h3 className="mhv-card-titulo">{hoja.titulo}</h3>
+                    <div className="mhv-card-underline"></div>
+                  </div>
+                  <div className="mhv-action-buttons">
+                    <button
+                      className="mhv-btn-edit"
+                      onClick={() => handleEditar(hoja)}
+                      title="Editar"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      className="mhv-btn-delete"
+                      onClick={() => handleEliminar(hoja.id)}
+                      title="Eliminar"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 </div>
 
-                <p className="card-subtitulo">{hoja.subtitulo}</p>
+                <p className="mhv-card-subtitulo">{hoja.subtitulo}</p>
 
-                <div className="metadata">
-                  <div className="metadata-item">
-                    <Calendar size={14} className="metadata-icon" />
+                <div className="mhv-metadata">
+                  <div className="mhv-metadata-item">
+                    <Calendar size={14} className="mhv-metadata-icon" />
                     <span>{hoja.fecha}</span>
                   </div>
-                  <div className="metadata-item">
-                    <Clock size={14} className="metadata-icon" />
+                  <div className="mhv-metadata-item">
+                    <Clock size={14} className="mhv-metadata-icon" />
                     <span>{hoja.hora}</span>
                   </div>
-                  <div className="metadata-item">
-                    <User size={14} className="metadata-icon" />
+                  <div className="mhv-metadata-item">
+                    <User size={14} className="mhv-metadata-icon" />
                     <span>{hoja.profesional}</span>
                   </div>
                 </div>
 
-                <p className="descripcion">{hoja.descripcion}</p>
+                <p className="mhv-descripcion">{hoja.descripcion}</p>
               </div>
             ))}
 
             {hojasVida.length === 0 && (
-              <div className="empty-state">
+              <div className="mhv-empty-state">
                 <p>No hay hojas de vida registradas</p>
               </div>
             )}

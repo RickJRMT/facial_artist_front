@@ -19,7 +19,7 @@ const SolicitarCitaCard = ({ onCitaCreada }) => {
     const [idServicio, setIdServicio] = useState("");
 
     const { profesionales } = useProfesionales();
-    const { servicios } = UseServicios();
+    const { servicios } = UseServicios(false); // false = mostrar todos los servicios incluyendo inactivos
     const { horariosDisponibles } = useHorariosDisponibles(
         idProfesional,
         idServicio,

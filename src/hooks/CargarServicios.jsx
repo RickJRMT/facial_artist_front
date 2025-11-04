@@ -9,7 +9,11 @@ export function UseServicios() {
         async function cargarServicios() {
             try {
                 const data = await obtenerServicios();
-                setServicios(data);
+                // Filtrar solo servicios activos
+                const serviciosActivos = data.filter(servicio => 
+                    (servicio.estado || servicio.servEstado || 'activo') === 'activo'
+                );
+                setServicios(serviciosActivos);
             } catch (error) {
                 console.error('Error al cargar servicios:', error);
             }

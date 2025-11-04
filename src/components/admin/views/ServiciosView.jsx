@@ -150,8 +150,14 @@ const ServiciosView = () => {
 
   const handleSubmitServicio = async (formData) => {
     try {
-      // Convertir los valores numéricos
-      const servCosto = parseFloat(formData.precio);
+      // Función para limpiar el formato de moneda
+      const cleanCurrencyFormat = (value) => {
+        return value.replace(/\./g, '');
+      };
+
+      // Limpiar el precio del formato colombiano antes de convertir
+      const precioCleaned = cleanCurrencyFormat(formData.precio.toString());
+      const servCosto = parseFloat(precioCleaned);
       const servDuracion = parseInt(formData.duracion);
 
       // Validar que los valores numéricos sean válidos
@@ -170,6 +176,7 @@ const ServiciosView = () => {
       servicioData.append('servDescripcion', formData.descripcion);
       servicioData.append('servCosto', servCosto);
       servicioData.append('servDuracion', servDuracion);
+      servicioData.append('servEstado', formData.estado);
 
       // Si hay una imagen, procesarla
       if (formData.imagen) {
@@ -209,8 +216,14 @@ const ServiciosView = () => {
 
   const handleSubmitEditarServicio = async (formData) => {
     try {
-      // Convertir los valores numéricos
-      const servCosto = parseFloat(formData.precio);
+      // Función para limpiar el formato de moneda
+      const cleanCurrencyFormat = (value) => {
+        return value.replace(/\./g, '');
+      };
+
+      // Limpiar el precio del formato colombiano antes de convertir
+      const precioCleaned = cleanCurrencyFormat(formData.precio.toString());
+      const servCosto = parseFloat(precioCleaned);
       const servDuracion = parseInt(formData.duracion);
 
       // Validar que los valores numéricos sean válidos
@@ -229,6 +242,7 @@ const ServiciosView = () => {
       servicioData.append('servDescripcion', formData.descripcion);
       servicioData.append('servCosto', servCosto);
       servicioData.append('servDuracion', servDuracion);
+      servicioData.append('servEstado', formData.estado);
 
       // Si hay una imagen nueva, procesarla
       if (formData.imagen && formData.hasImageChanged) {
@@ -409,6 +423,7 @@ const ServiciosView = () => {
                     <th>Imagen</th>
                     <th>Costo</th>
                     <th>Duración (min)</th>
+                    <th>Estado</th>
                     <th>Opciones</th>
                   </tr>
                 </thead>
@@ -451,6 +466,11 @@ const ServiciosView = () => {
                       <td>
                         <span className="duracion">
                           {servicio.servDuracion}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`estado-badge estado-${servicio.estado || servicio.servEstado || 'activo'}`}>
+                          {(servicio.estado || servicio.servEstado || 'activo').charAt(0).toUpperCase() + (servicio.estado || servicio.servEstado || 'activo').slice(1)}
                         </span>
                       </td>
                       <td>

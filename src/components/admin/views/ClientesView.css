@@ -77,39 +77,44 @@
 
 .table-wrapper {
   overflow-x: auto;
+  overflow-y: auto;
   flex: 1;
   min-height: 0;
   margin: -8px;
   padding: 8px;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling en mobile */
 }
 
 .clientes-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* Fija el ancho de las columnas */
+  table-layout: fixed;
 }
 
-/* Anchos fijos para las columnas para mantener el espaciado consistente */
+/* Anchos fijos para las 7 columnas (ID, Nombre, Celular, Fecha Nacimiento, Edad, Fecha Registro, Acciones) */
 .clientes-table th:nth-child(1),
-.clientes-table td:nth-child(1) { width: 8%; } /* ID */
+.clientes-table td:nth-child(1) { width: 6%; } /* ID */
 
 .clientes-table th:nth-child(2),
-.clientes-table td:nth-child(2) { width: 22%; } /* Nombre */
+.clientes-table td:nth-child(2) { width: 18%; } /* Nombre */
 
 .clientes-table th:nth-child(3),
-.clientes-table td:nth-child(3) { width: 18%; } /* Celular */
+.clientes-table td:nth-child(3) { width: 14%; } /* Celular */
 
 .clientes-table th:nth-child(4),
 .clientes-table td:nth-child(4) { width: 18%; } /* Fecha Nacimiento */
 
 .clientes-table th:nth-child(5),
-.clientes-table td:nth-child(5) { width: 20%; } /* Fecha Registro */
+.clientes-table td:nth-child(5) { width: 10%; } /* Edad */
 
 .clientes-table th:nth-child(6),
-.clientes-table td:nth-child(6) { 
+.clientes-table td:nth-child(6) { width: 20%; } /* Fecha Registro */
+
+.clientes-table th:nth-child(7),
+.clientes-table td:nth-child(7) { 
   width: 14%; 
   text-align: center; 
-} /* HV */
+} /* Acciones (Ver H/V) */
 
 .table-header {
   background: #faf9f7;
@@ -139,18 +144,29 @@
   padding: 12px;
   font-size: 13px;
   color: #1a1a1a;
-  box-sizing: border-box; /* Asegura que el padding se mantenga consistente */
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cliente-nombre {
   font-weight: 500;
   color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 
 .celular {
   font-weight: 500;
   color: #4b5563;
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 
 .fecha-nacimiento {
@@ -388,5 +404,188 @@
   .pagination-ellipsis {
     padding: 0 2px;
     font-size: 11px;
+  }
+}
+
+/* Botón de acciones Ver H/V */
+.btn-acciones-hv {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #d4a017 0%, #f4d03f 100%);
+  color: #1a1a1a;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(212, 160, 23, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.btn-acciones-hv::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.btn-acciones-hv:hover::before {
+  left: 100%;
+}
+
+.btn-acciones-hv:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(212, 160, 23, 0.35);
+  background: linear-gradient(135deg, #e0b020 0%, #fae050 100%);
+}
+
+.btn-acciones-hv:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 4px 10px rgba(212, 160, 23, 0.2);
+}
+
+.btn-acciones-hv:focus {
+  outline: none;
+  box-shadow: 0 4px 12px rgba(212, 160, 23, 0.25), 0 0 0 3px rgba(212, 160, 23, 0.1);
+}
+
+.btn-acciones-hv svg {
+  transition: transform 0.3s ease;
+}
+
+.btn-acciones-hv:hover svg {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+.btn-acciones-hv span {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Responsive para botón H/V */
+@media (max-width: 1024px) {
+  .btn-acciones-hv {
+    padding: 9px 16px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .btn-acciones-hv svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-acciones-hv {
+    padding: 8px 14px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .btn-acciones-hv span {
+    display: none;
+  }
+
+  .btn-acciones-hv {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .btn-acciones-hv svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Ocultar columnas menos importantes en tablet */
+  .clientes-table th:nth-child(5),
+  .clientes-table td:nth-child(5),
+  .clientes-table th:nth-child(6),
+  .clientes-table td:nth-child(6) {
+    display: none;
+  }
+
+  /* Ajustar anchos de columnas visibles */
+  .clientes-table th:nth-child(1),
+  .clientes-table td:nth-child(1) { width: 8%; }
+
+  .clientes-table th:nth-child(2),
+  .clientes-table td:nth-child(2) { width: 25%; }
+
+  .clientes-table th:nth-child(3),
+  .clientes-table td:nth-child(3) { width: 25%; }
+
+  .clientes-table th:nth-child(4),
+  .clientes-table td:nth-child(4) { width: 22%; }
+
+  .clientes-table th:nth-child(7),
+  .clientes-table td:nth-child(7) { width: 20%; }
+}
+
+@media (max-width: 480px) {
+  .btn-acciones-hv {
+    width: 38px;
+    height: 38px;
+    box-shadow: 0 2px 8px rgba(212, 160, 23, 0.2);
+  }
+
+  .btn-acciones-hv:hover {
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 4px 12px rgba(212, 160, 23, 0.3);
+  }
+
+  .clientes-table {
+    font-size: 12px;
+  }
+
+  .clientes-table th:nth-child(4) {
+    display: none;
+  }
+
+  .clientes-table td:nth-child(4) {
+    display: none;
+  }
+
+  /* En mobile solo mostrar: ID, Nombre, Acciones */
+  .clientes-table th:nth-child(1),
+  .clientes-table td:nth-child(1) { width: 10%; }
+
+  .clientes-table th:nth-child(2),
+  .clientes-table td:nth-child(2) { width: 60%; }
+
+  .clientes-table th:nth-child(3),
+  .clientes-table td:nth-child(3),
+  .clientes-table th:nth-child(5),
+  .clientes-table td:nth-child(5),
+  .clientes-table th:nth-child(6),
+  .clientes-table td:nth-child(6) {
+    display: none;
+  }
+
+  .clientes-table th:nth-child(7),
+  .clientes-table td:nth-child(7) { width: 30%; }
+
+  .clientes-table td {
+    padding: 10px 8px;
+  }
+
+  .clientes-table th {
+    padding: 10px 8px;
   }
 }
