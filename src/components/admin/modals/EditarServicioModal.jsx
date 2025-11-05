@@ -81,7 +81,7 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
   const isFormValid = () => {
     return (
       formData.nombre.trim() !== '' &&
-      formData.descripcion.length >= 50 &&
+      formData.descripcion.trim() !== '' &&
       formData.precio.trim() !== '' &&
       formData.duracion.trim() !== '' &&
       !Object.values(errors).some(error => error !== '')
@@ -122,8 +122,8 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
       case 'descripcion':
         if (value.trim() === '') {
           error = 'La descripción es obligatoria';
-        } else if (value.length < 50) {
-          error = `La descripción debe tener al menos 50 caracteres. Actualmente: ${value.length}`;
+        } else if (value.length < 10) {
+          error = `La descripción debe tener al menos 10 caracteres. Actualmente: ${value.length}`;
         }
         break;
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { obtenerServicios, crearServicio, eliminarServicio, actualizarServicio } from '../../../Services/ServiciosConexion';
-import { Search, Plus, Eye, Edit, Trash2 } from 'lucide-react';
+import { Search, Plus, Eye, Edit, Trash2, Grid, List } from 'lucide-react';
 import CrearServicioModal from '../modals/CrearServicioModal';
 import EditarServicioModal from '../modals/EditarServicioModal';
 import DescripcionModal from '../modals/DescripcionModal';
@@ -21,6 +21,7 @@ const ServiciosView = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [isMobile, setIsMobile] = useState(false);
   const [descripcionModal, setDescripcionModal] = useState({
     isOpen: false,
     descripcion: '',
@@ -39,6 +40,22 @@ const ServiciosView = () => {
     isOpen: false,
     servicio: null
   });
+
+  /**
+   * Efecto para detectar el tamaño de pantalla
+   */
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   /**
    * Efecto para cargar la lista de servicios al montar el componente
@@ -77,13 +94,16 @@ const ServiciosView = () => {
   // Funciones de paginación
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    // Scroll hacia arriba de la tabla
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll hacia arriba - en móviles scroll a la tabla, en desktop al inicio
+    const scrollTarget = isMobile 
+      ? document.querySelector('.servicios-table-card')?.offsetTop || 0
+      : 0;
+    window.scrollTo({ top: scrollTarget - (isMobile ? 20 : 0), behavior: 'smooth' });
   };
 
   const renderPaginationButtons = () => {
     const buttons = [];
-    const maxVisible = 5;
+    const maxVisible = isMobile ? 3 : 5; // Menos botones en móviles
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
 
@@ -350,8 +370,8 @@ const ServiciosView = () => {
           <p className="servicios-subtitle">Gestión de servicios y tratamientos</p>
         </div>
         <button className="btn-nuevo-servicio" onClick={handleNuevoServicio}>
-          <Plus size={16} />
-          <span>Nuevo Servicio</span>
+          <Plus size={isMobile ? 18 : 16} />
+          <span>{isMobile ? 'Nuevo' : 'Nuevo Servicio'}</span>
         </button>
       </div>
 
@@ -406,109 +426,191 @@ const ServiciosView = () => {
         </div>
       </div>
 
-      {/* Servicios Table */}
+      {/* Servicios Table/Cards */}
       <div className="servicios-table-card">
         <h3 className="servicios-table-title">Lista de Servicios</h3>
-        <div className="servicios-table-wrapper">
-          {loading ? (
-            <div className="servicios-empty-state">
-              <p>Cargando servicios...</p>
-            </div>
-          ) : error ? (
-            <div className="servicios-empty-state">
-              <p>{error}</p>
-            </div>
-          ) : (
-            <>
-              <table className="servicios-table">
-                <thead>
-                  <tr className="servicios-table-header">
-                    <th>ID</th>
-                    <th>Servicio</th>
-                    <th>Descripción</th>
-                    <th>Imagen</th>
-                    <th>Costo</th>
-                    <th>Duración (min)</th>
-                    <th>Estado</th>
-                    <th>Opciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentServicios.map((servicio) => (
-                    <tr key={servicio.id} className="servicios-table-row">
-                      <td>{servicio.id}</td>
-                      <td>
-                        <span className="servicio-nombre">{servicio.nombre}</span>
-                      </td>
-                      <td>
-                        <span 
-                          className="descripcion-truncada"
-                          onClick={() => setDescripcionModal({
-                            isOpen: true,
-                            descripcion: servicio.descripcion,
-                            titulo: servicio.nombre
-                          })}
-                          title="Click para ver descripción completa"
-                        >
-                          {servicio.descripcion}
-                        </span>
-                      </td>
-                      <td>
-                        <button 
-                          className="servicios-btn-visualizar"
-                          onClick={() => handleVisualizar(servicio)}
-                        >
-                          <Eye size={16} />
-                          <span>Visualizar</span>
-                        </button>
-                      </td>
-                      <td>
+        
+        {loading ? (
+          <div className="servicios-empty-state">
+            <p>Cargando servicios...</p>
+          </div>
+        ) : error ? (
+          <div className="servicios-empty-state">
+            <p>{error}</p>
+          </div>
+        ) : (
+          <>
+            {/* Vista Desktop - Tabla */}
+            {!isMobile && (
+              <div className="servicios-table-wrapper">
+                <table className="servicios-table">
+                  <thead>
+                    <tr className="servicios-table-header">
+                      <th>ID</th>
+                      <th>Servicio</th>
+                      <th>Descripción</th>
+                      <th>Imagen</th>
+                      <th>Costo</th>
+                      <th>Duración (min)</th>
+                      <th>Estado</th>
+                      <th>Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentServicios.map((servicio) => (
+                      <tr key={servicio.id} className="servicios-table-row">
+                        <td>{servicio.id}</td>
+                        <td>
+                          <span className="servicio-nombre">{servicio.nombre}</span>
+                        </td>
+                        <td>
+                          <span 
+                            className="descripcion-truncada"
+                            onClick={() => setDescripcionModal({
+                              isOpen: true,
+                              descripcion: servicio.descripcion,
+                              titulo: servicio.nombre
+                            })}
+                            title="Click para ver descripción completa"
+                          >
+                            {servicio.descripcion}
+                          </span>
+                        </td>
+                        <td>
+                          <button 
+                            className="servicios-btn-visualizar"
+                            onClick={() => handleVisualizar(servicio)}
+                          >
+                            <Eye size={16} />
+                            <span>Visualizar</span>
+                          </button>
+                        </td>
+                        <td>
+                          <span className="costo">
+                            ${new Intl.NumberFormat('es-CO', { 
+                              maximumFractionDigits: 0 
+                            }).format(servicio.costo)}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="duracion">
+                            {servicio.servDuracion}
+                          </span>
+                        </td>
+                        <td>
+                          <span className={`estado-badge estado-${servicio.estado || servicio.servEstado || 'activo'}`}>
+                            {(servicio.estado || servicio.servEstado || 'activo').charAt(0).toUpperCase() + (servicio.estado || servicio.servEstado || 'activo').slice(1)}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="servicios-action-buttons">
+                            <button 
+                              className="servicios-btn-edit"
+                              onClick={() => handleEditarServicio(servicio)}
+                              title="Editar"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button 
+                              className="servicios-btn-delete"
+                              onClick={() => handleEliminarServicio(servicio)}
+                              title="Eliminar"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Vista Mobile - Tarjetas */}
+            {isMobile && (
+              <div className="servicios-cards-container">
+                {currentServicios.map((servicio) => (
+                  <div key={servicio.id} className="servicio-card">
+                    <div className="servicio-card-header">
+                      <div className="servicio-card-title">
+                        <h4 className="servicio-nombre">{servicio.nombre}</h4>
+                        <span className="servicio-id">#{servicio.id}</span>
+                      </div>
+                      <span className={`estado-badge estado-${servicio.estado || servicio.servEstado || 'activo'}`}>
+                        {(servicio.estado || servicio.servEstado || 'activo').charAt(0).toUpperCase() + (servicio.estado || servicio.servEstado || 'activo').slice(1)}
+                      </span>
+                    </div>
+
+                    <div className="servicio-card-body">
+                      <div className="servicio-info-row">
+                        <span className="servicio-info-label">Precio:</span>
                         <span className="costo">
                           ${new Intl.NumberFormat('es-CO', { 
                             maximumFractionDigits: 0 
                           }).format(servicio.costo)}
                         </span>
-                      </td>
-                      <td>
+                      </div>
+                      
+                      <div className="servicio-info-row">
+                        <span className="servicio-info-label">Duración:</span>
                         <span className="duracion">
-                          {servicio.servDuracion}
+                          {servicio.servDuracion} min
                         </span>
-                      </td>
-                      <td>
-                        <span className={`estado-badge estado-${servicio.estado || servicio.servEstado || 'activo'}`}>
-                          {(servicio.estado || servicio.servEstado || 'activo').charAt(0).toUpperCase() + (servicio.estado || servicio.servEstado || 'activo').slice(1)}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="servicios-action-buttons">
-                          <button 
-                            className="servicios-btn-edit"
-                            onClick={() => handleEditarServicio(servicio)}
-                            title="Editar"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button 
-                            className="servicios-btn-delete"
-                            onClick={() => handleEliminarServicio(servicio)}
-                            title="Eliminar"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {filteredServicios.length === 0 && (
-                <div className="servicios-empty-state">
-                  <p>No se encontraron servicios</p>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+                      </div>
+
+                      <div className="servicio-descripcion">
+                        <span className="servicio-info-label">Descripción:</span>
+                        <p 
+                          className="descripcion-truncada-mobile"
+                          onClick={() => setDescripcionModal({
+                            isOpen: true,
+                            descripcion: servicio.descripcion,
+                            titulo: servicio.nombre
+                          })}
+                        >
+                          {servicio.descripcion}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="servicio-card-actions">
+                      <button 
+                        className="servicios-btn-visualizar-mobile"
+                        onClick={() => handleVisualizar(servicio)}
+                      >
+                        <Eye size={14} />
+                        Ver Imagen
+                      </button>
+                      <div className="servicios-action-buttons-mobile">
+                        <button 
+                          className="servicios-btn-edit-mobile"
+                          onClick={() => handleEditarServicio(servicio)}
+                          title="Editar"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button 
+                          className="servicios-btn-delete-mobile"
+                          onClick={() => handleEliminarServicio(servicio)}
+                          title="Eliminar"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {filteredServicios.length === 0 && (
+              <div className="servicios-empty-state">
+                <p>No se encontraron servicios</p>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Paginación */}
