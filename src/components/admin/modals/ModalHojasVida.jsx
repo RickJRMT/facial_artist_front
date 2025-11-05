@@ -64,14 +64,14 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
                       onClick={() => handleEditar(hoja)}
                       title="Editar"
                     >
-                      <Edit size={16} />
+                      <Edit size={20} />
                     </button>
                     <button
                       className="mhv-btn-delete"
                       onClick={() => handleEliminar(hoja.id)}
                       title="Eliminar"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={20} />
                     </button>
                   </div>
                 </div>

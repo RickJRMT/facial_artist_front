@@ -247,6 +247,9 @@ const ServiciosView = () => {
       // Si hay una imagen nueva, procesarla
       if (formData.imagen && formData.hasImageChanged) {
         servicioData.append('servImagen', formData.imagen);
+      } else if (editarModal.servicio && editarModal.servicio.imagen) {
+        // Si no hay imagen nueva, mantener la imagen original
+        servicioData.append('servImagen', editarModal.servicio.imagen);
       }
 
       // Convertir FormData a objeto regular
@@ -266,6 +269,9 @@ const ServiciosView = () => {
           reader.readAsDataURL(formData.imagen);
         });
         plainData.servImagen = base64Image;
+      } else if (editarModal.servicio && editarModal.servicio.imagen) {
+        // Si no hay imagen nueva, mantener la imagen original en base64
+        plainData.servImagen = editarModal.servicio.imagen;
       }
 
       // Actualizar el servicio
