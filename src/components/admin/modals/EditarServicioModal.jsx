@@ -16,7 +16,8 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
     descripcion: '',
     duracion: '',
     precio: '',
-    imagen: null
+    imagen: null,
+    estado: 'activo'
   });
 
   const [errors, setErrors] = useState({
@@ -33,19 +34,33 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
   // Cargar datos del servicio cuando se abre el modal
   useEffect(() => {
     if (isOpen && servicio) {
+      // Usar tanto los nombres transformados como los originales
+      const duracionValue = servicio.servDuracion || servicio.duracion || '';
+      const precioValue = servicio.costo || servicio.precio || '';
+      
+      // Limpiar el precio de formato colombiano: 150.000,00 -> 150000
+      const precioCleaned = precioValue 
+        ? precioValue.toString()
+            .replace(/\./g, '')      // Eliminar puntos separadores: 150.000,00 -> 150000,00
+            .replace(/,/g, '')       // Eliminar comas decimales: 150000,00 -> 15000000
+            .slice(0, -2) || ''      // Remover últimos 2 dígitos (decimales): 15000000 -> 150000
+        : '';
+      
       setFormData({
-        nombre: servicio.nombre || '',
-        descripcion: servicio.descripcion || '',
-        duracion: servicio.duracion ? servicio.duracion.toString() : '',
-        precio: servicio.precio ? formatCurrency(servicio.precio.toString()) : '',
-        imagen: null
+        nombre: servicio.nombre || servicio.servNombre || '',
+        descripcion: servicio.descripcion || servicio.servDescripcion || '',
+        duracion: duracionValue ? duracionValue.toString() : '',
+        precio: precioCleaned,
+        imagen: null,
+        estado: servicio.estado || servicio.servEstado || 'activo'
       });
 
       // Si el servicio tiene imagen, mostrarla como preview
-      if (servicio.imagen) {
-        const imagenSrc = servicio.imagen.startsWith('data:image') 
-          ? servicio.imagen 
-          : `data:image/png;base64,${servicio.imagen}`;
+      if (servicio.imagen || servicio.servImagen) {
+        const imagenData = servicio.imagen || servicio.servImagen;
+        const imagenSrc = imagenData.startsWith('data:image') 
+          ? imagenData 
+          : `data:image/png;base64,${imagenData}`;
         setPreviewImage(imagenSrc);
       } else {
         setPreviewImage(null);
@@ -66,7 +81,7 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
   const isFormValid = () => {
     return (
       formData.nombre.trim() !== '' &&
-      formData.descripcion.length >= 50 &&
+      formData.descripcion.trim() !== '' &&
       formData.precio.trim() !== '' &&
       formData.duracion.trim() !== '' &&
       !Object.values(errors).some(error => error !== '')
@@ -107,8 +122,8 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
       case 'descripcion':
         if (value.trim() === '') {
           error = 'La descripción es obligatoria';
-        } else if (value.length < 50) {
-          error = `La descripción debe tener al menos 50 caracteres. Actualmente: ${value.length}`;
+        } else if (value.length < 10) {
+          error = `La descripción debe tener al menos 10 caracteres. Actualmente: ${value.length}`;
         }
         break;
 
@@ -195,11 +210,15 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
     e.preventDefault();
     if (!isFormValid()) return;
 
+    // Limpiar el precio del formato colombiano antes de convertir
+    const precioLimpio = cleanCurrencyFormat(formData.precio);
+    const precioNumerico = parseFloat(precioLimpio);
+
     // Preparar los datos para el envío
     const submitData = {
       ...formData,
       // Convertir el precio: primero limpiar el formato y luego convertir a número
-      precio: parseInt(cleanCurrencyFormat(formData.precio)),
+      precio: precioNumerico,
       // Convertir la duración a número si existe
       duracion: formData.duracion ? parseInt(formData.duracion) : 60,
       // Incluir información sobre si la imagen cambió
@@ -225,7 +244,8 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
       descripcion: '',
       duracion: '',
       precio: '',
-      imagen: null
+      imagen: null,
+      estado: 'activo'
     });
     setPreviewImage(null);
     setHasImageChanged(false);
@@ -288,6 +308,19 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
                 onChange={handleChange}
               />
               {errors.duracion && <span className="error-message">{errors.duracion}</span>}
+            </div>
+
+            <div className="servicio-form-group">
+              <label className="servicio-form-label">Estado del Servicio</label>
+              <select
+                name="estado"
+                className="servicio-form-input"
+                value={formData.estado}
+                onChange={handleChange}
+              >
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
             </div>
 
             <div className="servicio-form-group">

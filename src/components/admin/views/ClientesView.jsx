@@ -1,85 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Search, FileText } from 'lucide-react';
 import './ClientesView.css';
+import { useClientes } from '../../../hooks/CargarClientes';
+import ModalHojasVida from '../modals/ModalHojasVida';
 
 /**
  * Componente principal para la gestión de clientes en el panel de administración
  * Permite listar y buscar clientes
  */
 const ClientesView = () => {
-  // Estados para el manejo de datos y UI
+  // Custom hook para cargar clientes
+  const { clientes, loading, error } = useClientes();
+  
+  // Estados para el manejo de UI
   const [searchTerm, setSearchTerm] = useState('');
-  const [clientes, setClientes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalHVOpen, setModalHVOpen] = useState(false);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const itemsPerPage = 10;
-
-  // Datos de ejemplo basados en la estructura de la base de datos
-  const [clientesData] = useState([
-    {
-      idCliente: 1,
-      nombreCliente: 'María González',
-      celularCliente: '+57 300 123 4567',
-      fechaNacCliente: '1985-03-15',
-      fechaRegistro: '2024-01-15 10:30:00'
-    },
-    {
-      idCliente: 2,
-      nombreCliente: 'Carmen López',
-      celularCliente: '+57 301 234 5678',
-      fechaNacCliente: '1990-07-22',
-      fechaRegistro: '2024-01-20 14:15:00'
-    },
-    {
-      idCliente: 3,
-      nombreCliente: 'Ana Rodríguez',
-      celularCliente: '+57 302 345 6789',
-      fechaNacCliente: '1988-11-10',
-      fechaRegistro: '2024-02-01 09:45:00'
-    },
-    {
-      idCliente: 4,
-      nombreCliente: 'Laura Martín',
-      celularCliente: '+57 303 456 7890',
-      fechaNacCliente: '1992-02-28',
-      fechaRegistro: '2024-02-10 16:20:00'
-    },
-    {
-      idCliente: 5,
-      nombreCliente: 'Sofia García',
-      celularCliente: '+57 304 567 8901',
-      fechaNacCliente: '1995-05-12',
-      fechaRegistro: '2024-02-15 11:30:00'
-    },
-    {
-      idCliente: 6,
-      nombreCliente: 'Isabella Torres',
-      celularCliente: '+57 305 678 9012',
-      fechaNacCliente: '1987-09-08',
-      fechaRegistro: '2024-02-20 13:45:00'
-    }
-  ]);
-
-  /**
-   * Efecto para cargar la lista de clientes al montar el componente
-   */
-  useEffect(() => {
-    const fetchClientes = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // Simular carga de datos
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setClientes(clientesData);
-      } catch (err) {
-        setError('Error al cargar los clientes');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchClientes();
-  }, [clientesData]);
 
   const filteredClientes = clientes.filter(cliente =>
     cliente.nombreCliente?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -181,6 +119,19 @@ const ClientesView = () => {
     return date.toLocaleString('es-CO');
   };
 
+  // Función para calcular la edad
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return '-';
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   return (
     <div className="clientes-container">
       {/* Header */}
@@ -225,7 +176,9 @@ const ClientesView = () => {
                     <th>Nombre</th>
                     <th>Celular</th>
                 <th>Fecha Nacimiento</th>
+                    <th>Edad</th>
                     <th>Fecha Registro</th>
+                    <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -244,10 +197,28 @@ const ClientesView = () => {
                         </span>
                   </td>
                       <td>
+                        <span className="edad">
+                          {calculateAge(cliente.fechaNacCliente)} años
+                        </span>
+                  </td>
+                      <td>
                         <span className="fecha-registro">
                           {formatDateTime(cliente.fechaRegistro)}
                         </span>
                   </td>
+                      <td>
+                        <button
+                          className="btn-acciones-hv"
+                          onClick={() => {
+                            setClienteSeleccionado(cliente);
+                            setModalHVOpen(true);
+                          }}
+                          title="Ver hojas de vida"
+                        >
+                          <FileText size={16} />
+                          <span>Ver H/V</span>
+                        </button>
+                      </td>
                 </tr>
               ))}
             </tbody>
@@ -287,6 +258,16 @@ const ClientesView = () => {
           </div>
           </div>
         )}
+
+      {/* Modal Hojas de Vida */}
+      <ModalHojasVida
+        isOpen={modalHVOpen}
+        onClose={() => {
+          setModalHVOpen(false);
+          setClienteSeleccionado(null);
+        }}
+        cliente={clienteSeleccionado}
+      />
     </div>
   );
 };

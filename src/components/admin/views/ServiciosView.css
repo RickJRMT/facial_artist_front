@@ -155,16 +155,19 @@
 .servicios-table td:nth-child(3) { width: 25%; } /* Descripción */
 
 .servicios-table th:nth-child(4),
-.servicios-table td:nth-child(4) { width: 15%; } /* Imagen */
+.servicios-table td:nth-child(4) { width: 12%; } /* Imagen */
 
 .servicios-table th:nth-child(5),
-.servicios-table td:nth-child(5) { width: 12%; } /* Costo */
+.servicios-table td:nth-child(5) { width: 10%; } /* Costo */
 
 .servicios-table th:nth-child(6),
-.servicios-table td:nth-child(6) { width: 12%; } /* Duración */
+.servicios-table td:nth-child(6) { width: 10%; } /* Duración */
 
 .servicios-table th:nth-child(7),
-.servicios-table td:nth-child(7) { width: 16%; } /* Opciones */
+.servicios-table td:nth-child(7) { width: 10%; } /* Estado */
+
+.servicios-table th:nth-child(8),
+.servicios-table td:nth-child(8) { width: 18%; } /* Opciones */
 
 .servicios-table-header {
   background: #faf9f7;
@@ -247,6 +250,30 @@
   content: ' min';
   color: #6b7280;
   margin-left: 2px;
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.estado-activo {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.estado-inactivo {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .badge-inactivo {
@@ -430,27 +457,38 @@
     flex-direction: column;
     gap: 12px;
     align-items: center;
-    padding: 10px 12px;
+    padding: 12px;
+    margin-top: 16px;
   }
 
   .servicios-pagination-info {
     order: 2;
-    font-size: 12px;
+    font-size: 13px;
+    text-align: center;
   }
 
   .servicios-pagination-controls {
     order: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
   }
 
   .servicios-pagination-btn {
-    min-width: 28px;
-    height: 28px;
-    font-size: 12px;
-    padding: 0 6px;
+    min-width: 32px;
+    height: 32px;
+    font-size: 13px;
+    padding: 0 8px;
   }
 
   .servicios-pagination-btn.servicios-pagination-nav {
-    padding: 0 10px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .servicios-pagination-ellipsis {
+    padding: 0 4px;
+    font-size: 13px;
   }
 }
 
@@ -517,6 +555,440 @@
   .servicios-pagination-ellipsis {
     padding: 0 2px;
     font-size: 11px;
+  }
+}
+
+/* Vista de tarjetas móviles */
+.servicios-cards-container {
+  display: grid;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.servicio-card {
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.servicio-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #d4a017;
+}
+
+.servicio-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.servicio-card-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.servicio-card-title .servicio-nombre {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  display: block;
+  word-wrap: break-word;
+}
+
+.servicio-id {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  margin-top: 2px;
+  display: block;
+}
+
+.servicio-card-body {
+  margin-bottom: 16px;
+}
+
+.servicio-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.servicio-info-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.servicio-info-row .costo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #d4a017;
+}
+
+.servicio-info-row .duracion {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.servicio-descripcion {
+  margin-top: 12px;
+}
+
+.servicio-descripcion .servicio-info-label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.descripcion-truncada-mobile {
+  font-size: 13px;
+  color: #4a5568;
+  line-height: 1.4;
+  margin: 0;
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+
+.descripcion-truncada-mobile:hover {
+  color: #2d3748;
+}
+
+.servicio-card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.servicios-btn-visualizar-mobile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8f9fa;
+  color: #495057;
+  padding: 8px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.servicios-btn-visualizar-mobile:hover {
+  background: #e9ecef;
+  color: #212529;
+  border-color: #d4a017;
+}
+
+.servicios-action-buttons-mobile {
+  display: flex;
+  gap: 8px;
+}
+
+.servicios-btn-edit-mobile,
+.servicios-btn-delete-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #495057;
+  transition: all 0.2s ease;
+}
+
+.servicios-btn-edit-mobile:hover {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #1976d2;
+}
+
+.servicios-btn-delete-mobile:hover {
+  background: #ffebee;
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+/* Mejoras adicionales para responsividad */
+@media (max-width: 900px) {
+  .servicios-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .servicios-title-container {
+    text-align: center;
+  }
+  
+  .btn-nuevo-servicio {
+    width: 100%;
+    padding: 12px 16px;
+    justify-content: center;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  
+  .servicios-search-input {
+    padding: 12px 16px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+  
+  .servicios-table-card {
+    padding: 16px 12px;
+  }
+  
+  .servicios-cards-container {
+    gap: 12px;
+  }
+  
+  .servicio-card {
+    padding: 14px;
+  }
+  
+  .servicio-card-header {
+    margin-bottom: 10px;
+  }
+  
+  .servicio-card-body {
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .servicios-container {
+    padding: 16px 12px;
+  }
+  
+  .servicios-title {
+    font-size: 20px;
+  }
+  
+  .servicios-subtitle {
+    font-size: 14px;
+  }
+  
+  .btn-nuevo-servicio {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  .servicios-search-input {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+  
+  .servicios-table-card {
+    padding: 12px 8px;
+    margin-bottom: 12px;
+  }
+  
+  .servicios-table-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  .servicios-cards-container {
+    gap: 10px;
+  }
+  
+  .servicio-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  .servicio-card-title .servicio-nombre {
+    font-size: 15px;
+  }
+  
+  .servicio-id {
+    font-size: 11px;
+  }
+  
+  .servicio-info-label {
+    font-size: 13px;
+  }
+  
+  .servicio-info-row .costo {
+    font-size: 15px;
+  }
+  
+  .servicio-info-row .duracion {
+    font-size: 13px;
+  }
+  
+  .descripcion-truncada-mobile {
+    font-size: 12px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  .servicios-btn-visualizar-mobile {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .servicios-btn-edit-mobile,
+  .servicios-btn-delete-mobile {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .servicio-card-actions {
+    gap: 8px;
+  }
+}
+
+/* Mejoras para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .servicios-container {
+    padding: 20px;
+  }
+  
+  .servicios-table {
+    font-size: 13px;
+  }
+  
+  .servicios-table th,
+  .servicios-table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+  
+  .servicios-table th:nth-child(1),
+  .servicios-table td:nth-child(1) { width: 6%; } /* ID */
+
+  .servicios-table th:nth-child(2),
+  .servicios-table td:nth-child(2) { width: 16%; } /* Servicio */
+
+  .servicios-table th:nth-child(3),
+  .servicios-table td:nth-child(3) { width: 20%; } /* Descripción */
+
+  .servicios-table th:nth-child(4),
+  .servicios-table td:nth-child(4) { width: 10%; } /* Imagen */
+
+  .servicios-table th:nth-child(5),
+  .servicios-table td:nth-child(5) { width: 12%; } /* Costo */
+
+  .servicios-table th:nth-child(6),
+  .servicios-table td:nth-child(6) { width: 10%; } /* Duración */
+
+  .servicios-table th:nth-child(7),
+  .servicios-table td:nth-child(7) { width: 10%; } /* Estado */
+
+  .servicios-table th:nth-child(8),
+  .servicios-table td:nth-child(8) { width: 16%; } /* Opciones */
+  
+  .descripcion-truncada {
+    max-width: 180px;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+  
+  .servicios-btn-visualizar {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  
+  .servicios-btn-visualizar span {
+    display: none;
+  }
+  
+  .servicios-btn-edit,
+  .servicios-btn-delete {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .servicios-action-buttons {
+    gap: 6px;
+  }
+  
+  .costo {
+    font-size: 13px;
+  }
+  
+  .estado-badge {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}
+
+/* Forzar vista de tabla en pantallas muy grandes */
+@media (min-width: 1025px) {
+  .servicios-cards-container {
+    display: none !important;
+  }
+  
+  .servicios-table-wrapper {
+    display: block !important;
+  }
+}
+
+/* Mejoras de accesibilidad y contraste */
+@media (prefers-reduced-motion: reduce) {
+  .servicio-card,
+  .servicios-btn-visualizar,
+  .servicios-btn-visualizar-mobile,
+  .servicios-btn-edit,
+  .servicios-btn-delete,
+  .servicios-btn-edit-mobile,
+  .servicios-btn-delete-mobile,
+  .servicios-pagination-btn,
+  .descripcion-truncada,
+  .descripcion-truncada-mobile {
+    transition: none !important;
+  }
+}
+
+/* Estados de focus para accesibilidad */
+.servicios-btn-visualizar:focus,
+.servicios-btn-visualizar-mobile:focus,
+.servicios-btn-edit:focus,
+.servicios-btn-delete:focus,
+.servicios-btn-edit-mobile:focus,
+.servicios-btn-delete-mobile:focus,
+.btn-nuevo-servicio:focus,
+.servicios-pagination-btn:focus {
+  outline: 2px solid #d4a017;
+  outline-offset: 2px;
+}
+
+.servicios-search-input:focus {
+  outline: 2px solid #d4a017;
+  outline-offset: 0;
+}
+
+/* Mejoras para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .servicio-card:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
   }
 }
 

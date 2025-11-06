@@ -50,7 +50,12 @@ const CalendarioCitas = () => {
                 // const horariosResp = await getHorarios();
 
                 setProfesionales(profesionalesResp.data || []);
-                setServicios(serviciosResp.data || []);
+                
+                // Filtrar solo servicios activos
+                const serviciosActivos = (serviciosResp.data || []).filter(servicio =>
+                    (servicio.estado || servicio.servEstado || 'activo') === 'activo'
+                );
+                setServicios(serviciosActivos);
                 // setHorarios(horariosResp.data || []);
             } catch (error) {
                 console.error('Error al cargar datos:', error);

@@ -105,7 +105,7 @@ select:focus {
 
 
 /* Botón enviar */
-button {
+.btn_solicitar_cita_cliente {
   margin-top: 20px;
   width: 100%;
   background: var(--color-boton-fondo);
@@ -119,7 +119,7 @@ button {
   transition: background 0.3s;
 }
 
-button:hover {
+.btn_solicitar_cita_cliente:hover {
   background: var(--color-boton-hover);
 }
 

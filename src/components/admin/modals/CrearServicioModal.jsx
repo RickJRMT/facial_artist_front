@@ -15,7 +15,8 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
     descripcion: '',
     duracion: '',
     precio: '',
-    imagen: null
+    imagen: null,
+    estado: 'activo'
   });
 
   const [errors, setErrors] = useState({
@@ -160,11 +161,15 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     if (!isFormValid()) return;
 
+    // Limpiar el precio del formato colombiano antes de convertir
+    const precioLimpio = cleanCurrencyFormat(formData.precio);
+    const precioNumerico = parseFloat(precioLimpio);
+
     // Preparar los datos para el envío
     const submitData = {
       ...formData,
       // Convertir el precio: primero limpiar el formato y luego convertir a número
-      precio: parseInt(cleanCurrencyFormat(formData.precio)),
+      precio: precioNumerico,
       // Convertir la duración a número si existe
       duracion: formData.duracion ? parseInt(formData.duracion) : 60
     };
@@ -188,7 +193,8 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
       descripcion: '',
       duracion: '',
       precio: '',
-      imagen: null
+      imagen: null,
+      estado: 'activo'
     });
     setPreviewImage(null);
     setErrors({
@@ -250,6 +256,19 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
                 onChange={handleChange}
               />
               {errors.duracion && <span className="error-message">{errors.duracion}</span>}
+            </div>
+
+            <div className="servicio-form-group">
+              <label className="servicio-form-label">Estado del Servicio</label>
+              <select
+                name="estado"
+                className="servicio-form-input"
+                value={formData.estado}
+                onChange={handleChange}
+              >
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
             </div>
 
             <div className="servicio-form-group">
