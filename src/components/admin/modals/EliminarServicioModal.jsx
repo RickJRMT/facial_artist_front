@@ -20,7 +20,12 @@ const EliminarServicioModal = ({ isOpen, onClose, onConfirm, servicioNombre }) =
         <div className="eliminar-modal-content">
           <h3>¿Eliminar servicio?</h3>
           <p>
-            ¿Estás seguro de que deseas eliminar el servicio <strong>"{servicioNombre}"</strong>? 
+            ¿Estás seguro de que deseas eliminar el servicio <strong>"{servicioNombre}"</strong>?
+          </p>
+          <div className="eliminar-warning">
+            <strong>⚠️ Importante:</strong> Antes de eliminar este servicio, verifica que no existan citas activas asociadas a él. Si hay citas programadas con este servicio, la eliminación fallará.
+          </div>
+          <p className="eliminar-notice">
             Esta acción no se puede deshacer.
           </p>
         </div>

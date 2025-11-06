@@ -356,7 +356,17 @@ const ServiciosView = () => {
       setEliminarModal({ isOpen: false, servicioId: null, servicioNombre: '' });
     } catch (error) {
       console.error('Error al eliminar el servicio:', error);
-      alert('Error al eliminar el servicio. Por favor, intente nuevamente.');
+      
+      let mensajeError;
+      
+      // Verificar si es un error por citas activas
+      if (error.code === 'ACTIVE_APPOINTMENTS' || error.message.includes('citas')) {
+        mensajeError = `❌ No se puede eliminar el servicio "${eliminarModal.servicioNombre}"\n\n🔗 Este servicio tiene citas activas asociadas.\n\nPara eliminarlo debes:\n• Cancelar o completar todas las citas programadas\n• Verificar que no hay citas pendientes en el sistema\n• Luego podrás eliminarlo sin problemas\n\n💡 Tip: Revisa la sección de "Citas" para gestionar las citas asociadas.`;
+      } else {
+        mensajeError = `Error al eliminar el servicio "${eliminarModal.servicioNombre}".\n\nPor favor, intente nuevamente o contacte al administrador del sistema.`;
+      }
+      
+      alert(mensajeError);
       setEliminarModal({ isOpen: false, servicioId: null, servicioNombre: '' });
     }
   };
