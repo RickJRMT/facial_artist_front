@@ -30,7 +30,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         estado: 'activo',
         idHorario: null
     });
-    const [isEditMode, setIsEditMode] = useState(false); // NUEVO: Controla POST vs PUT
+    const [isEditMode, setIsEditMode] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
     const [mensaje, setMensaje] = useState('');
@@ -41,27 +41,56 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         setLoading(true);
         setError(null);
         try {
-            const [allCitasEvents, allHorariosEvents, statsData, pros] = await Promise.all([
+            const [allCitasResponse, allHorariosResponse, statsData, pros] = await Promise.all([
                 getAllCitas(),
                 getAllHorarios(),
                 getEstadisticasCitas(),
                 getAllProfesionales()
             ]);
-            const citasEventsWithProps = (allCitasEvents || []).filter(ev => ev && ev.title).map(ev => ({
+
+            const allCitasEvents = allCitasResponse.eventosParaCalendario || [];
+            const citasEventsWithProps = allCitasEvents.filter(ev => ev && ev.title).map(ev => ({
                 ...ev,
                 extendedProps: {
+                    ...ev.extendedProps,
                     nombreProfesional: ev.extendedProps?.nombreProfesional || (ev.title || '').split(' - ')[0] || 'N/A',
                     descripcionServicio: ev.extendedProps?.descripcionServicio || (ev.title || '').split(' - ')[1] || ''
                 }
             })).filter(ev => ev.extendedProps.nombreProfesional !== 'N/A' || ev.extendedProps.descripcionServicio);
-            const horariosEventsWithProps = (allHorariosEvents || []).filter(ev => ev && ev.title).map(ev => ({
-                ...ev,
-                extendedProps: {
-                    estado: ev.extendedProps?.estado || (ev.title.includes('Activo') ? 'activo' : 'inactivo'),
-                    nombreProfesional: ev.extendedProps?.nombreProfesional || 'N/A',
-                    idHorario: ev.id
+
+            // FIX: Maneja si allHorariosResponse es array directo o {eventosParaCalendario}
+            const allHorariosEvents = Array.isArray(allHorariosResponse) ? allHorariosResponse : allHorariosResponse.eventosParaCalendario || [];
+
+            const horariosEventsWithProps = allHorariosEvents.filter(ev => ev && ev.title).map(ev => {
+                let nombreProfesional = ev.extendedProps?.nombreProfesional || 'N/A';
+                if (nombreProfesional === 'N/A' && ev.idProfesional) {
+                    const pro = pros.find(p => p.idProfesional === ev.idProfesional);
+                    nombreProfesional = pro ? pro.nombreProfesional : 'N/A';
                 }
-            }));
+                const estado = ev.extendedProps?.estado || (ev.title.includes('Activo') ? 'activo' : 'inactivo');
+                const estadoText = estado === 'activo' ? 'Activo' : 'Inactivo';
+                const titleWithEstado = `${nombreProfesional} - ${estadoText}`; // Título con nombre + estado como en el original
+                // FIX: Usa raw fecha del backend para evitar timezone issues en fechas futuras
+                const fechaRaw = ev.extendedProps?.fechaLocal || ev.start.split('T')[0]; // Usa raw o start
+                const horaInicioRaw = ev.start.split('T')[1] || ev.extendedProps?.hora_inicio;
+                const horaFinRaw = ev.end.split('T')[1] || ev.extendedProps?.hora_fin;
+                const startStr = `${fechaRaw}T${horaInicioRaw}`;
+                const endStr = `${fechaRaw}T${horaFinRaw}`;
+
+                return {
+                    ...ev,
+                    title: ev.title || titleWithEstado, // Forzar título si no viene del backend
+                    start: startStr,
+                    end: endStr,
+                    extendedProps: {
+                        estado,
+                        nombreProfesional,
+                        idHorario: ev.id,
+                        idProfesional: ev.idProfesional || ev.extendedProps?.idProfesional
+                    }
+                };
+            });
+
             const combinedEvents = [...citasEventsWithProps, ...horariosEventsWithProps];
             const finalEvents = combinedEvents.map(ev => {
                 const solapHorario = horariosEventsWithProps.find(h => h.extendedProps.estado === 'inactivo' && h.start <= ev.start && h.end >= ev.end);
@@ -70,6 +99,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 }
                 return ev;
             });
+
             setEventos(finalEvents);
             setStats(statsData || { totalCitas: 0, citasPendientes: 0, citasConfirmadas: 0 });
             setProfesionales(pros || []);
@@ -115,6 +145,53 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         }
     };
 
+    // VALIDACIÓN: Verifica citas raw en rango para pro/fecha, con duración de cita (replica backend)
+    const checkCitasInHorario = async (fecha, horaInicio, horaFin, idProfesional) => {
+        try {
+            let fechaNorm = fecha;
+            if (fechaNorm.includes('T')) {
+                fechaNorm = fechaNorm.split('T')[0];
+            }
+
+
+            // Obtén full data
+            const todasCitasResponse = await getAllCitas();
+            const todasCitas = todasCitasResponse.citas || []; // Raw con idProfesional, fechaCita, horaCita, servDuracion
+
+
+            // Filtrar por fecha y pro
+            const citasDiaPro = todasCitas.filter(cita => {
+                const fechaCitaNorm = cita.fechaCita ? (typeof cita.fechaCita === 'string' ? cita.fechaCita.split('T')[0] : new Date(cita.fechaCita).toISOString().split('T')[0]) : null;
+                const matchesFecha = fechaCitaNorm === fechaNorm;
+                const matchesPro = parseInt(cita.idProfesional, 10) === parseInt(idProfesional, 10);
+                return matchesFecha && matchesPro;
+            });
+
+            if (citasDiaPro.length === 0) {
+                return false;
+            }
+
+            // FIX: Chequea overlap con duración de cita (replica backend: cita_start < hora_fin && cita_end > hora_inicio)
+            const inicio = new Date(`2000-01-01T${horaInicio}:00`).getTime();
+            const fin = new Date(`2000-01-01T${horaFin}:00`).getTime();
+
+            const hasSolapamiento = citasDiaPro.some(cita => {
+                // FIX: Parse horaCita a 'HH:mm' (quita segundos si 'HH:mm:ss')
+                const horaCitaStr = cita.horaCita ? cita.horaCita.split(':').slice(0, 2).join(':') : '';
+                const citaInicio = new Date(`2000-01-01T${horaCitaStr}:00`).getTime();
+                const citaDuracionMin = cita.servDuracion || 60; // Default 60min si no hay
+                const citaFin = citaInicio + (citaDuracionMin * 60 * 1000);
+                const overlap = citaInicio < fin && citaFin > inicio;
+                return overlap;
+            });
+
+            return hasSolapamiento;
+        } catch (err) {
+            console.error('Error en validación citas:', err);
+            return false; // Fallback: No bloquea si error
+        }
+    };
+
     useEffect(() => {
         fetchAllData();
     }, []);
@@ -135,7 +212,10 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const fechaFormatted = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(startLocal);
             const horaFormatted = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(startLocal);
             if (isHorario) {
+                const idProfesional = eventoFull.extendedProps?.idProfesional || '';
                 setCitaSeleccionada({
+                    ...eventoFull.extendedProps,
+                    idProfesional,
                     nombreProfesional: eventoFull.extendedProps?.nombreProfesional || 'N/A',
                     fecha: fechaLocal,
                     hora: horaLocal,
@@ -144,6 +224,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                     descripcion: title,
                     idHorario: eventoFull.id,
                     estado: eventoFull.extendedProps.estado,
+                    hora_inicio: horaLocal,
                     hora_fin: eventoFull.end ? new Date(eventoFull.end).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : null
                 });
                 return;
@@ -166,7 +247,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         fetchHorariosByDate(fecha);
     };
 
-    // ABRIR MODAL PARA CREAR NUEVO (POST)
     const openModal = () => {
         setFormData({
             idProfesional: '',
@@ -176,18 +256,16 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             estado: 'activo',
             idHorario: null
         });
-        setIsEditMode(false); // SOLO POST
+        setIsEditMode(false);
         setShowModal(true);
         setError(null);
     };
 
-    // ABRIR MODAL PARA EDITAR (PUT)
     const openEditModal = (horario) => {
-
         const idProfesional = horario.idProfesional ||
             profesionales.find(p => p.nombreProfesional === horario.nombreProfesional)?.idProfesional || '';
 
-        const fecha = horario.fecha
+        let fecha = horario.fecha
             ? (typeof horario.fecha === 'string' ? horario.fecha.split('T')[0] : new Date(horario.fecha).toISOString().split('T')[0])
             : '';
 
@@ -199,7 +277,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             estado: horario.estado || 'activo',
             idHorario: horario.idHorario
         });
-        setIsEditMode(true); // SOLO PUT
+        setIsEditMode(true);
         setShowModal(true);
         setError(null);
     };
@@ -215,10 +293,9 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
     };
 
     const handleGuardarHorario = async () => {
-
         const payload = {
             ...formData,
-            hora_inicio: formData.hora_inicio, // ← Ya está en HH:mm
+            hora_inicio: formData.hora_inicio,
             hora_fin: formData.hora_fin
         };
 
@@ -235,11 +312,9 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             let responseData;
 
             if (isEditMode && formData.idHorario) {
-                // PUT: Actualizar
                 responseData = await updateHorario(formData.idHorario, formData);
                 setMensaje('Horario actualizado correctamente');
             } else {
-                // POST: Crear nuevo
                 responseData = await createHorario(formData);
                 setMensaje('Horario creado correctamente');
             }
@@ -273,13 +348,13 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         showModal,
         formData,
         setFormData,
-        isEditMode, // NUEVO: para el modal
+        isEditMode,
         loading,
         error,
         handleSelectEvent,
         handleDateClick,
-        openModal,        // SOLO POST
-        openEditModal,    // SOLO PUT
+        openModal,
+        openEditModal,
         handleGuardarHorario,
         setShowModal,
         fetchAllData,
@@ -289,6 +364,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         mensaje,
         setShowSuccess,
         setShowError,
-        setMensaje
+        setMensaje,
+        checkCitasInHorario
     };
 };
