@@ -9,7 +9,6 @@ import ModalCitaExitosa from './components/layout/ModalCitaSolicitada.jsx';
 import Homecliente from './pages/homeCliente.jsx';
 import Adminpage from './pages/AdminPage.jsx';
 import SolicitarCitaCard from './pages/SolicitarCitaAdmin.jsx'; 
-
 function App() {
   return (
     <BrowserRouter>
@@ -25,7 +24,6 @@ function App() {
         <Route path='/homecliente' element={< Homecliente />} />
         <Route path='/admin' element={< Adminpage />} />
         <Route path='/adminCita' element={< SolicitarCitaCard />} />
-        {/* Opcional: redirección para rutas no encontradas */}
         <Route path="*" element={<Homecliente />} />
       </Routes>
     </BrowserRouter>
