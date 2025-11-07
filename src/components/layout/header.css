@@ -1,100 +1,350 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
+/* Variables globales en español */
+:root {
+  /* Colores principales */
+  --color-fondo-header: #000;
+  --color-texto-principal: #fff;
+  --color-dorado-elegante: #c9a56a;
+  --color-dorado-fuerte: #FFB81C;
+  --color-dorado-hover: #e0a700;
+  --color-texto-negro: #000;
+  --color-texto-gris: #333;
+  --color-fondo-modal: #fff;
+  --color-fondo-card: #f8f6f0;
+  --color-borde-card: #e8e2d5;
+  --color-sombra-negra: rgba(0, 0, 0, 0.5);
+  --color-sombra-suave: rgba(0, 0, 0, 0.25);
+  --color-overlay-modal: rgba(0, 0, 0, 0.6);
+
+  /* Tipografía */
+  --fuente-principal: sans-serif;
+  --tamano-texto-normal: 1rem;
+  --tamano-texto-pequeno: 0.9rem;
+  --tamano-texto-subtitulo: 1.5rem;
+
+  /* Espaciados */
+  --espacio-pequeno: 0.5rem;
+  --espacio-medio: 1rem;
+  --espacio-grande: 1.5rem;
+  --espacio-extra: 2rem;
+
+  /* Botones principales */
+  --color-boton-fondo: #222;
+  --color-boton-texto: #ffd600;
+  --color-boton-hover: #444;
 }
 
+/* Reset global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--fuente-principal);
+}
+
+/* Header principal */
 .header {
-    background-color: #000;
-    padding: 20px 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  background-color: var(--color-fondo-header);
+  padding: var(--espacio-extra);
+  box-shadow: 0 2px 4px var(--color-sombra-negra);
 }
 
 .header__container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+/* Logo */
 .header__logo {
-    max-height: auto;
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .header__logo img {
-    max-height: 20px;
-    width: auto;
-    transform: scale(3);
-    transform-origin: left center;
-    margin-left: 1rem;
+  max-height: 20px;
+  width: auto;
+  transform: scale(3);
+  transform-origin: left center;
+  margin-left: var(--espacio-medio);
 }
 
+/* Navegación principal */
 .header__nav {
-    display: flex; 
-    justify-content: flex-start;
-    align-items: center;
-    gap: 25px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
 }
 
 .header__nav-item {
-    position: relative;
-    margin-left: 0;
+  position: relative;
 }
 
-/* Solo los enlaces principales con el dorado elegante */
+/* Enlaces principales del menú */
 .header__nav a.main-nav-link {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
+  color: var(--color-texto-principal);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .header__nav a.main-nav-link:hover {
-    color: #c9a56a; /* dorado elegante solo para el menú principal */
+  color: var(--color-dorado-elegante);
 }
 
-/* Estilo para el submenú */
+/* Submenú */
 .header__submenu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #000;
-    list-style: none;
-    padding: 0;
-    min-width: 200px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    display: none;
-    border-radius: 8px; /* Bordes redondeados */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--color-fondo-header);
+  list-style: none;
+  min-width: 200px;
+  box-shadow: 0 2px 4px var(--color-sombra-negra);
+  border-radius: 8px;
+  display: none;
+  z-index: 1000;
 }
 
-/* Mostrar el submenú cuando el usuario pasa el mouse sobre el ítem */
 .header__nav-item:hover .header__submenu {
-    display: block;
+  display: block;
 }
 
 .header__submenu li {
-    padding: 8px 15px; /* Menos espacio alrededor del texto */
+  padding: 8px 15px;
 }
 
-/* Estilo para los enlaces dentro del submenú */
+/* Botones del submenú */
 .header__submenu li a {
-    color: #000000;
-    text-decoration: none;
-    font-weight: 600; /* Texto más grueso */
-    display: block;
-    font-size: 14px; /* Fuente más pequeña */
-    text-align: center; /* Centrar el texto en los botones */
-    background-color: #FFB81C; /* Fondo amarillo dorado */
-    padding: 6px 12px; /* Menos padding en los botones */
-    border-radius: 8px; /* Bordes redondeados para los botones */
-    transition: background-color 0.3s ease, transform 0.3s ease;
+  color: var(--color-texto-negro);
+  text-decoration: none;
+  font-weight: 600;
+  display: block;
+  font-size: 14px;
+  text-align: center;
+  background-color: var(--color-dorado-fuerte);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-/* Efecto hover para los enlaces del submenú */
 .header__submenu li a:hover {
-    background-color: #e0a700; /* Color dorado más oscuro en hover */
-    transform: translateY(-3px); /* Desplazamiento hacia arriba con menos intensidad */
+  background-color: var(--color-dorado-hover);
+  transform: translateY(-3px);
+}
+
+/* Modal - fondo oscuro */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay-modal);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Contenido común de los modales */
+.modal-content {
+  background: var(--color-fondo-modal);
+  padding: var(--espacio-extra);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: var(--color-texto-gris);
+  text-align: center;
+  font-size: var(--tamano-texto-subtitulo);
+}
+
+/* Formulario del modal */
+.form-group {
+  margin-bottom: var(--espacio-medio);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--espacio-pequeno);
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: var(--tamano-texto-normal);
+}
+
+/* Botones del modal */
+.modal-actions .btn-consultar,
+.modal-actions .btn-cancel {
+  background: var(--color-boton-fondo);
+  color: var(--color-boton-texto);
+  font-weight: bold;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.modal-actions .btn-consultar:hover,
+.modal-actions .btn-cancel:hover {
+  background: var(--color-boton-hover);
+}
+
+.btn-consultar:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Enlace tipo botón del submenú */
+.submenu-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: var(--color-dorado-fuerte);
+  color: var(--color-texto-negro);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.submenu-link:hover {
+  background-color: var(--color-dorado-hover);
+  transform: translateY(-3px);
+}
+
+/* Mensaje de error */
+.error {
+  color: red;
+  font-size: var(--tamano-texto-pequeno);
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+/* Contenedor de botones del modal */
+.modal-actions {
+  margin-top: 1.8rem;
+  display: flex;
+  gap: var(--espacio-medio);
+}
+
+.modal-content .modal-actions {
+  justify-content: flex-end;
+}
+
+.detalle-modal .modal-actions {
+  justify-content: center;
+}
+
+/* Modal de detalle de cita */
+.detalle-modal {
+  background: var(--color-fondo-modal);
+  padding: var(--espacio-extra);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 15px 40px var(--color-sombra-suave);
+  position: relative;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.detalle-modal h2 {
+  margin: 0 0 var(--espacio-grande);
+  text-align: center;
+  color: #222;
+  font-size: var(--tamano-texto-subtitulo);
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-dorado-elegante);
+  padding-bottom: var(--espacio-pequeno);
+}
+
+/* Tarjeta del detalle de la cita */
+.cita-card {
+  background: var(--color-fondo-card);
+  padding: 1.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-borde-card);
+  font-size: var(--tamano-texto-normal);
+  line-height: 1.7;
+}
+
+/* Cada fila del detalle en color negro */
+.cita-card p {
+  margin: 0.75rem 0;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: #000; /* ← Ahora el texto de cada detalle es negro */
+}
+
+.cita-card strong {
+  color: var(--color-texto-negro); /* También negro */
+  min-width: 120px;
+  font-weight: 600;
+}
+
+/* Animación de entrada */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 480px) {
+  .detalle-modal {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .cita-card {
+    padding: 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .cita-card p {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .cita-card strong {
+    min-width: auto;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions .btn-consultar,
+  .modal-actions .btn-cancel {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .modal-content .modal-actions,
+  .detalle-modal .modal-actions {
+    justify-content: center;
+  }
 }

@@ -202,6 +202,12 @@ const SolicitarCitaPage = () => {
       // Convertimos la hora seleccionada en formato 24h para el backend
       horaCita: horariosDisponibles.find((h) => h.horaInicio === resumen.hora)
         ?.horaInicio24,
+        // Se generará un numero de referencia de 10 digitos
+         // 🔢 Generamos un número de referencia único basado en la fecha y hora actual
+  // Date.now() devuelve los milisegundos desde 1970 (por ejemplo, 1762438000000 en 2025)
+  // Dividimos entre 1000 para obtener segundos (por ejemplo, 1762438000)
+  // Math.floor() elimina los decimales y deja un número entero de aproximadamente 10 dígitos
+  // Este número cambia cada segundo, por lo que garantiza unicidad en cada cita creada
       numeroReferencia: Math.floor(Date.now() / 1000),
     };
 

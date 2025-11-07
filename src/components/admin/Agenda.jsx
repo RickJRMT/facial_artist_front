@@ -4,7 +4,7 @@ import ModalGestionHoraria from '../layout/ModalGestionHoraria';
 import ModalMensaje from '../layout/ModalMensaje';
 import CalendarioGestionHoraria from '../layout/CalendarioGestionHoraria';
 import './Agenda.css';
-import moment from 'moment'; // ← Asegúrate de tenerlo para formateo local
+import moment from 'moment';
 
 const Agenda = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -12,22 +12,34 @@ const Agenda = () => {
     const {
         eventos, citaSeleccionada, selectedDateCitas, selectedDateHorarios, profesionales, showModal, formData, setFormData, loading, error,
         handleSelectEvent, handleDateClick, openModal, openEditModal, handleGuardarHorario, setShowModal, isEditMode,
-        showSuccess, showError, mensaje, setShowSuccess, setShowError, setMensaje
+        showSuccess, showError, mensaje, setShowSuccess, setShowError, setMensaje, checkCitasInHorario
     } = useGestionHoraria();
 
     const handleDatesSet = (arg) => {
         setCurrentDate(new Date(arg.start));
     };
 
+    // HANDLER DE EDITAR CON VALIDACIÓN
+    const handleEditHorario = async (horario) => {
+
+        const hasCitas = await checkCitasInHorario(horario.fecha, horario.hora_inicio, horario.hora_fin, horario.idProfesional);
+
+        if (hasCitas) {
+            setMensaje('No se puede editar ya que hay citas agendadas en este horario.');
+            setShowError(true);
+            return; // BLOQUEA: No abre modal
+        }
+        // Si no hay, abre modal normal
+        openEditModal(horario);
+    };
+
     if (loading) return <div className="gh-carga-calendario">Cargando calendario...</div>;
     if (error) return <div className="gh-error-calendario">Error: {error}</div>;
 
-    // FIX: Filtrar por tipo: Citas vs Horarios (sin duplicados)
     const isBloque = !!citaSeleccionada;
     let citasItems = [];
     let horariosItems = [];
     if (isBloque) {
-        // Bloque: Clasificar el seleccionado
         const item = citaSeleccionada;
         if (item.estado && (item.estado === 'activo' || item.estado === 'inactivo')) {
             horariosItems = [item];
@@ -35,7 +47,6 @@ const Agenda = () => {
             citasItems = [item];
         }
     } else {
-        // Día: Combina y filtra por tipo/uniques
         const allCitas = selectedDateCitas || [];
         const allHorarios = selectedDateHorarios || [];
         citasItems = allCitas.filter((item, index, self) =>
@@ -47,7 +58,6 @@ const Agenda = () => {
     }
     const hasHorarioInDay = horariosItems.length > 0;
 
-    // FIX: Formateo prioriza hook/backend, fallback a Moment local (evita merma)
     const formatFecha = (item) => {
         if (item.fechaFormatted || item.fechaLocal) {
             return item.fechaFormatted || item.fechaLocal;
@@ -61,7 +71,6 @@ const Agenda = () => {
         }
     };
 
-    // FIX: Hora prioriza hook, fallback a raw; para horarios, soporta rango
     const formatHora = (item, isRango = false) => {
         if (item.horaFormatted) {
             return item.horaFormatted;
@@ -83,7 +92,6 @@ const Agenda = () => {
         }
     };
 
-    // Render card para citas (sin editar)
     const renderCitaCard = (item, index) => (
         <div key={item.idCita || index} className="gh-card-evento gh-card-cita">
             <div className="gh-card-header">
@@ -94,21 +102,43 @@ const Agenda = () => {
                 <p><strong>Fecha:</strong> {formatFecha(item)}</p>
                 <p><strong>Hora:</strong> {formatHora(item)}</p>
                 <p><strong>Descripción:</strong> {item.descripcion || item.descripcionServicio || 'N/A'}</p>
+                <p><strong>Estado:</strong> {item.estadoCita || 'N/A'}</p> {/* FIX: Muestra estado de cita */}
             </div>
         </div>
     );
 
-    // Render card para horarios (con botón editar)
     const renderHorarioCard = (item, index) => {
         const estadoText = item.estado === 'activo' ? 'Activo' : 'Inactivo (No reservable)';
         const estadoIcon = item.estado === 'activo' ? '🟢' : '🔴';
 
+        let idProfesional = item.idProfesional;
+        if (!idProfesional) {
+            const pro = profesionales.find(p => p.nombreProfesional === item.nombreProfesional);
+            idProfesional = pro ? pro.idProfesional : '';
+        }
+        if (!idProfesional) {
+            console.warn('No se pudo obtener idProfesional para:', item);
+            return null;
+        }
+
+        let fecha = item.fecha;
+        if (!fecha && item.fechaFormatted) {
+            const [dd, mm, yyyy] = item.fechaFormatted.split('/');
+            fecha = `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+        }
+        if (fecha && fecha.includes('T')) {
+            fecha = fecha.split('T')[0];
+        }
+
+        const horaInicio24 = item.hora_inicio || item.hora || '';
+        const horaFin24 = item.hora_fin || '';
+
         const horarioNormalizado = {
-            idHorario: item.idHorario,
-            idProfesional: profesionales.find(p => p.nombreProfesional === item.nombreProfesional)?.idProfesional || '',
-            fecha: item.fecha || item.fechaFormatted?.split('/').reverse().join('-') || '',
-            hora_inicio: item.hora_inicio || item.horaFormatted?.split(' ')[0] || '',
-            hora_fin: item.hora_fin || '',
+            idHorario: item.idHorario || item.id,
+            idProfesional: idProfesional,
+            fecha: fecha || '',
+            hora_inicio: horaInicio24,
+            hora_fin: horaFin24,
             estado: item.estado,
             nombreProfesional: item.nombreProfesional
         };
@@ -121,12 +151,12 @@ const Agenda = () => {
                 </div>
                 <div className="gh-card-body">
                     <p><strong>Fecha:</strong> {formatFecha(item)}</p>
-                    <p><strong>Hora:</strong> {formatHora(item, true)} {/* ← Rango para horarios */}</p>
+                    <p><strong>Hora:</strong> {formatHora(item, true)}</p>
                     <p><strong>Estado:</strong> {estadoText}</p>
                     <div className="gh-card-actions">
                         <button
                             className="gh-boton-editar-horario-card"
-                            onClick={() => openEditModal(horarioNormalizado)}
+                            onClick={() => handleEditHorario(horarioNormalizado)}
                         >
                             ✏️ Editar
                         </button>
@@ -169,7 +199,7 @@ const Agenda = () => {
                                 <div className="gh-sección-estados">
                                     <h4 className="gh-sección-título">Estados de Agenda</h4>
                                     <div className="gh-contenedor-cards">
-                                        {horariosItems.map((item, index) => renderHorarioCard(item, index))}
+                                        {horariosItems.map((item, index) => renderHorarioCard(item, index)).filter(Boolean)}
                                     </div>
                                 </div>
                             )}

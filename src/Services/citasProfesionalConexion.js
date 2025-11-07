@@ -17,17 +17,17 @@ citasProfesionalApi.interceptors.response.use(
 
 export const getAllCitas = async () => {
     const response = await citasProfesionalApi.get('/citas-profesional/all');
-    return response.data.eventosParaCalendario || [];
+    return response.data; // ← CAMBIO: Full data ({ citas: raw, eventosParaCalendario })
 };
 
 export const getCitasByProfesional = async (idProfesional) => {
     const response = await citasProfesionalApi.get(`/citas-profesional/profesional/${idProfesional}`);
-    return response.data.eventosParaCalendario || [];
+    return response.data.eventosParaCalendario || []; // Mantiene para compatibilidad
 };
 
 export const getCitasByDate = async (fecha) => {
     const response = await citasProfesionalApi.get(`/citas-profesional/date/${fecha}`);
-    return response.data;
+    return response.data; // ← CAMBIO: Full data (raw con idProfesional)
 };
 
 export const getEstadisticasCitas = async () => {
