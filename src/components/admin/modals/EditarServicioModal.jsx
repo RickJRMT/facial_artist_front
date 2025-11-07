@@ -114,7 +114,12 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
 
     switch (name) {
       case 'nombre':
-        if (value.trim() === '') {
+        // Solo permitir letras, números y espacios
+        const nombreRegex = /^[a-zA-Z0-9\s]*$/;
+        if (!nombreRegex.test(value)) {
+          error = 'El nombre solo puede contener letras, números y espacios';
+          return; // No actualizar el valor si contiene caracteres no permitidos
+        } else if (value.trim() === '') {
           error = 'El nombre es obligatorio';
         }
         break;
@@ -146,10 +151,13 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
         break;
 
       case 'duracion':
-        if (value === '') {
+        // Solo permitir números
+        const duracionRegex = /^\d*$/;
+        if (!duracionRegex.test(value)) {
+          error = 'Solo se permiten números en la duración';
+          return; // No actualizar el valor si contiene caracteres no permitidos
+        } else if (value === '') {
           error = 'La duración es obligatoria';
-        } else if (!/^\d+$/.test(value)) {
-          error = 'Ingrese solo números';
         } else if (parseInt(value) <= 0) {
           error = 'La duración debe ser mayor a 0';
         }

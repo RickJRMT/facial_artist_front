@@ -164,6 +164,16 @@ const ServiciosView = () => {
     return buttons;
   };
 
+  // Función para manejar el cambio en el campo de búsqueda con validación
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    // Solo permitir letras, números y espacios
+    const searchRegex = /^[a-zA-Z0-9\s]*$/;
+    if (searchRegex.test(value)) {
+      setSearchTerm(value);
+    }
+  };
+
   const handleNuevoServicio = () => {
     setModalOpen(true);
   };
@@ -431,7 +441,7 @@ const ServiciosView = () => {
             placeholder="Buscar servicios por nombre..."
             className="servicios-search-input"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
       </div>
