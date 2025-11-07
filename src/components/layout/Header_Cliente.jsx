@@ -95,7 +95,7 @@ const Header = () => {
     setError("");            // Limpia cualquier mensaje de error
     setLoading(false);       // Asegura que loading esté en false
   };
-  { isDetalleOpen && cita && console.log("CITA RECIBIDA:", cita) }
+ 
   return (
     <header className="header">
       {/* Contenedor principal del encabezado */}
@@ -152,7 +152,7 @@ const Header = () => {
 
           {/* Enlace al inicio de sesión de administración */}
           <Link to="/admin" className="main-nav-link">
-            Iniciar sesión
+            Iniciar sesión Administrador
           </Link>
         </nav>
       </div>

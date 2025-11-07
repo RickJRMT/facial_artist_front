@@ -21,9 +21,6 @@ export function useProfesionales() {
         // Llamamos a la función que consulta la API o base de datos y trae los profesionales.
         const data = await obtenerProfesionales();
 
-        // Debug: Mostrar profesionales cargados
-        console.log('Profesionales cargados:', data);
-
         // Guardamos la lista de profesionales en el estado local.
         setProfesionales(data);
 

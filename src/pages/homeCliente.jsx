@@ -12,6 +12,7 @@ import deposito from '../assets/img/stickers/donacion.png';
 import actualizar from '../assets/img/stickers/actualizar.png';
 import devoluciones from '../assets/img/stickers/devoluciones-faciles.png';
 import ServicioCardGrid from '../components/views/ServicioCard.jsx';
+import { Link } from "react-router-dom";
 
 
 const Homecliente = () => {
@@ -33,7 +34,9 @@ const Homecliente = () => {
                                 Tratamientos profesionales de diseño de cejas, micropigmentación y labios perfectos.
                                 Resultados armoniosos, personalizados y duraderos.
                             </h2>
-                            <button className="btn_reservarcita animar_entrada delay3">Reservar cita</button>
+                            <Link to="/cita">
+                                <button className="btn_reservarcita animar_entrada delay3">Reservar cita</button>
+                            </Link>
                         </div>
 
                     </section>

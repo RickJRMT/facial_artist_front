@@ -425,6 +425,28 @@
   display: inline-block;
 }
 
+.lista-citas td span.iniciada {
+  background-color: #f8d7da;
+  /* rojo claro */
+  color: #2014c4;
+  /* rojo oscuro */
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.lista-citas td span.finalizada {
+  background-color: #3d3c3c;
+  /* rojo claro */
+  color: #d5d2fa;
+  /* rojo oscuro */
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
 /* Estado por defecto para otros estados */
 .lista-citas td span.otroEstado {
   background-color: #e2e3e5;

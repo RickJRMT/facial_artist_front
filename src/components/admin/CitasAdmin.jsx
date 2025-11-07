@@ -83,6 +83,8 @@ export default function CitasAdmin() {
             case "confirmada": return "confirmada";   // Verde
             case "cancelada": return "cancelada";     // Rojo
             case "pendiente": return "pendiente";     // Amarillo
+            case "iniciada": return "iniciada";     // Amarillo
+            case "finalizada": return "finalizada";     // Amarillo
             default: return "otroEstado";             // Gris
         }
     }
