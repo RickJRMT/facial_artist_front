@@ -101,7 +101,7 @@ const Agenda = () => {
     const renderCitaCard = (item, index) => (
         <div key={item.idCita || index} className="gh-card-evento gh-card-cita">
             <div className="gh-card-header">
-                <span className="gh-estado-icon">�</span>
+                <span className="gh-estado-icon">👤</span>
                 <h4>{item.nombreCliente || `${item.nombreCliente || ''} ${item.apellidoCliente || ''}`.trim() || 'Cliente no especificado'}</h4>
             </div>
             <div className="gh-card-body">
@@ -230,7 +230,6 @@ const Agenda = () => {
                     setFormData={setFormData}
                     profesionales={profesionales}
                     handleGuardarHorario={handleGuardarHorario}
-                    error={error}
                     onClose={() => setShowModal(false)}
                     isEditMode={isEditMode}
                 />

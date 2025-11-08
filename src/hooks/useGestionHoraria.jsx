@@ -170,7 +170,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 const citaInicio = new Date(`2000-01-01T${horaCitaStr}:00`);
                 const citaDuracionMin = cita.servDuracion || 60;
                 const citaFin = new Date(citaInicio.getTime() + (citaDuracionMin * 60 * 1000));
-                
+
                 return {
                     ...cita,
                     horaInicio: horaCitaStr,
@@ -188,8 +188,8 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 return cita.inicioTime < fin && cita.finTime > inicio;
             });
 
-            return { 
-                hasCitas: citasEnConflicto.length > 0, 
+            return {
+                hasCitas: citasEnConflicto.length > 0,
                 citas: citasConHorarios,
                 citasEnConflicto: citasEnConflicto
             };
@@ -202,9 +202,9 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
     // Nueva función para validar si una modificación de horario es válida
     const validateHorarioModification = async (horarioOriginal, nuevoHorario) => {
         const { citas } = await checkCitasInHorario(
-            horarioOriginal.fecha, 
-            horarioOriginal.hora_inicio, 
-            horarioOriginal.hora_fin, 
+            horarioOriginal.fecha,
+            horarioOriginal.hora_inicio,
+            horarioOriginal.hora_fin,
             horarioOriginal.idProfesional
         );
 
@@ -221,10 +221,10 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         });
 
         if (citasNoContempladas.length > 0) {
-            const horariosAfectados = citasNoContempladas.map(cita => 
+            const horariosAfectados = citasNoContempladas.map(cita =>
                 `${cita.horaInicio}-${cita.horaFin}`
             ).join(', ');
-            
+
             return {
                 esValido: false,
                 mensaje: `No se puede modificar: hay citas agendadas en ${horariosAfectados} que quedarían fuera del nuevo horario.`,
@@ -365,7 +365,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         if (validationError) {
             setMensaje(validationError);
             setShowError(true);
-            setError(validationError);
             return;
         }
 
@@ -375,7 +374,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             // Si estamos editando, validar que no afecte citas existentes
             if (isEditMode && formData.idHorario) {
                 // Obtener el horario original para comparar
-                const horarioOriginal = eventos.find(e => 
+                const horarioOriginal = eventos.find(e =>
                     e.id === formData.idHorario || e.extendedProps?.idHorario === formData.idHorario
                 );
 
@@ -424,7 +423,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 setMensaje(errMsg);
             }
             setShowError(true);
-            setError(errMsg);
             console.error('Error en guardar:', err);
         }
     };
