@@ -33,7 +33,7 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
   const isFormValid = () => {
     return (
       formData.nombre.trim() !== '' &&
-      formData.descripcion.length >= 50 &&
+      formData.descripcion.length >= 10 &&
       formData.precio.trim() !== '' &&
       formData.duracion.trim() !== '' &&
       formData.imagen !== null &&
@@ -67,7 +67,12 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
 
     switch (name) {
       case 'nombre':
-        if (value.trim() === '') {
+        // Solo permitir letras, números y espacios
+        const nombreRegex = /^[a-zA-Z0-9\s]*$/;
+        if (!nombreRegex.test(value)) {
+          error = 'El nombre solo puede contener letras, números y espacios';
+          return; // No actualizar el valor si contiene caracteres no permitidos
+        } else if (value.trim() === '') {
           error = 'El nombre es obligatorio';
         }
         break;
@@ -75,8 +80,8 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
       case 'descripcion':
         if (value.trim() === '') {
           error = 'La descripción es obligatoria';
-        } else if (value.length < 50) {
-          error = `La descripción debe tener al menos 50 caracteres. Actualmente: ${value.length}`;
+        } else if (value.length < 10) {
+          error = `La descripción debe tener al menos 10 caracteres. Actualmente: ${value.length}`;
         }
         break;
 
@@ -99,10 +104,13 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
         break;
 
       case 'duracion':
-        if (value === '') {
+        // Solo permitir números
+        const duracionRegex = /^\d*$/;
+        if (!duracionRegex.test(value)) {
+          error = 'Solo se permiten números en la duración';
+          return; // No actualizar el valor si contiene caracteres no permitidos
+        } else if (value === '') {
           error = 'La duración es obligatoria';
-        } else if (!/^\d+$/.test(value)) {
-          error = 'Ingrese solo números';
         } else if (parseInt(value) <= 0) {
           error = 'La duración debe ser mayor a 0';
         }
@@ -184,6 +192,24 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
     }
 
     onSubmit(submitData);
+    
+    // Limpiar el formulario después de enviar exitosamente
+    setFormData({
+      nombre: '',
+      descripcion: '',
+      duracion: '',
+      precio: '',
+      imagen: null,
+      estado: 'activo'
+    });
+    setPreviewImage(null);
+    setErrors({
+      nombre: '',
+      descripcion: '',
+      precio: '',
+      duracion: '',
+      imagen: ''
+    });
   };
 
   // Función para limpiar el formulario

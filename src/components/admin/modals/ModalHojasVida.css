@@ -197,6 +197,43 @@
   font-size: 15px;
 }
 
+.mhv-loading {
+  text-align: center;
+  padding: 48px 24px;
+  color: #666;
+  font-size: 15px;
+}
+
+.mhv-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.mhv-hv-info {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.mhv-hv-fecha {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.mhv-hv-fecha strong {
+  color: #1a1a1a;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .mhv-modal {

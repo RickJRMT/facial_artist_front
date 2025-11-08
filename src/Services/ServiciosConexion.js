@@ -92,7 +92,7 @@ export const actualizarServicio = async (id, servicioData) => {
  * Elimina un servicio del sistema
  * @param {number} id - ID del servicio a eliminar
  * @returns {Promise<Object>} Resultado de la eliminación
- * @throws {Error} Si hay un error en la eliminación
+ * @throws {Error} Si hay un error en la eliminación (por ejemplo, si tiene citas activas)
  */
 export const eliminarServicio = async (id) => {
     try {
@@ -100,6 +100,16 @@ export const eliminarServicio = async (id) => {
         return response.data;
     } catch (error) {
         console.error('Error al eliminar servicio:', error);
+        
+        // Personalizar el mensaje de error según el tipo de respuesta del servidor
+        if (error.response?.status === 409 || error.response?.status === 400) {
+            // Error por conflicto - probablemente tiene citas asociadas
+            const errorMessage = error.response?.data?.message || 'El servicio tiene citas activas asociadas y no puede ser eliminado';
+            const customError = new Error(errorMessage);
+            customError.code = 'ACTIVE_APPOINTMENTS';
+            throw customError;
+        }
+        
         throw error;
     }
 };
