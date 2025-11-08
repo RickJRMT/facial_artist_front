@@ -23,12 +23,12 @@ const Agenda = () => {
     const handleEditHorario = async (horario) => {
         // Siempre permitir abrir el modal, pero con validaciones inteligentes
         openEditModal(horario);
-        
+
         // Cargar información sobre citas existentes para mostrar al usuario
         const { hasCitas, citas } = await checkCitasInHorario(
-            horario.fecha, 
-            horario.hora_inicio, 
-            horario.hora_fin, 
+            horario.fecha,
+            horario.hora_inicio,
+            horario.hora_fin,
             horario.idProfesional
         );
 
@@ -177,9 +177,7 @@ const Agenda = () => {
         <div className="gh-contenedor-agenda">
             <header className="gh-encabezado-agenda">
                 <h1>Gestión Horaria</h1>
-                <br />
-                <h3>Para visualizar las citas agendadas, selecciona un día específico que contenga el horario del profesional</h3>
-                <small>Solo se muestran los horarios de profesionales en el calendario. Las citas se visualizan al seleccionar un día.</small>
+                <small>Para visualizar las citas agendadas, selecciona un día específico que contenga el horario del profesional.</small>
             </header>
 
             <div className="gh-principal-agenda">
