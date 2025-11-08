@@ -98,6 +98,21 @@ const Agenda = () => {
         }
     };
 
+    const formatHoraRango = (horaInicio, duracionMin = 60) => {
+        try {
+            const inicio = new Date(`2000-01-01T${horaInicio}`);
+            const fin = new Date(inicio.getTime() + duracionMin * 60000);
+            const formatoHora = { hour: 'numeric', minute: '2-digit', hour12: true };
+            
+            const horaInicioStr = new Intl.DateTimeFormat('es-ES', formatoHora).format(inicio);
+            const horaFinStr = new Intl.DateTimeFormat('es-ES', formatoHora).format(fin);
+            
+            return `${horaInicioStr} - ${horaFinStr}`;
+        } catch {
+            return 'N/A';
+        }
+    };
+
     const renderCitaCard = (item, index) => (
         <div key={item.idCita || index} className="gh-card-evento gh-card-cita">
             <div className="gh-card-header">
@@ -107,7 +122,7 @@ const Agenda = () => {
             <div className="gh-card-body">
                 <p><strong>Profesional:</strong> {item.nombreProfesional || 'N/A'}</p>
                 <p><strong>Fecha:</strong> {formatFecha(item)}</p>
-                <p><strong>Hora:</strong> {formatHora(item)}</p>
+                <p><strong>Horario:</strong> {formatHoraRango(item.horaCita, item.servDuracion || 60)}</p>
                 <p><strong>Servicio:</strong> {item.descripcion || item.descripcionServicio || item.nombreServicio || 'N/A'}</p>
                 <p><strong>Estado:</strong> {item.estadoCita || 'N/A'}</p>
             </div>
@@ -158,7 +173,14 @@ const Agenda = () => {
                 </div>
                 <div className="gh-card-body">
                     <p><strong>Fecha:</strong> {formatFecha(item)}</p>
-                    <p><strong>Hora:</strong> {formatHora(item, true)}</p>
+                    <p><strong>Horario del Profesional:</strong> {(() => {
+                        const formatoHora = { hour: 'numeric', minute: '2-digit', hour12: true };
+                        const inicio = new Date(`2000-01-01T${horaInicio24}`);
+                        const fin = new Date(`2000-01-01T${horaFin24}`);
+                        const horaInicioStr = new Intl.DateTimeFormat('es-ES', formatoHora).format(inicio);
+                        const horaFinStr = new Intl.DateTimeFormat('es-ES', formatoHora).format(fin);
+                        return `${horaInicioStr} - ${horaFinStr}`;
+                    })()}</p>
                     <p><strong>Estado:</strong> {estadoText}</p>
                     <div className="gh-card-actions">
                         <button

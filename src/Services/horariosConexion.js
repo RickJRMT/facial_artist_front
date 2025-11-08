@@ -31,11 +31,41 @@ export const getHorariosByProfesional = async (idProfesional) => {
 };
 
 export const createHorario = async (data) => {
-    const response = await horariosApi.post('/horarios', data);
+    // Asegurar formato de hora correcto (HH:MM:SS)
+    const formatearHora = (hora) => {
+        if (!hora) return null;
+        // Si ya tiene los segundos, retornar tal cual
+        if (hora.split(':').length === 3) return hora;
+        // Si solo tiene horas y minutos, agregar segundos
+        return `${hora}:00`;
+    };
+
+    const horarioFormateado = {
+        ...data,
+        hora_inicio: formatearHora(data.hora_inicio),
+        hora_fin: formatearHora(data.hora_fin)
+    };
+
+    const response = await horariosApi.post('/horarios', horarioFormateado);
     return response.data;
 };
 
 export const updateHorario = async (id, data) => {
-    const response = await horariosApi.put(`/horarios/${id}`, data);
+    // Asegurar formato de hora correcto (HH:MM:SS)
+    const formatearHora = (hora) => {
+        if (!hora) return null;
+        // Si ya tiene los segundos, retornar tal cual
+        if (hora.split(':').length === 3) return hora;
+        // Si solo tiene horas y minutos, agregar segundos
+        return `${hora}:00`;
+    };
+
+    const horarioFormateado = {
+        ...data,
+        hora_inicio: formatearHora(data.hora_inicio),
+        hora_fin: formatearHora(data.hora_fin)
+    };
+
+    const response = await horariosApi.put(`/horarios/${id}`, horarioFormateado);
     return response.data;
 };

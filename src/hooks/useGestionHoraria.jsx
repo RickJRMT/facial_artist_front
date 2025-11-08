@@ -199,8 +199,48 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         }
     };
 
-    // Nueva función para validar si una modificación de horario es válida
+    // Validación específica para cambio de estado (activo/inactivo)
+    const validateEstadoChange = async (horarioOriginal, nuevoEstado) => {
+        // Si estamos activando un horario, siempre permitir
+        if (nuevoEstado === 'activo') {
+            return { esValido: true, mensaje: '' };
+        }
+
+        // Si estamos inactivando, verificar si hay citas
+        const { hasCitas, citas } = await checkCitasInHorario(
+            horarioOriginal.fecha,
+            horarioOriginal.hora_inicio,
+            horarioOriginal.hora_fin,
+            horarioOriginal.idProfesional
+        );
+
+        if (hasCitas) {
+            const horariosAfectados = citas.map(cita =>
+                `${cita.horaInicio}-${cita.horaFin}`
+            ).join(', ');
+
+            return {
+                esValido: true, // Permitimos inactivar aún con citas, pero mostramos advertencia
+                advertencia: `Hay citas agendadas en los siguientes horarios: ${horariosAfectados}. Las citas se mantendrán pero no se podrán agendar nuevas citas en este horario.`
+            };
+        }
+
+        return { esValido: true, mensaje: '' };
+    };
+
+    // Validación de modificación de horario
     const validateHorarioModification = async (horarioOriginal, nuevoHorario) => {
+        // Si solo estamos cambiando el estado, usar validación específica
+        if (
+            horarioOriginal.hora_inicio === nuevoHorario.hora_inicio &&
+            horarioOriginal.hora_fin === nuevoHorario.hora_fin &&
+            horarioOriginal.fecha === nuevoHorario.fecha &&
+            horarioOriginal.estado !== nuevoHorario.estado
+        ) {
+            return await validateEstadoChange(horarioOriginal, nuevoHorario.estado);
+        }
+
+        // Para otros cambios, validar que las citas queden dentro del nuevo horario
         const { citas } = await checkCitasInHorario(
             horarioOriginal.fecha,
             horarioOriginal.hora_inicio,
@@ -212,7 +252,6 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             return { esValido: true, mensaje: '' };
         }
 
-        // Verificar si el nuevo horario cubre todas las citas existentes
         const nuevoInicio = new Date(`2000-01-01T${nuevoHorario.hora_inicio}:00`).getTime();
         const nuevoFin = new Date(`2000-01-01T${nuevoHorario.hora_fin}:00`).getTime();
 
@@ -233,7 +272,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             };
         }
 
-        return { esValido: true, mensaje: 'Modificación válida' };
+        return { esValido: true, mensaje: '' };
     };
 
     // Función para sugerir horarios válidos
@@ -254,9 +293,53 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         };
     };
 
+    // Efecto inicial para cargar datos
     useEffect(() => {
         fetchAllData();
     }, []);
+
+    // Efecto para mantener datos sincronizados
+    useEffect(() => {
+        let refreshInterval;
+
+        // Si hay un modal abierto o estamos cargando, no refrescar
+        if (!showModal && !loading) {
+            refreshInterval = setInterval(async () => {
+                // Actualizar datos sin mostrar indicador de carga
+                try {
+                    const [allHorariosResponse, statsData] = await Promise.all([
+                        getAllHorarios(),
+                        getEstadisticasCitas()
+                    ]);
+
+                    // Actualizar solo si hay cambios
+                    const newHorarios = Array.isArray(allHorariosResponse) ? 
+                        allHorariosResponse : 
+                        allHorariosResponse.eventosParaCalendario || [];
+
+                    if (JSON.stringify(newHorarios) !== JSON.stringify(eventos)) {
+                        await fetchAllData(selectedPro?.idProfesional);
+                        
+                        // Si hay una fecha seleccionada, actualizar los datos específicos
+                        if (citaSeleccionada?.fecha) {
+                            await Promise.all([
+                                fetchHorariosByDate(citaSeleccionada.fecha),
+                                fetchCitasByDate(citaSeleccionada.fecha)
+                            ]);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error en actualización automática:', err);
+                }
+            }, 30000); // Actualizar cada 30 segundos
+        }
+
+        return () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        };
+    }, [showModal, loading, selectedPro, citaSeleccionada]);
 
     const handleSelectPro = (newPro) => {
         setSelectedPro(newPro);
@@ -370,6 +453,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
 
         try {
             setError(null);
+            setLoading(true); // Indicar que está cargando
 
             // Si estamos editando, validar que no afecte citas existentes
             if (isEditMode && formData.idHorario) {
@@ -384,7 +468,8 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                             fecha: formData.fecha,
                             hora_inicio: horarioOriginal.extendedProps?.hora_inicio || horarioOriginal.start?.split('T')[1]?.slice(0, 5),
                             hora_fin: horarioOriginal.extendedProps?.hora_fin || horarioOriginal.end?.split('T')[1]?.slice(0, 5),
-                            idProfesional: formData.idProfesional
+                            idProfesional: formData.idProfesional,
+                            estado: horarioOriginal.extendedProps?.estado || 'activo'
                         },
                         formData
                     );
@@ -395,7 +480,14 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                             setMensaje(`${validacion.mensaje}\n\n${validacion.sugerencia.mensaje}`);
                         }
                         setShowError(true);
+                        setLoading(false);
                         return;
+                    }
+
+                    // Si hay advertencia pero se puede continuar
+                    if (validacion.advertencia) {
+                        setMensaje(validacion.advertencia);
+                        setShowError(true);
                     }
                 }
             }
@@ -410,9 +502,16 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 setMensaje('Horario creado correctamente');
             }
 
+            // Actualizar todos los datos necesarios
+            await Promise.all([
+                fetchAllData(selectedPro?.idProfesional),
+                formData.fecha && fetchHorariosByDate(formData.fecha),
+                formData.fecha && fetchCitasByDate(formData.fecha)
+            ]);
+
             setShowModal(false);
             setShowSuccess(true);
-            fetchAllData(selectedPro?.idProfesional);
+            setLoading(false);
         } catch (err) {
             const errMsg = err.response?.data?.error || err.message || 'Error al guardar horario';
             let variant = null;
@@ -423,6 +522,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 setMensaje(errMsg);
             }
             setShowError(true);
+            setLoading(false);
             console.error('Error en guardar:', err);
         }
     };
