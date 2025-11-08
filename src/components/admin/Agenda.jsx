@@ -19,18 +19,24 @@ const Agenda = () => {
         setCurrentDate(new Date(arg.start));
     };
 
-    // HANDLER DE EDITAR CON VALIDACIÓN
+    // HANDLER DE EDITAR CON VALIDACIÓN INTELIGENTE
     const handleEditHorario = async (horario) => {
-
-        const hasCitas = await checkCitasInHorario(horario.fecha, horario.hora_inicio, horario.hora_fin, horario.idProfesional);
-
-        if (hasCitas) {
-            setMensaje('No se puede editar ya que hay citas agendadas en este horario.');
-            setShowError(true);
-            return; // BLOQUEA: No abre modal
-        }
-        // Si no hay, abre modal normal
+        // Siempre permitir abrir el modal, pero con validaciones inteligentes
         openEditModal(horario);
+        
+        // Cargar información sobre citas existentes para mostrar al usuario
+        const { hasCitas, citas } = await checkCitasInHorario(
+            horario.fecha, 
+            horario.hora_inicio, 
+            horario.hora_fin, 
+            horario.idProfesional
+        );
+
+        if (hasCitas && citas.length > 0) {
+            const citasInfo = citas.map(c => `${c.horaInicio}-${c.horaFin}`).join(', ');
+            setMensaje(`Atención: Hay citas agendadas en ${citasInfo}. Asegúrate de que el nuevo horario las cubra.`);
+            setShowError(true);
+        }
     };
 
     if (loading) return <div className="gh-carga-calendario">Cargando calendario...</div>;
@@ -170,6 +176,8 @@ const Agenda = () => {
         <div className="gh-contenedor-agenda">
             <header className="gh-encabezado-agenda">
                 <h1>Gestión Horaria</h1>
+                <br />
+                <h3>Para visualizar los agendamientos, por favor selecione un dia especifico el cual contiene el horario del profesional</h3>
             </header>
 
             <div className="gh-principal-agenda">

@@ -232,3 +232,29 @@
         font-size: 0.9em;
     }
 }
+
+/* Estilos para información sobre citas existentes */
+.gh-info-citas-existentes {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 12px;
+    margin: 16px 0;
+    border-radius: 4px;
+}
+
+.gh-info-citas-existentes h4 {
+    margin: 0 0 8px 0;
+    color: #1976d2;
+    font-size: 14px;
+}
+
+.gh-info-citas-existentes p {
+    margin: 4px 0;
+    color: #424242;
+    font-size: 13px;
+}
+
+.gh-info-citas-existentes small {
+    color: #666;
+    font-size: 12px;
+}

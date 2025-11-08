@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllCitas, getCitasByDate, getEstadisticasCitas } from '../Services/citasProfesionalConexion';
-import { getAllHorarios, getHorariosByDate, createHorario, updateHorario } from '../services/horariosConexion';
-import { obtenerProfesionales } from '../services/profesionalesConexion';
+import { getAllHorarios, getHorariosByDate, createHorario, updateHorario } from '../Services/horariosConexion';
+import { obtenerProfesionales } from '../Services/profesionalesConexion';
 
 const padTime = (time) => {
     if (!time) return '';
@@ -153,11 +153,8 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 fechaNorm = fechaNorm.split('T')[0];
             }
 
-
-            // Obtén full data
             const todasCitasResponse = await getAllCitas();
-            const todasCitas = todasCitasResponse.citas || []; // Raw con idProfesional, fechaCita, horaCita, servDuracion
-
+            const todasCitas = todasCitasResponse.citas || [];
 
             // Filtrar por fecha y pro
             const citasDiaPro = todasCitas.filter(cita => {
@@ -168,28 +165,97 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             });
 
             if (citasDiaPro.length === 0) {
-                return false;
+                return { hasCitas: false, citas: [] };
             }
 
-            // FIX: Chequea overlap con duración de cita (replica backend: cita_start < hora_fin && cita_end > hora_inicio)
+            // Calcular horarios de las citas con duración
+            const citasConHorarios = citasDiaPro.map(cita => {
+                const horaCitaStr = cita.horaCita ? cita.horaCita.split(':').slice(0, 2).join(':') : '';
+                const citaInicio = new Date(`2000-01-01T${horaCitaStr}:00`);
+                const citaDuracionMin = cita.servDuracion || 60;
+                const citaFin = new Date(citaInicio.getTime() + (citaDuracionMin * 60 * 1000));
+                
+                return {
+                    ...cita,
+                    horaInicio: horaCitaStr,
+                    horaFin: citaFin.toTimeString().slice(0, 5),
+                    inicioTime: citaInicio.getTime(),
+                    finTime: citaFin.getTime()
+                };
+            });
+
+            // Verificar solapamiento con el horario propuesto
             const inicio = new Date(`2000-01-01T${horaInicio}:00`).getTime();
             const fin = new Date(`2000-01-01T${horaFin}:00`).getTime();
 
-            const hasSolapamiento = citasDiaPro.some(cita => {
-                // FIX: Parse horaCita a 'HH:mm' (quita segundos si 'HH:mm:ss')
-                const horaCitaStr = cita.horaCita ? cita.horaCita.split(':').slice(0, 2).join(':') : '';
-                const citaInicio = new Date(`2000-01-01T${horaCitaStr}:00`).getTime();
-                const citaDuracionMin = cita.servDuracion || 60; // Default 60min si no hay
-                const citaFin = citaInicio + (citaDuracionMin * 60 * 1000);
-                const overlap = citaInicio < fin && citaFin > inicio;
-                return overlap;
+            const citasEnConflicto = citasConHorarios.filter(cita => {
+                return cita.inicioTime < fin && cita.finTime > inicio;
             });
 
-            return hasSolapamiento;
+            return { 
+                hasCitas: citasEnConflicto.length > 0, 
+                citas: citasConHorarios,
+                citasEnConflicto: citasEnConflicto
+            };
         } catch (err) {
             console.error('Error en validación citas:', err);
-            return false; // Fallback: No bloquea si error
+            return { hasCitas: false, citas: [] };
         }
+    };
+
+    // Nueva función para validar si una modificación de horario es válida
+    const validateHorarioModification = async (horarioOriginal, nuevoHorario) => {
+        const { citas } = await checkCitasInHorario(
+            horarioOriginal.fecha, 
+            horarioOriginal.hora_inicio, 
+            horarioOriginal.hora_fin, 
+            horarioOriginal.idProfesional
+        );
+
+        if (citas.length === 0) {
+            return { esValido: true, mensaje: '' };
+        }
+
+        // Verificar si el nuevo horario cubre todas las citas existentes
+        const nuevoInicio = new Date(`2000-01-01T${nuevoHorario.hora_inicio}:00`).getTime();
+        const nuevoFin = new Date(`2000-01-01T${nuevoHorario.hora_fin}:00`).getTime();
+
+        const citasNoContempladas = citas.filter(cita => {
+            return cita.inicioTime < nuevoInicio || cita.finTime > nuevoFin;
+        });
+
+        if (citasNoContempladas.length > 0) {
+            const horariosAfectados = citasNoContempladas.map(cita => 
+                `${cita.horaInicio}-${cita.horaFin}`
+            ).join(', ');
+            
+            return {
+                esValido: false,
+                mensaje: `No se puede modificar: hay citas agendadas en ${horariosAfectados} que quedarían fuera del nuevo horario.`,
+                citasAfectadas: citasNoContempladas,
+                sugerencia: getSugerenciaHorario(citas, nuevoHorario)
+            };
+        }
+
+        return { esValido: true, mensaje: 'Modificación válida' };
+    };
+
+    // Función para sugerir horarios válidos
+    const getSugerenciaHorario = (citas, horarioDeseado) => {
+        if (citas.length === 0) return null;
+
+        // Encontrar el rango mínimo necesario para cubrir todas las citas
+        const inicioMinimo = Math.min(...citas.map(c => c.inicioTime));
+        const finMaximo = Math.max(...citas.map(c => c.finTime));
+
+        const sugerenciaInicio = new Date(inicioMinimo).toTimeString().slice(0, 5);
+        const sugerenciaFin = new Date(finMaximo).toTimeString().slice(0, 5);
+
+        return {
+            hora_inicio: sugerenciaInicio,
+            hora_fin: sugerenciaFin,
+            mensaje: `Horario sugerido para cubrir todas las citas: ${sugerenciaInicio} - ${sugerenciaFin}`
+        };
     };
 
     useEffect(() => {
@@ -309,6 +375,36 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
 
         try {
             setError(null);
+
+            // Si estamos editando, validar que no afecte citas existentes
+            if (isEditMode && formData.idHorario) {
+                // Obtener el horario original para comparar
+                const horarioOriginal = eventos.find(e => 
+                    e.id === formData.idHorario || e.extendedProps?.idHorario === formData.idHorario
+                );
+
+                if (horarioOriginal) {
+                    const validacion = await validateHorarioModification(
+                        {
+                            fecha: formData.fecha,
+                            hora_inicio: horarioOriginal.extendedProps?.hora_inicio || horarioOriginal.start?.split('T')[1]?.slice(0, 5),
+                            hora_fin: horarioOriginal.extendedProps?.hora_fin || horarioOriginal.end?.split('T')[1]?.slice(0, 5),
+                            idProfesional: formData.idProfesional
+                        },
+                        formData
+                    );
+
+                    if (!validacion.esValido) {
+                        setMensaje(validacion.mensaje);
+                        if (validacion.sugerencia) {
+                            setMensaje(`${validacion.mensaje}\n\n${validacion.sugerencia.mensaje}`);
+                        }
+                        setShowError(true);
+                        return;
+                    }
+                }
+            }
+
             let responseData;
 
             if (isEditMode && formData.idHorario) {
@@ -365,6 +461,8 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         setShowSuccess,
         setShowError,
         setMensaje,
-        checkCitasInHorario
+        checkCitasInHorario,
+        validateHorarioModification,
+        getSugerenciaHorario
     };
 };

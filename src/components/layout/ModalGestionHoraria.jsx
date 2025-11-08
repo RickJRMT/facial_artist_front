@@ -21,6 +21,15 @@ const ModalGestionHoraria = ({
 
                 {error && <p className="gh-error-modal">{error}</p>}
 
+                {/* Información sobre citas existentes */}
+                {isEditMode && (
+                    <div className="gh-info-citas-existentes">
+                        <h4>ℹ️ Información importante:</h4>
+                        <p>Al modificar este horario, asegúrate de que el nuevo rango cubra todas las citas ya agendadas.</p>
+                        <small>Las citas existentes se muestran en el calendario para tu referencia.</small>
+                    </div>
+                )}
+
                 <div className="gh-formulario-modal">
                     <div className="gh-row-form">
                         <label className="gh-etiqueta-form">
