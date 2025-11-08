@@ -91,14 +91,8 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
                 };
             });
 
-            const combinedEvents = [...citasEventsWithProps, ...horariosEventsWithProps];
-            const finalEvents = combinedEvents.map(ev => {
-                const solapHorario = horariosEventsWithProps.find(h => h.extendedProps.estado === 'inactivo' && h.start <= ev.start && h.end >= ev.end);
-                if (solapHorario && ev.extendedProps?.estado !== 'confirmada') {
-                    return { ...ev, classNames: ['gh-cita-solapada-inactiva'], backgroundColor: '#dc3545' };
-                }
-                return ev;
-            });
+            // Solo mostrar horarios en el calendario, no las citas
+            const finalEvents = horariosEventsWithProps;
 
             setEventos(finalEvents);
             setStats(statsData || { totalCitas: 0, citasPendientes: 0, citasConfirmadas: 0 });
@@ -119,7 +113,9 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             const formattedCitas = citasDia.map(cita => ({
                 ...cita,
                 fechaFormatted: new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(cita.fechaCita)),
-                horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${cita.horaCita}`))
+                horaFormatted: new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(`2000-01-01T${cita.horaCita}`)),
+                // Agregar nombre completo del cliente
+                nombreCliente: `${cita.nombreCliente || 'N/A'} ${cita.apellidoCliente || ''}`.trim() || 'Cliente no especificado'
             }));
             setSelectedDateCitas(formattedCitas);
         } catch (err) {

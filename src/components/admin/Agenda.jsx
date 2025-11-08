@@ -101,14 +101,15 @@ const Agenda = () => {
     const renderCitaCard = (item, index) => (
         <div key={item.idCita || index} className="gh-card-evento gh-card-cita">
             <div className="gh-card-header">
-                <span className="gh-estado-icon">📅</span>
-                <h4>{item.nombreProfesional || 'N/A'}</h4>
+                <span className="gh-estado-icon">�</span>
+                <h4>{item.nombreCliente || `${item.nombreCliente || ''} ${item.apellidoCliente || ''}`.trim() || 'Cliente no especificado'}</h4>
             </div>
             <div className="gh-card-body">
+                <p><strong>Profesional:</strong> {item.nombreProfesional || 'N/A'}</p>
                 <p><strong>Fecha:</strong> {formatFecha(item)}</p>
                 <p><strong>Hora:</strong> {formatHora(item)}</p>
-                <p><strong>Descripción:</strong> {item.descripcion || item.descripcionServicio || 'N/A'}</p>
-                <p><strong>Estado:</strong> {item.estadoCita || 'N/A'}</p> {/* FIX: Muestra estado de cita */}
+                <p><strong>Servicio:</strong> {item.descripcion || item.descripcionServicio || item.nombreServicio || 'N/A'}</p>
+                <p><strong>Estado:</strong> {item.estadoCita || 'N/A'}</p>
             </div>
         </div>
     );
@@ -177,7 +178,8 @@ const Agenda = () => {
             <header className="gh-encabezado-agenda">
                 <h1>Gestión Horaria</h1>
                 <br />
-                <h3>Para visualizar los agendamientos, por favor selecione un dia especifico el cual contiene el horario del profesional</h3>
+                <h3>Para visualizar las citas agendadas, selecciona un día específico que contenga el horario del profesional</h3>
+                <small>Solo se muestran los horarios de profesionales en el calendario. Las citas se visualizan al seleccionar un día.</small>
             </header>
 
             <div className="gh-principal-agenda">
