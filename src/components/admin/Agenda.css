@@ -18,10 +18,6 @@
     --gh-font-size-sm: 0.85em; /* Fuente pequeña */
     --gh-line-height: 1.3; /* Altura de línea */
     --gh-min-height-day: 300px; /* Altura mínima paneles */
-    --gh-scrollbar-width: 4px; /* Ancho scrollbar minimalista */
-    --gh-scrollbar-track: #f1f1f1; /* Fondo track claro */
-    --gh-scrollbar-thumb: rgba(0, 0, 0, 0.2); /* Color thumb sutil, semi-transparente */
-    --gh-scrollbar-thumb-hover: rgba(0, 0, 0, 0.4); /* Hover thumb más visible pero suave */
 }
 
 .gh-contenedor-agenda {
@@ -32,28 +28,29 @@
     background-color: var(--gh-background); /* Fondo #faf8f3 para todo el modulo */
 }
 
-/* Scrollbar global para el contenedor principal */
+/* Scrollbar elegante para el contenedor principal - WebKit */
 .gh-contenedor-agenda::-webkit-scrollbar {
-    width: var(--gh-scrollbar-width);
+    width: 8px;
 }
 
 .gh-contenedor-agenda::-webkit-scrollbar-track {
-    background: var(--gh-scrollbar-track);
+    background: transparent;
 }
 
 .gh-contenedor-agenda::-webkit-scrollbar-thumb {
-    background: var(--gh-scrollbar-thumb);
-    border-radius: var(--gh-scrollbar-width);
+    background: linear-gradient(180deg, #D4AF37 0%, #FFD700 100%);
+    border-radius: 10px;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .gh-contenedor-agenda::-webkit-scrollbar-thumb:hover {
-    background: var(--gh-scrollbar-thumb-hover);
+    background: linear-gradient(180deg, #FFD700 0%, #D4AF37 100%);
 }
 
-/* Firefox fallback global */
+/* Scrollbar para Firefox */
 .gh-contenedor-agenda {
     scrollbar-width: thin;
-    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
+    scrollbar-color: #D4AF37 transparent;
 }
 
 .gh-encabezado-agenda {
@@ -85,27 +82,29 @@
     background: var(--gh-background);
 }
 
-/* Scrollbar para panel calendario */
+/* Scrollbar elegante para panel calendario - WebKit */
 .gh-panel-calendario::-webkit-scrollbar {
-    width: var(--gh-scrollbar-width);
+    width: 8px;
 }
 
 .gh-panel-calendario::-webkit-scrollbar-track {
-    background: var(--gh-scrollbar-track);
+    background: transparent;
 }
 
 .gh-panel-calendario::-webkit-scrollbar-thumb {
-    background: var(--gh-scrollbar-thumb);
-    border-radius: var(--gh-scrollbar-width);
+    background: linear-gradient(180deg, #D4AF37 0%, #FFD700 100%);
+    border-radius: 10px;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .gh-panel-calendario::-webkit-scrollbar-thumb:hover {
-    background: var(--gh-scrollbar-thumb-hover);
+    background: linear-gradient(180deg, #FFD700 0%, #D4AF37 100%);
 }
 
+/* Scrollbar para Firefox en panel calendario */
 .gh-panel-calendario {
     scrollbar-width: thin;
-    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
+    scrollbar-color: #D4AF37 transparent;
 }
 
 .gh-panel-descripción {
@@ -118,27 +117,29 @@
     background: var(--gh-background);
 }
 
-/* Scrollbar para panel descripción */
+/* Scrollbar elegante para panel descripción - WebKit */
 .gh-panel-descripción::-webkit-scrollbar {
-    width: var(--gh-scrollbar-width);
+    width: 8px;
 }
 
 .gh-panel-descripción::-webkit-scrollbar-track {
-    background: var(--gh-scrollbar-track);
+    background: transparent;
 }
 
 .gh-panel-descripción::-webkit-scrollbar-thumb {
-    background: var(--gh-scrollbar-thumb);
-    border-radius: var(--gh-scrollbar-width);
+    background: linear-gradient(180deg, #D4AF37 0%, #FFD700 100%);
+    border-radius: 10px;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .gh-panel-descripción::-webkit-scrollbar-thumb:hover {
-    background: var(--gh-scrollbar-thumb-hover);
+    background: linear-gradient(180deg, #FFD700 0%, #D4AF37 100%);
 }
 
+/* Scrollbar para Firefox en panel descripción */
 .gh-panel-descripción {
     scrollbar-width: thin;
-    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
+    scrollbar-color: #D4AF37 transparent;
 }
 
 .gh-título-panel {
@@ -185,27 +186,29 @@
     overflow-y: auto;
 }
 
-/* Scrollbar minimalista para contenedores de cards */
+/* Scrollbar elegante para contenedor de cards - WebKit */
 .gh-contenedor-cards::-webkit-scrollbar {
-    width: var(--gh-scrollbar-width);
+    width: 6px;
 }
 
 .gh-contenedor-cards::-webkit-scrollbar-track {
-    background: var(--gh-scrollbar-track);
+    background: transparent;
 }
 
 .gh-contenedor-cards::-webkit-scrollbar-thumb {
-    background: var(--gh-scrollbar-thumb);
-    border-radius: var(--gh-scrollbar-width);
+    background: #D4AF37;
+    border-radius: 10px;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .gh-contenedor-cards::-webkit-scrollbar-thumb:hover {
-    background: var(--gh-scrollbar-thumb-hover);
+    background: #FFD700;
 }
 
+/* Scrollbar para Firefox en contenedor de cards */
 .gh-contenedor-cards {
     scrollbar-width: thin;
-    scrollbar-color: var(--gh-scrollbar-thumb) var(--gh-scrollbar-track);
+    scrollbar-color: #D4AF37 transparent;
 }
 
 .gh-card-evento {
@@ -334,6 +337,10 @@
         overflow-y: auto; /* Scroll vertical completo */
     }
 
+    .gh-encabezado-agenda {
+        padding: var(--gh-spacing-md) var(--gh-spacing-lg);
+    }
+
     .gh-principal-agenda {
         flex-direction: column;
         height: auto;
@@ -348,18 +355,25 @@
         border-right: none;
         border-bottom: 1px solid var(--gh-border-light);
         overflow-y: auto;
-        padding: var(--gh-spacing-sm);
+        padding: var(--gh-spacing-lg) var(--gh-spacing-md);
+        margin: var(--gh-spacing-sm);
+        border-radius: var(--gh-border-radius);
+        background: #fff;
+        border: 1px solid var(--gh-border-light);
+        box-shadow: var(--gh-shadow-light);
     }
 
     .gh-secciones-cards {
         flex-direction: column;
         gap: var(--gh-spacing-md);
+        padding: var(--gh-spacing-sm);
     }
 
     .gh-sección-agendamientos,
     .gh-sección-estados {
         flex: none;
-        padding: var(--gh-spacing-sm);
+        padding: var(--gh-spacing-md);
+        margin: 0;
     }
 
     .gh-contenedor-cards {
@@ -367,28 +381,54 @@
     }
 
     .gh-card-evento {
-        padding: var(--gh-spacing-sm);
+        padding: var(--gh-spacing-md);
     }
 
     .gh-boton-gestión-horaria {
-        padding: 10px;
-        font-size: var(--gh-font-size-sm);
+        padding: 12px var(--gh-spacing-lg);
+        font-size: var(--gh-font-size-base);
+        margin: var(--gh-spacing-md);
     }
 }
 
 @media (max-width: 480px) {
+    .gh-encabezado-agenda {
+        padding: var(--gh-spacing-md) var(--gh-spacing-md);
+    }
+
     .gh-encabezado-agenda h1 {
         font-size: 1.2em;
     }
 
+    .gh-encabezado-agenda small {
+        font-size: 0.8em;
+        display: block;
+        margin-top: var(--gh-spacing-sm);
+    }
+
     .gh-título-panel {
         font-size: 1em;
+        margin: var(--gh-spacing-md);
+        padding: 0 var(--gh-spacing-md);
     }
 
     .gh-panel-calendario,
     .gh-panel-descripción {
-        padding: var(--gh-spacing-sm);
+        padding: var(--gh-spacing-lg) var(--gh-spacing-md);
+        margin: var(--gh-spacing-sm) var(--gh-spacing-sm);
         min-height: 250px; /* Mínimo, auto si más */
+        border-radius: var(--gh-border-radius);
+    }
+
+    .gh-secciones-cards {
+        padding: var(--gh-spacing-md);
+        gap: var(--gh-spacing-md);
+    }
+
+    .gh-sección-agendamientos,
+    .gh-sección-estados {
+        padding: var(--gh-spacing-md);
+        margin: 0;
     }
 
     .gh-tarjeta-estadísticas p {
@@ -397,10 +437,28 @@
 
     .gh-card-body p {
         font-size: var(--gh-font-size-sm);
+        margin: var(--gh-spacing-sm) 0;
+    }
+
+    .gh-card-evento {
+        padding: var(--gh-spacing-md);
+        margin-bottom: var(--gh-spacing-sm);
     }
 
     .gh-boton-editar-horario-card {
-        padding: 3px 6px;
-        font-size: 0.75em;
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+
+    .gh-boton-gestión-horaria {
+        padding: 12px var(--gh-spacing-md);
+        font-size: var(--gh-font-size-base);
+        margin: var(--gh-spacing-md) var(--gh-spacing-md);
+        width: calc(100% - var(--gh-spacing-lg));
+    }
+
+    .gh-placeholder-panel {
+        padding: var(--gh-spacing-lg) var(--gh-spacing-md);
+        margin: var(--gh-spacing-sm);
     }
 }

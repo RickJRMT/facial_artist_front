@@ -8,11 +8,12 @@ import moment from 'moment';
 
 const Agenda = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [citasEnHorario, setCitasEnHorario] = useState([]);
 
     const {
         eventos, citaSeleccionada, selectedDateCitas, selectedDateHorarios, profesionales, showModal, formData, setFormData, loading, error,
         handleSelectEvent, handleDateClick, openModal, openEditModal, handleGuardarHorario, setShowModal, isEditMode,
-        showSuccess, showError, mensaje, setShowSuccess, setShowError, setMensaje, checkCitasInHorario
+        showSuccess, showError, mensaje, setShowSuccess, setShowError, setMensaje, checkCitasInHorario, formatCitasComListado
     } = useGestionHoraria();
 
     const handleDatesSet = (arg) => {
@@ -25,17 +26,22 @@ const Agenda = () => {
         openEditModal(horario);
 
         // Cargar información sobre citas existentes para mostrar al usuario
-        const { hasCitas, citas } = await checkCitasInHorario(
+        const { hasCitas, citas, citasEnConflicto } = await checkCitasInHorario(
             horario.fecha,
             horario.hora_inicio,
             horario.hora_fin,
             horario.idProfesional
         );
 
+        // Guardar las citas detectadas para usarlas en el modal
         if (hasCitas && citas.length > 0) {
-            const citasInfo = citas.map(c => `${c.horaInicio}-${c.horaFin}`).join(', ');
-            setMensaje(`Atención: Hay citas agendadas en ${citasInfo}. Asegúrate de que el nuevo horario las cubra.`);
+            setCitasEnHorario(citas);
+            const citasFormateadas = formatCitasComListado(citas);
+            const listadoCitas = citasFormateadas.join('\n');
+            setMensaje(`Atención: Hay citas agendadas:\n${listadoCitas}\nAsegúrate de que el nuevo horario las cubra.`);
             setShowError(true);
+        } else {
+            setCitasEnHorario([]);
         }
     };
 
@@ -254,6 +260,7 @@ const Agenda = () => {
                     handleGuardarHorario={handleGuardarHorario}
                     onClose={() => setShowModal(false)}
                     isEditMode={isEditMode}
+                    citasEnHorario={citasEnHorario}
                 />
             )}
             {showSuccess && (

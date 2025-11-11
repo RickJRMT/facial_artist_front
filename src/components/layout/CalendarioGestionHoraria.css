@@ -6,6 +6,8 @@
     /* Rojo inactivo */
     --gcal-hover-green: #218838;
     /* Verde hover */
+    --gcal-hover-red: #c82333;
+    /* Rojo hover más oscuro */
     --gcal-text-white: white;
     /* Texto en eventos */
     --gcal-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -24,6 +26,17 @@
     /* Radio eventos */
     --gcal-line-height-compact: 1.1;
     /* Línea compacta */
+    /* Colores del módulo Agenda (Negro, Blanco, variaciones) */
+    --gcal-agenda-primary: #1a1a1a;
+    /* Negro principal */
+    --gcal-agenda-secondary: #333333;
+    /* Negro secundario */
+    --gcal-agenda-light: #f5f5f5;
+    /* Blanco/gris claro */
+    --gcal-agenda-border: #cccccc;
+    /* Gris para bordes */
+    --gcal-agenda-hover: #2d2d2d;
+    /* Negro hover */
 }
 
 .gcal-contenedor-calendario {
@@ -38,13 +51,14 @@
 }
 
 .gcal-titulo-fecha-dia {
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, var(--gcal-agenda-primary), var(--gcal-agenda-secondary));
     padding: 10px;
     text-align: center;
     font-size: 1.2em;
     font-weight: bold;
-    border-bottom: 1px solid #dee2e6;
-    color: #495057;
+    border-bottom: 2px solid var(--gcal-agenda-primary);
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .gcal-ocultar-titulo .gcal-titulo-fecha-dia {
@@ -55,6 +69,163 @@
     height: 100%;
 }
 
+/* ===== ESTILOS ESPECÍFICOS PARA FULLCALENDAR EN AGENDA ===== */
+
+/* Personalizacion de la barra de herramientas (toolbar) */
+.gcal-calendario-citas .fc-toolbar {
+    padding: 12px 8px;
+    background-color: var(--gcal-agenda-light);
+    border-bottom: 1px solid var(--gcal-agenda-border);
+}
+
+.gcal-calendario-citas .fc-toolbar-title {
+    color: var(--gcal-agenda-primary);
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Botones de navegación y vista */
+.gcal-calendario-citas .fc-button-primary {
+    background-color: var(--gcal-agenda-primary);
+    border-color: var(--gcal-agenda-primary);
+    color: #fff;
+    font-weight: 500;
+}
+
+.gcal-calendario-citas .fc-button-primary:hover {
+    background-color: var(--gcal-agenda-hover);
+    border-color: var(--gcal-agenda-hover);
+}
+
+.gcal-calendario-citas .fc-button-primary.fc-button-active {
+    background-color: var(--gcal-agenda-secondary);
+    border-color: var(--gcal-agenda-secondary);
+    color: #fff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Encabezados de días (en vista mes, semana) */
+.gcal-calendario-citas .fc-col-header-cell {
+    background-color: var(--gcal-agenda-secondary);
+    border-color: var(--gcal-agenda-border);
+    color: #fff;
+    font-weight: bold;
+    padding: 8px 0;
+    font-size: 0.95em;
+}
+
+/* Celdas de días en vista mes */
+.gcal-calendario-citas .fc-daygrid-day {
+    background-color: #fff;
+    border-color: var(--gcal-agenda-border);
+}
+
+.gcal-calendario-citas .fc-daygrid-day:hover {
+    background-color: var(--gcal-agenda-light);
+}
+
+.gcal-calendario-citas .fc-daygrid-day.fc-day-today {
+    background-color: #f0f0f0 !important;
+    border-color: var(--gcal-agenda-primary) !important;
+}
+
+.gcal-calendario-citas .fc-daygrid-day-number {
+    color: var(--gcal-agenda-primary);
+    padding: 6px 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+/* Eventos en vista mes */
+.gcal-calendario-citas .fc-daygrid-event {
+    border-radius: 3px;
+    padding: 2px 4px;
+    margin-bottom: 1px;
+    border: none;
+    font-size: 0.8em;
+}
+
+/* Eventos en vista semana/día */
+.gcal-calendario-citas .fc-timegrid-event {
+    border-radius: 3px;
+    padding: 3px 4px;
+    border: none;
+    font-size: 0.8em;
+}
+
+/* Encabezados de horarios (vista semana/día) */
+.gcal-calendario-citas .fc-timegrid-slot {
+    background-color: #fff;
+    border-color: #eee;
+}
+
+.gcal-calendario-citas .fc-col-time,
+.gcal-calendario-citas .fc-timegrid-axis {
+    background-color: var(--gcal-agenda-light);
+    border-color: var(--gcal-agenda-border);
+    color: var(--gcal-agenda-primary);
+    font-weight: 500;
+}
+
+/* Hoy en vista semana/día */
+.gcal-calendario-citas .fc-timegrid-col.fc-day-today {
+    background-color: #f9f9f9 !important;
+}
+
+/* Lista de eventos */
+.gcal-calendario-citas .fc-list {
+    border-color: var(--gcal-agenda-border);
+}
+
+.gcal-calendario-citas .fc-list-day-cushion {
+    background-color: var(--gcal-agenda-secondary);
+    color: #fff;
+    font-weight: bold;
+}
+
+.gcal-calendario-citas .fc-list-event {
+    border-color: var(--gcal-agenda-border);
+    background-color: #fff;
+}
+
+/* Hover específico para cada tipo de evento en lista */
+
+.gcal-calendario-citas .fc-list-event-time,
+.gcal-calendario-citas .fc-list-event-title {
+    color: var(--gcal-agenda-primary);
+    font-size: 0.9em;
+}
+
+/* Asegurar visibilidad en eventos coloreados de lista */
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada .fc-list-event-time,
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada .fc-list-event-title,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo .fc-list-event-time,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo .fc-list-event-title {
+    color: var(--gcal-text-white) !important;
+    font-weight: 600;
+}
+
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo .fc-list-event-time,
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo .fc-list-event-title {
+    color: var(--gcal-text-white) !important;
+    font-weight: 600;
+}
+
+/* Remover hover por defecto de FullCalendar en lista para eventos con color */
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada:hover td,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo:hover td {
+    background-color: var(--gcal-hover-green) !important;
+}
+
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo:hover td {
+    background-color: var(--gcal-hover-red) !important;
+}
+
+/* Separadores */
+.gcal-calendario-citas .fc {
+    border-color: var(--gcal-agenda-border);
+}
+
 
 
 /* Contenido evento general (para dos líneas) */
@@ -63,20 +234,30 @@
     flex-direction: column;
     height: 100%;
     justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: var(--gcal-spacing-sm) var(--gcal-spacing-md);
+    padding: 2px 3px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .gcal-titulo-evento {
     font-weight: bold;
     font-size: var(--gcal-font-size-sm);
     /* Compacto para nombre arriba */
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    margin: 0;
     color: var(--gcal-text-white);
-    line-height: var(--gcal-line-height-compact);
+    line-height: 1.2;
+    word-break: break-word;
+    width: 100%;
+    max-width: 100%;
 }
 
 .gcal-estado-evento {
@@ -84,12 +265,19 @@
     /* Más pequeño para estado abajo */
     font-style: italic;
     color: var(--gcal-text-white);
-    opacity: 0.9;
-    white-space: nowrap;
+    opacity: 0.95;
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 0;
-    line-height: var(--gcal-line-height-compact);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    margin: 0;
+    line-height: 1.2;
+    word-break: break-word;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* Semaforización para Citas Agendadas (verde) */
@@ -103,17 +291,72 @@
     background-color: var(--gcal-hover-green) !important;
 }
 
+/* Hover para eventos en vista lista - Verde oscuro */
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada:hover,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo:hover {
+    background-color: var(--gcal-hover-green) !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada:hover .gcal-titulo-evento,
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada:hover .gcal-estado-evento,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo:hover .gcal-titulo-evento,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo:hover .gcal-estado-evento {
+    color: var(--gcal-text-white) !important;
+    font-weight: 600;
+}
+
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada:hover .fc-list-event-time,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo:hover .fc-list-event-time,
+.gcal-calendario-citas .fc-list-event.gcal-cita-agendada:hover .fc-list-event-title,
+.gcal-calendario-citas .fc-list-event.gcal-horario-activo:hover .fc-list-event-title {
+    color: var(--gcal-text-white) !important;
+    font-weight: 600;
+}
+
+/* Hover para eventos en vista lista - Rojo oscuro */
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo:hover {
+    background-color: var(--gcal-hover-red) !important;
+    transition: all 0.2s ease !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo:hover .gcal-titulo-evento,
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo:hover .gcal-estado-evento {
+    color: var(--gcal-text-white) !important;
+    font-weight: 600;
+}
+
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo:hover .fc-list-event-time,
+.gcal-calendario-citas .fc-list-event.gcal-horario-inactivo:hover .fc-list-event-title {
+    color: var(--gcal-text-white) !important;
+    font-weight: 600;
+}
+
 /* Semaforización para Horarios Activos (verde) */
 .gcal-horario-activo {
     background-color: var(--gcal-primary-green) !important;
     border-color: var(--gcal-primary-green) !important;
     color: var(--gcal-text-white) !important;
     cursor: pointer !important;
+    font-weight: 600;
 }
 
 .gcal-horario-activo:hover {
     background-color: var(--gcal-hover-green) !important;
-    opacity: var(--gcal-opacity-hover);
+    opacity: 1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.gcal-horario-activo .gcal-titulo-evento {
+    color: var(--gcal-text-white) !important;
+}
+
+.gcal-horario-activo .gcal-estado-evento {
+    color: var(--gcal-text-white) !important;
 }
 
 /* Semaforización para Horarios Inactivos/Cerrados (rojo) */
@@ -145,7 +388,8 @@
 }
 
 .gcal-dia-calendario.fc-day-today {
-    background-color: #e3f2fd !important;
+    background-color: #f0f0f0 !important;
+    border-color: var(--gcal-agenda-primary) !important;
     font-weight: bold;
 }
 
@@ -156,12 +400,12 @@
         height: auto;
     }
 
-    .fc-event-title {
-        font-size: 0.75em;
+    .gcal-calendario-citas .fc-toolbar {
+        padding: 8px 6px;
     }
 
-    .fc-toolbar-title {
-        font-size: 1.2em;
+    .gcal-calendario-citas .fc-toolbar-title {
+        font-size: 1em;
     }
 
     .gcal-titulo-fecha-dia {
@@ -170,15 +414,35 @@
     }
 
     /* Mes: Más compacto en mobile */
-    .fc-daygrid-event {
-        font-size: 0.7em;
-        padding: var(--gcal-spacing-sm) 2px;
+    .gcal-calendario-citas .fc-daygrid-event {
+        font-size: 0.75em;
+        padding: 2px 3px;
+        border-radius: 2px;
+    }
+
+    /* Semana/Día: Padding reducido */
+    .gcal-calendario-citas .fc-timegrid-event {
+        padding: 2px 3px;
+        min-height: 22px;
+        font-size: 0.75em;
     }
 
     /* Lista: Padding reducido */
-    .fc-list-event {
-        padding: 3px 6px;
-        min-height: 35px;
+    .gcal-calendario-citas .fc-list-event {
+        padding: 4px 6px;
+        min-height: 36px;
+    }
+
+    .gcal-contenido-evento {
+        padding: 2px 2px;
+    }
+
+    .gcal-titulo-evento {
+        font-size: 0.75em;
+    }
+
+    .gcal-estado-evento {
+        font-size: 0.6em;
     }
 }
 
@@ -187,34 +451,81 @@
         font-size: 11px;
     }
 
-    .fc {
-        font-size: 12px;
+    .gcal-calendario-citas .fc {
+        font-size: 11px;
     }
 
-    .fc-event-title {
+    .gcal-calendario-citas .fc-toolbar {
+        flex-direction: column;
+        padding: 6px 4px;
+        gap: 4px;
+    }
+
+    .gcal-calendario-citas .fc-toolbar-title {
+        font-size: 0.95em;
+        order: 1;
+    }
+
+    .gcal-calendario-citas .fc-button {
+        font-size: 0.8em;
+        padding: 4px 6px;
+    }
+
+    .gcal-titulo-fecha-dia {
+        font-size: 0.95em;
+        padding: 6px;
+    }
+
+    /* Mes: Ultra compacto en mobile */
+    .gcal-calendario-citas .fc-daygrid-event {
         font-size: 0.7em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        padding: 1px 2px;
+        border-radius: 1px;
+        margin-bottom: 0.5px;
     }
 
-    /* Semana/Día: Padding reducido */
-    .fc-timegrid-event {
-        padding: var(--gcal-spacing-sm) 3px;
+    .gcal-calendario-citas .fc-daygrid-day-number {
+        font-size: 0.85em;
+        padding: 4px 2px;
+    }
+
+    .gcal-calendario-citas .fc-col-header-cell {
+        font-size: 0.8em;
+        padding: 4px 0;
+    }
+
+    /* Semana/Día: Ultra compacto */
+    .gcal-calendario-citas .fc-timegrid-event {
+        padding: 1px 2px;
         min-height: 18px;
+        font-size: 0.7em;
+    }
+
+    .gcal-calendario-citas .fc-col-time {
+        font-size: 0.75em;
     }
 
     /* Lista: Ultra compacto */
-    .fc-list-event {
-        padding: 2px 4px;
+    .gcal-calendario-citas .fc-list-event {
+        padding: 3px 4px;
         min-height: 30px;
+    }
+
+    .gcal-calendario-citas .fc-list-event-time {
+        font-size: 0.75em;
+    }
+
+    .gcal-contenido-evento {
+        padding: 1px 2px;
     }
 
     .gcal-titulo-evento {
         font-size: 0.7em;
+        margin: 0;
     }
 
     .gcal-estado-evento {
-        font-size: 0.6em;
+        font-size: 0.55em;
+        margin: 0;
     }
 }

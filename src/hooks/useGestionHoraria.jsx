@@ -293,6 +293,28 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         };
     };
 
+    // Función para formatear citas en listado (hh:mm a.m. - hh:mm p.m.)
+    const formatCitasComListado = (citas) => {
+        if (!citas || citas.length === 0) return [];
+        
+        return citas.map(cita => {
+            const horaInicio = cita.horaInicio || '';
+            const horaFin = cita.horaFin || '';
+            
+            if (!horaInicio) return null;
+            
+            // Convertir a formato 12 horas con a.m./p.m.
+            const inicioDate = new Date(`2000-01-01T${horaInicio}:00`);
+            const finDate = horaFin ? new Date(`2000-01-01T${horaFin}:00`) : new Date(inicioDate.getTime() + 60 * 60 * 1000);
+            
+            const formatoHora = { hour: 'numeric', minute: '2-digit', hour12: true };
+            const inicioFormato = new Intl.DateTimeFormat('es-ES', formatoHora).format(inicioDate);
+            const finFormato = new Intl.DateTimeFormat('es-ES', formatoHora).format(finDate);
+            
+            return `${inicioFormato} - ${finFormato}`;
+        }).filter(Boolean);
+    };
+
     // Efecto inicial para cargar datos
     useEffect(() => {
         fetchAllData();
@@ -557,6 +579,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         setMensaje,
         checkCitasInHorario,
         validateHorarioModification,
-        getSugerenciaHorario
+        getSugerenciaHorario,
+        formatCitasComListado
     };
 };

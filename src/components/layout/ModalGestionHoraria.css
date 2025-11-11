@@ -9,11 +9,12 @@
     --spacing-sm: 8px; /* Espaciado pequeño */
     --spacing-md: 15px; /* Espaciado mediano */
     --spacing-lg: 20px; /* Espaciado grande */
+    --spacing-xl: 24px; /* Espaciado extra grande */
     --border-radius: 4px; /* Radio de borde */
     --font-size-base: 1em; /* Tamaño de fuente base */
 
     background: #ffffff; /* Blanco puro, sin bordes/colores extras */
-    padding: var(--spacing-lg);
+    padding: var(--spacing-xl) var(--spacing-lg);
     border-radius: var(--border-radius);
     width: 600px; /* Anchura larga para nombres */
     max-width: 90vw; /* Responsivo */
@@ -22,6 +23,31 @@
     box-shadow: var(--shadow-light); /* Sombra sutil, no bordes */
     position: relative;
     font-size: var(--font-size-base);
+}
+
+/* Estilizar scrollbar para navegadores webkit (Chrome, Safari, Edge) */
+.gh-contenido-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.gh-contenido-modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.gh-contenido-modal::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #D4AF37 0%, #FFD700 100%);
+    border-radius: 10px;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.gh-contenido-modal::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #FFD700 0%, #D4AF37 100%);
+}
+
+/* Scrollbar para Firefox */
+.gh-contenido-modal {
+    scrollbar-width: thin;
+    scrollbar-color: #D4AF37 transparent;
 }
 
 .gh-superposicion-modal {
@@ -41,8 +67,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
     border-bottom: 1px solid var(--border-color); /* Separador sutil */
 }
 
@@ -76,19 +102,132 @@
 
 .gh-error-modal {
     color: var(--error-color);
-    margin: 0 0 var(--spacing-md) 0;
+    margin: 0 0 var(--spacing-lg) 0;
+    padding: var(--spacing-md) var(--spacing-lg);
     font-size: 0.9em;
     text-align: center;
     background: #f8d7da;
-    padding: var(--spacing-sm);
     border-radius: var(--border-radius);
     border-left: 4px solid var(--error-color);
+    line-height: 1.5;
+}
+
+/* ========== ESTILOS DEL ACCORDION ========== */
+.gh-accordion-container {
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.gh-accordion-header {
+    width: 100%;
+    background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-size: 1em;
+    font-weight: 600;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.gh-accordion-header:hover {
+    background: linear-gradient(135deg, #e8f0f8 0%, #f5f8fb 100%);
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
+}
+
+.gh-accordion-header:active {
+    transform: translateY(1px);
+}
+
+.gh-accordion-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: transform 0.3s ease;
+}
+
+.gh-accordion-titulo {
+    flex: 1;
+    text-align: left;
+}
+
+.gh-accordion-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: bold;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+}
+
+.gh-accordion-contenido {
+    background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    animation: slideDown 0.3s ease-out;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Estilizar scrollbar dentro del accordion */
+.gh-accordion-contenido::-webkit-scrollbar {
+    width: 6px;
+}
+
+.gh-accordion-contenido::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.gh-accordion-contenido::-webkit-scrollbar-thumb {
+    background: #D4AF37;
+    border-radius: 10px;
+}
+
+.gh-accordion-contenido::-webkit-scrollbar-thumb:hover {
+    background: #FFD700;
+}
+
+.gh-accordion-contenido {
+    scrollbar-width: thin;
+    scrollbar-color: #D4AF37 transparent;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 400px;
+    }
 }
 
 .gh-formulario-modal {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
 }
 
 /* Rows de dos columnas (lado a lado) */
@@ -109,7 +248,10 @@
 .gh-etiqueta-form {
     font-weight: bold;
     color: var(--text-color);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
 .gh-etiqueta-form:last-of-type {
@@ -126,6 +268,7 @@
     background: #ffffff; /* Blanco puro */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box;
+    line-height: 1.5;
 }
 
 .gh-entrada-form:focus,
@@ -133,6 +276,19 @@
     border-color: var(--primary-color); /* Dorado en focus, sutil */
     outline: none;
     box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1); /* Sombra ligera */
+}
+
+.gh-entrada-form:disabled,
+.gh-select-form:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ddd;
+}
+
+.gh-entrada-form:disabled:hover,
+.gh-select-form:disabled:hover {
+    border-color: #ddd;
 }
 
 .gh-select-form option {
@@ -144,12 +300,14 @@
 .gh-botones-modal {
     display: flex;
     justify-content: center;
-    margin-top: var(--spacing-sm);
+    margin-top: var(--spacing-xl);
     width: 100%;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
 }
 
 .gh-boton-guardar {
-    padding: 12px 30px; /* Padding ancho para visibilidad */
+    padding: 14px 40px; /* Padding más generoso */
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -159,7 +317,8 @@
     color: #000;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
-    min-width: 120px; /* Anchura mínima */
+    min-width: 140px; /* Anchura mínima */
+    letter-spacing: 0.5px;
 }
 
 .gh-boton-guardar:hover {
@@ -168,17 +327,109 @@
     box-shadow: 0 4px 8px rgba(212, 175, 55, 0.4);
 }
 
-/* Responsividad: Rows verticales en mobile */
+/* ========== ESTILOS DEL CONTENIDO DEL ACCORDION ========== */
+.gh-contexto-horario {
+    background: rgba(33, 150, 243, 0.08);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: 3px;
+    border-left: 3px solid #2196f3;
+    margin: 0 0 var(--spacing-lg) 0;
+    color: #424242;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.gh-citas-detectadas {
+    background: rgba(255, 255, 255, 0.7);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: 3px;
+    margin: var(--spacing-lg) 0;
+    border-left: 3px solid #2196f3;
+}
+
+.gh-subtitulo-citas {
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    color: #1565c0;
+    font-size: 13px;
+}
+
+.gh-listado-citas {
+    margin: 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.gh-listado-citas li {
+    margin: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    color: #424242;
+    font-size: 13px;
+}
+
+.gh-listado-citas li:before {
+    content: "•";
+    color: #2196f3;
+    font-weight: bold;
+    display: inline-block;
+    width: 20px;
+    margin-left: -20px;
+}
+
+.gh-horario-cita {
+    font-weight: 500;
+    color: #1565c0;
+    font-family: 'Courier New', monospace;
+}
+
+.gh-explicacion-cierre {
+    background: rgba(255, 235, 59, 0.1);
+    border-left: 3px solid #fbc02d;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: 3px;
+    margin: var(--spacing-lg) 0;
+}
+
+.gh-explicacion-cierre p {
+    margin: 6px 0;
+    color: #f57f17;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.gh-ejemplo-cierre {
+    font-size: 12px !important;
+    color: #e65100 !important;
+    background: rgba(255, 235, 59, 0.2);
+    padding: 8px;
+    border-radius: 2px;
+    margin-top: 8px !important;
+}
+
+.gh-alerta-citas {
+    background: rgba(244, 67, 54, 0.1);
+    border-left: 3px solid #f44336;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: 3px;
+    margin-top: var(--spacing-lg);
+    color: #c62828;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* ========== RESPONSIVIDAD ========== */
 @media (max-width: 768px) {
     .gh-contenido-modal {
         width: 95%;
-        padding: var(--spacing-md);
+        padding: var(--spacing-lg) var(--spacing-md);
         margin: var(--spacing-sm);
     }
 
     .gh-row-form {
         flex-direction: column;
-        gap: var(--spacing-sm);
+        gap: var(--spacing-md);
     }
 
     .gh-etiqueta-form {
@@ -187,17 +438,18 @@
 
     .gh-entrada-form,
     .gh-select-form {
-        padding: 10px 12px;
+        padding: 11px 12px;
         font-size: 0.95em;
     }
 
     .gh-botones-modal {
-        margin-top: var(--spacing-sm);
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
     }
 
     .gh-boton-guardar {
-        padding: 10px 20px;
-        width: 100%;
+        padding: 12px 32px;
+        width: auto;
         min-width: auto;
     }
 
@@ -214,12 +466,39 @@
         width: 25px;
         height: 25px;
     }
+
+    .gh-accordion-header {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.95em;
+    }
+
+    .gh-accordion-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 0.85em;
+    }
+
+    .gh-accordion-badge {
+        padding: 3px 10px;
+        font-size: 0.7em;
+    }
+
+    .gh-accordion-contenido {
+        padding: var(--spacing-md) var(--spacing-lg);
+        max-height: 300px;
+    }
+
+    .gh-formulario-modal {
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
+    }
 }
 
 @media (max-width: 480px) {
     .gh-contenido-modal {
         width: 98%;
-        padding: var(--spacing-sm);
+        padding: var(--spacing-lg) var(--spacing-md);
+        max-height: 85vh;
     }
 
     .gh-titulo-modal {
@@ -228,33 +507,65 @@
 
     .gh-entrada-form,
     .gh-select-form {
-        padding: 8px 10px;
+        padding: 10px 11px;
         font-size: 0.9em;
     }
-}
 
-/* Estilos para información sobre citas existentes */
-.gh-info-citas-existentes {
-    background-color: #e3f2fd;
-    border-left: 4px solid #2196f3;
-    padding: 12px;
-    margin: 16px 0;
-    border-radius: 4px;
-}
+    .gh-accordion-header {
+        padding: 10px var(--spacing-sm);
+        font-size: 0.9em;
+        gap: var(--spacing-sm);
+    }
 
-.gh-info-citas-existentes h4 {
-    margin: 0 0 8px 0;
-    color: #1976d2;
-    font-size: 14px;
-}
+    .gh-accordion-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 0.8em;
+    }
 
-.gh-info-citas-existentes p {
-    margin: 4px 0;
-    color: #424242;
-    font-size: 13px;
-}
+    .gh-accordion-badge {
+        display: none; /* Ocultar badge en móviles para ahorrar espacio */
+    }
 
-.gh-info-citas-existentes small {
-    color: #666;
-    font-size: 12px;
+    .gh-accordion-contenido {
+        padding: var(--spacing-md) var(--spacing-md);
+        max-height: 250px;
+    }
+
+    .gh-contexto-horario,
+    .gh-citas-detectadas,
+    .gh-explicacion-cierre,
+    .gh-alerta-citas {
+        padding: var(--spacing-sm) var(--spacing-md);
+        margin: var(--spacing-md) 0;
+    }
+
+    .gh-subtitulo-citas,
+    .gh-listado-citas li {
+        font-size: 12px;
+    }
+
+    .gh-boton-guardar {
+        padding: 12px 28px;
+        font-size: 0.95em;
+    }
+
+    .gh-botones-modal {
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
+    }
+
+    .gh-formulario-modal {
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
+    }
+
+    .gh-row-form {
+        gap: var(--spacing-md);
+    }
+
+    .gh-header-modal {
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+    }
 }
