@@ -11,6 +11,21 @@ const ModalGestionHoraria = ({
         onClose();
     };
 
+    // Calcular fechas mínima y máxima permitidas (RANGO DESLIZANTE)
+    const getMinMaxDates = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const minDate = today.toISOString().split('T')[0];
+        
+        // Máximo dinámico: hoy + 6 meses (rango deslizante)
+        const maxDate = new Date(today);
+        maxDate.setMonth(maxDate.getMonth() + 6);
+        const maxDateStr = maxDate.toISOString().split('T')[0];
+        
+        return { minDate, maxDate: maxDateStr };
+    };
+
     // Función para formatear hora en 12 horas con a.m./p.m.
     const formatearHora = (horaStr) => {
         if (!horaStr) return '';
@@ -27,6 +42,8 @@ const ModalGestionHoraria = ({
     // Detectar si hay citas en el horario (para bloquear campos)
     // Solo bloquear si estamos en modo edición Y hay citas detectadas
     const hayCitasEnHorario = isEditMode && citasEnHorario && citasEnHorario.length > 0;
+    
+    const { minDate, maxDate } = getMinMaxDates();
 
     return (
         <div className="gh-superposicion-modal" onClick={onClose}>
@@ -136,7 +153,10 @@ const ModalGestionHoraria = ({
                                 className="gh-entrada-form"
                                 disabled={hayCitasEnHorario}
                                 title={hayCitasEnHorario ? "Este campo está bloqueado porque hay citas agendadas en este horario" : ""}
+                                min={minDate}
+                                max={maxDate}
                             />
+                            <small className="gh-ayuda-fecha">Rango permitido: hoy hasta 6 meses</small>
                         </label>
                     </div>
 

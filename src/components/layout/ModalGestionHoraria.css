@@ -291,6 +291,13 @@
     border-color: #ddd;
 }
 
+.gh-ayuda-fecha {
+    font-size: 0.8em;
+    color: #666;
+    font-weight: normal;
+    margin-top: 4px;
+}
+
 .gh-select-form option {
     padding: var(--spacing-sm);
     background: #fff;
