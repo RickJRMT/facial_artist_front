@@ -234,6 +234,110 @@
   color: #1a1a1a;
 }
 
+/* Botón para mostrar/ocultar imágenes */
+.mhv-toggle-imagenes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  margin-top: 12px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mhv-toggle-imagenes:hover {
+  background: #f9f9f9;
+  border-color: #d4a017;
+  color: #d4a017;
+}
+
+.mhv-toggle-imagenes svg {
+  transition: transform 0.2s ease;
+}
+
+/* Panel desplegable de imágenes */
+.mhv-imagenes-panel {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mhv-imagenes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.mhv-imagen-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mhv-imagen-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  text-align: center;
+}
+
+.mhv-imagen-preview {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.mhv-imagen-preview:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mhv-imagen-vacia {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border: 2px dashed #e5e5e5;
+  border-radius: 8px;
+  color: #9ca3af;
+  gap: 8px;
+}
+
+.mhv-imagen-vacia p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .mhv-modal {
@@ -296,5 +400,15 @@
   .mhv-metadata {
     flex-direction: column;
     gap: 8px;
+  }
+
+  .mhv-imagenes-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .mhv-imagen-preview,
+  .mhv-imagen-vacia {
+    height: 180px;
   }
 }
