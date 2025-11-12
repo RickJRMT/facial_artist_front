@@ -1,13 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { X, Edit, Trash2, Calendar, Clock, User, AlertCircle } from 'lucide-react';
+import { X, Edit, Trash2, Calendar, Clock, User, AlertCircle, ChevronDown, ChevronUp, Image as ImageIcon } from 'lucide-react';
 import './ModalHojasVida.css';
 import { useHojasVida } from '../../../hooks/useHojasVida';
+import ModalEditarHV from './ModalEditarHV';
 
 const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
-  const { hojasVida, loading, error, eliminarHoja, actualizarLista } = useHojasVida(cliente?.idCliente);
+  const { hojasVida, loading, error, eliminarHoja, actualizarHoja, actualizarLista } = useHojasVida(cliente?.idCliente);
+  
+  // Estados para el modal de edición
+  const [modalEditarOpen, setModalEditarOpen] = useState(false);
+  const [hojaSeleccionada, setHojaSeleccionada] = useState(null);
+  
+  // Estado para controlar qué acordeones están abiertos
+  const [imagenesAbiertas, setImagenesAbiertas] = useState({});
 
   const handleEditar = (hoja) => {
-    alert(`Editar: ${hoja.hvDesc || 'Hoja de vida'}`);
+    setHojaSeleccionada(hoja);
+    setModalEditarOpen(true);
+  };
+
+  const toggleImagenes = (idHv) => {
+    setImagenesAbiertas(prev => ({
+      ...prev,
+      [idHv]: !prev[idHv]
+    }));
+  };
+
+  const convertirImagenAURL = (imagenBase64) => {
+    if (!imagenBase64) return null;
+    if (imagenBase64.startsWith('data:image')) return imagenBase64;
+    return `data:image/png;base64,${imagenBase64}`;
+  };
+
+  const handleGuardarEdicion = async (datosActualizados) => {
+    try {
+      const success = await actualizarHoja(datosActualizados.idHv, datosActualizados);
+      
+      if (success) {
+        alert('Hoja de vida actualizada correctamente');
+        setModalEditarOpen(false);
+        setHojaSeleccionada(null);
+      } else {
+        alert('Error al actualizar la hoja de vida');
+      }
+    } catch (error) {
+      console.error('Error al actualizar:', error);
+      alert('Error al actualizar la hoja de vida');
+    }
   };
 
   const handleEliminar = async (idHv) => {
@@ -117,6 +156,57 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
                     </div>
                     <p className="mhv-descripcion">{hoja.hvDesc}</p>
                   </div>
+
+                  {/* Botón para ver imágenes */}
+                  <button 
+                    className="mhv-toggle-imagenes"
+                    onClick={() => toggleImagenes(hoja.idHv)}
+                  >
+                    <ImageIcon size={16} />
+                    <span>Ver imágenes</span>
+                    {imagenesAbiertas[hoja.idHv] ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+
+                  {/* Panel desplegable de imágenes */}
+                  {imagenesAbiertas[hoja.idHv] && (
+                    <div className="mhv-imagenes-panel">
+                      <div className="mhv-imagenes-grid">
+                        {/* Imagen Antes */}
+                        <div className="mhv-imagen-item">
+                          <h4 className="mhv-imagen-titulo">Antes</h4>
+                          {hoja.hvImagenAntes ? (
+                            <img 
+                              src={convertirImagenAURL(hoja.hvImagenAntes)} 
+                              alt="Antes del tratamiento" 
+                              className="mhv-imagen-preview"
+                            />
+                          ) : (
+                            <div className="mhv-imagen-vacia">
+                              <ImageIcon size={32} />
+                              <p>Sin imagen</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Imagen Después */}
+                        <div className="mhv-imagen-item">
+                          <h4 className="mhv-imagen-titulo">Después</h4>
+                          {hoja.hvImagenDespues ? (
+                            <img 
+                              src={convertirImagenAURL(hoja.hvImagenDespues)} 
+                              alt="Después del tratamiento" 
+                              className="mhv-imagen-preview"
+                            />
+                          ) : (
+                            <div className="mhv-imagen-vacia">
+                              <ImageIcon size={32} />
+                              <p>Sin imagen</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
 
@@ -129,6 +219,17 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
           )}
         </div>
       </div>
+
+      {/* Modal de Edición */}
+      <ModalEditarHV
+        isOpen={modalEditarOpen}
+        onClose={() => {
+          setModalEditarOpen(false);
+          setHojaSeleccionada(null);
+        }}
+        onSave={handleGuardarEdicion}
+        hojaVida={hojaSeleccionada}
+      />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { obtenerHojasVidaCliente, eliminarHojaVida } from '../Services/hojasVidaConexion';
+import { obtenerHojasVidaCliente, eliminarHojaVida, actualizarHojaVida } from '../Services/hojasVidaConexion';
 
 export const useHojasVida = (idCliente) => {
     const [hojasVida, setHojasVida] = useState([]);
@@ -35,6 +35,42 @@ export const useHojasVida = (idCliente) => {
         }
     };
 
+    const actualizarHoja = async (idHv, datosActualizados) => {
+        try {
+            // Preparar datos para la API - SOLO los campos editables
+            const hojaVidaData = {
+                hvDesc: datosActualizados.descripcion
+            };
+
+            // Agregar imágenes solo si fueron proporcionadas (ya convertidas a base64)
+            if (datosActualizados.imagenAntes) {
+                hojaVidaData.hvImagenAntes = datosActualizados.imagenAntes;
+            }
+            
+            if (datosActualizados.imagenDespues) {
+                hojaVidaData.hvImagenDespues = datosActualizados.imagenDespues;
+            }
+
+            console.log('Datos que se enviarán al backend:', {
+                idHv,
+                hvDesc: hojaVidaData.hvDesc,
+                tieneImagenAntes: !!hojaVidaData.hvImagenAntes,
+                tieneImagenDespues: !!hojaVidaData.hvImagenDespues
+            });
+            
+            await actualizarHojaVida(idHv, hojaVidaData);
+            
+            // Actualizar la lista local
+            await cargarHojasVida();
+            
+            return true;
+        } catch (err) {
+            setError('Error al actualizar la hoja de vida');
+            console.error('Error completo:', err.response?.data || err);
+            return false;
+        }
+    };
+
     const actualizarLista = () => {
         cargarHojasVida();
     };
@@ -51,6 +87,7 @@ export const useHojasVida = (idCliente) => {
         error,
         cargarHojasVida,
         eliminarHoja,
+        actualizarHoja,
         actualizarLista
     };
 };
