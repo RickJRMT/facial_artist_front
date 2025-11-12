@@ -20,6 +20,7 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
   const [previewDespues, setPreviewDespues] = useState(null);
   const [hasImageAntesChanged, setHasImageAntesChanged] = useState(false);
   const [hasImageDespuesChanged, setHasImageDespuesChanged] = useState(false);
+  const [errorDescripcion, setErrorDescripcion] = useState('');
 
   // Actualizar formData cuando cambie hojaVida
   useEffect(() => {
@@ -57,6 +58,7 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
 
       setHasImageAntesChanged(false);
       setHasImageDespuesChanged(false);
+      setErrorDescripcion('');
     }
   }, [hojaVida]);
 
@@ -70,6 +72,19 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    if (name === 'descripcion') {
+      // Expresión regular para permitir solo letras, números, espacios, comas, puntos, paréntesis y guiones
+      const regex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s,.\-()]*$/;
+      
+      if (!regex.test(value)) {
+        setErrorDescripcion('No se permiten caracteres especiales. Solo letras, números, espacios, comas, puntos, paréntesis y guiones.');
+        return; // No actualizar el valor si contiene caracteres no permitidos
+      } else {
+        setErrorDescripcion('');
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -119,7 +134,12 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
 
   const handleSubmit = async () => {
     if (!formData.descripcion.trim()) {
-      alert('Por favor completa la descripción');
+      setErrorDescripcion('La descripción es obligatoria');
+      return;
+    }
+    
+    if (errorDescripcion) {
+      alert('Por favor corrige los errores antes de continuar');
       return;
     }
     
@@ -178,6 +198,7 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
     setPreviewDespues(null);
     setHasImageAntesChanged(false);
     setHasImageDespuesChanged(false);
+    setErrorDescripcion('');
     onClose();
   };
 
@@ -252,9 +273,12 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
               value={formData.descripcion}
               onChange={handleInputChange}
               placeholder="Describe el procedimiento realizado..."
-              className="mehv-textarea"
+              className={`mehv-textarea ${errorDescripcion ? 'mehv-textarea-error' : ''}`}
               rows={4}
             />
+            {errorDescripcion && (
+              <span className="mehv-error-message">{errorDescripcion}</span>
+            )}
           </div>
 
           {/* Imágenes Antes y Después */}

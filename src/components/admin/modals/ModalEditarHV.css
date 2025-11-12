@@ -134,6 +134,23 @@
   color: #9ca3af;
 }
 
+.mehv-textarea-error {
+  border-color: #dc2626 !important;
+}
+
+.mehv-textarea-error:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+}
+
+.mehv-error-message {
+  display: block;
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
 .mehv-imagenes-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
