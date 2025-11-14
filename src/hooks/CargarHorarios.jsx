@@ -28,11 +28,11 @@ export function useHorariosDisponibles(idProfesional, idServicio, fecha) {
                     idServicios: idServicio,
                     fechaCita: fecha,
                 };
-                console.log('Enviando datos para horarios:', datosEnvio);
+                // console.log('Enviando datos para horarios:', datosEnvio);
                 const horarios = await obtenerHorariosDisponibles(datosEnvio);
-                console.log('Horarios disponibles cargados:', horarios);
-                console.log('Tipo de datos recibidos:', typeof horarios);
-                console.log('Es array?:', Array.isArray(horarios));
+                // console.log('Horarios disponibles cargados:', horarios);
+                // console.log('Tipo de datos recibidos:', typeof horarios);
+                // console.log('Es array?:', Array.isArray(horarios));
                 
                 // Verificar si los horarios vienen en un formato diferente
                 const horariosArray = Array.isArray(horarios) ? horarios : (horarios?.horarios || []);
