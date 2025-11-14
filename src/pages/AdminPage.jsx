@@ -5,6 +5,7 @@ import Navbar from '../components/admin/Navbar';
 import StatCard from '../components/admin/StatCard';
 import ClientesView from '../components/admin/views/ClientesView';
 import ServiciosView from '../components/admin/views/ServiciosView';
+import CursosView from '../components/admin/views/CursosView';
 import './AdminPage.css';
 import CitasAdmin from '../components/admin/CitasAdmin';
 import Agenda from '../components/admin/Agenda';
@@ -75,6 +76,7 @@ const AdminPage = () => {
         {activeMenu === 'clientes' && <ClientesView />}
         {activeMenu === 'servicios' && <ServiciosView />}
         {activeMenu === 'citas' && <CitasAdmin />}
+        {activeMenu === 'cursos' && <CursosView />}
         {activeMenu === 'agenda' && <Agenda />}
       </div>
     </div>
