@@ -1,5 +1,4 @@
 import axios from 'axios';
-// las citas, la "c" iba en mayuscula, pero para consultar el numero de referencia, supuestamente lo debo colocar en minuscula
 const API_URL = 'http://localhost:3000/api/citas';
 
 export const crearCita = async (datosCita) => {
@@ -31,14 +30,22 @@ export const consultarCita = async (celular, numeroReferencia) => {
   return response.data;
 };
 
-// Nueva función para actualizar una cita existente
+// función para actualizar una cita existente
 export const actualizarCita = async (idCita, datosActualizados) => {
   const response = await axios.put(`${API_URL}/${idCita}`, datosActualizados);
   return response.data;
 };
 
-// Nueva función para eliminar una cita
+// función para eliminar una cita
 export const eliminarCita = async (idCita) => {
-  const response = await axios.delete(`${API_URL}/${idCita}`);
-  return response.data;
+  try {
+    const response = await axios.delete(`${API_URL}/${idCita}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      throw new Error(error.response.data.error);
+    } else {
+      throw error;
+    }
+  }
 };

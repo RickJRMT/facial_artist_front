@@ -1,4 +1,4 @@
-// CitasAdmin.jsx (versión completa actualizada)
+// CitasAdmin.jsx (actualizado para mejor manejo de errores en eliminación)
 import React, { useState } from "react";
 import "./CitasAdmin.css";
 import SolicitarCitaCard from "../../pages/SolicitarCitaAdmin.jsx";
@@ -7,7 +7,7 @@ import { useCitasAdmin } from "../../hooks/CargarCitasAdmin.jsx";
 import ModalCitaExitosa from "../layout/ModalCitaSolicitada.jsx";
 import ModalCitaEditada from "../layout/ModalCitaEditada.jsx";
 import useModalCitaExitosa from "../../hooks/useModalCitaExitosa.jsx";
-import { useProfesionales } from "../../hooks/CargarProfesionales.jsx"; // Agregado para obtener profesionales
+import { useProfesionales } from "../../hooks/CargarProfesionales.jsx";
 import { actualizarCita, eliminarCita } from "../../Services/citasClientesConexion";
 
 export default function CitasAdmin() {
@@ -15,15 +15,13 @@ export default function CitasAdmin() {
     const [mostrarEditar, setMostrarEditar] = useState(false);
     const [citaAEditar, setCitaAEditar] = useState(null);
 
-    // Estado para modal de edición
     const [modalEditadaVisible, setModalEditadaVisible] = useState(false);
     const [datosEditados, setDatosEditados] = useState(null);
 
     const { citas, loading, error, fetchCitas } = useCitasAdmin();
-    const { profesionales } = useProfesionales(); // Agregado para usar en modal
+    const { profesionales } = useProfesionales();
     const { modalVisible, mostrarModal, cerrarModal, datosCita } = useModalCitaExitosa();
 
-    // Estados para filtros
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProfesional, setSelectedProfesional] = useState("");
     const [selectedPago, setSelectedPago] = useState("");
@@ -48,7 +46,6 @@ export default function CitasAdmin() {
             await actualizarCita(citaAEditar.idCita, datosActualizados);
             fetchCitas();
             cerrarEditar();
-            // Preparar datos para modal de edición
             const nombreProfesionalNuevo = profesionales.find(p => p.idProfesional === datosActualizados.idProfesional)?.nombreProfesional || citaAEditar.nombreProfesional;
             const datosParaModal = {
                 nombreCliente: citaAEditar.nombreCliente,
@@ -68,17 +65,18 @@ export default function CitasAdmin() {
     };
 
     const handleEliminarCita = async (idCita) => {
-        if (!window.confirm("¿Estás seguro de eliminar esta cita?")) return;
+        if (!window.confirm("¿Estás seguro de eliminar esta cita? Esto también eliminará la HV asociada.")) return;
         try {
-            await eliminarCita(idCita);
+            const resultado = await eliminarCita(idCita);
             fetchCitas();
+            alert(resultado.message || "Cita eliminada exitosamente");
         } catch (error) {
             console.error("Error al eliminar cita:", error);
-            alert(error.message || "Error al eliminar cita");
+            alert(error.message || "Error al eliminar cita. Detalles en consola del navegador.");
         }
     };
 
-    // Función para filtrar citas
+    // Función para filtrar citas (mantenida igual)
     const citasFiltradas = citas.filter((cita) => {
         const matchesSearch = cita.nombreCliente.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesProfesional = !selectedProfesional || cita.nombreProfesional === selectedProfesional;
@@ -113,7 +111,6 @@ export default function CitasAdmin() {
     const citasPaginadas = citasFiltradas.slice(indexPrimeraCita, indexUltimaCita);
     const totalPaginas = Math.ceil(citasFiltradas.length / citasPorPagina);
 
-    // Opciones para filtros
     const profesionalesUnicos = [...new Set(citas.map(c => c.nombreProfesional))].sort();
     const estadosPagoUnicos = [...new Set(citas.map(c => c.estadoPago))].sort();
 
@@ -127,7 +124,6 @@ export default function CitasAdmin() {
                 </button>
             </div>
 
-            {/* Filtros funcionales */}
             <div className="filtros">
                 <input
                     type="text"
@@ -239,7 +235,6 @@ export default function CitasAdmin() {
                 )}
             </div>
 
-            {/* Modal Nueva Cita */}
             {mostrarFormulario && (
                 <div className="modal-overlay">
                     <div className="modal-content">
@@ -249,7 +244,6 @@ export default function CitasAdmin() {
                 </div>
             )}
 
-            {/* Modal Edición */}
             {mostrarEditar && citaAEditar && (
                 <div className="modal-overlay">
                     <div className="modal-content">
@@ -259,10 +253,8 @@ export default function CitasAdmin() {
                 </div>
             )}
 
-            {/* Modal Éxito Creación */}
             {modalVisible && <ModalCitaExitosa datosCita={datosCita} onClose={cerrarModal} />}
 
-            {/* Modal Éxito Edición */}
             {modalEditadaVisible && (
                 <ModalCitaEditada
                     datosCita={datosEditados}
