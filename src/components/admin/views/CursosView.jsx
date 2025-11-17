@@ -36,7 +36,7 @@ const CursosView = () => {
       // Si hay imagen, ya viene como base64 desde el modal
       if (formData.imagen) {
         const base64String = formData.imagen.split(',')[1]; // Remover el prefijo data:image
-        cursoData.cursoImagen = base64String;
+        cursoData.imagenBase64 = base64String; // Cambiar cursoImagen por imagenBase64
       }
 
       await crearCurso(cursoData);

@@ -29,7 +29,6 @@ const ModalCrearCurso = ({ isOpen, onClose, onSave }) => {
   });
 
   const [imagenPreview, setImagenPreview] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   // Verificar si el formulario es válido
   const isFormValid = () => {
@@ -126,22 +125,14 @@ const ModalCrearCurso = ({ isOpen, onClose, onSave }) => {
     }));
   };
 
-  // Función para convertir archivo a base64
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  };
+
 
   /**
    * Maneja el cambio de la imagen seleccionada
    * Valida el tipo y tamaño de la imagen, y crea una vista previa
    * @param {Event} e - Evento del input de tipo file
    */
-  const handleImagenChange = async (e) => {
+  const handleImagenChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       // Validar que sea una imagen
@@ -162,78 +153,22 @@ const ModalCrearCurso = ({ isOpen, onClose, onSave }) => {
         return;
       }
 
-      try {
-        const base64 = await fileToBase64(file);
-        setFormData(prev => ({
-          ...prev,
-          imagen: base64
-        }));
-        setImagenPreview(base64);
-        setErrors(prev => ({
-          ...prev,
-          imagen: ''
-        }));
-      } catch (error) {
-        console.error('Error al convertir imagen:', error);
-        setErrors(prev => ({
-          ...prev,
-          imagen: 'Error al procesar la imagen'
-        }));
-      }
-    }
-  };
+      setFormData(prev => ({
+        ...prev,
+        imagen: file
+      }));
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = async (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      if (file.type.startsWith('image/')) {
-        // Validar tamaño máximo (5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          setErrors(prev => ({
-            ...prev,
-            imagen: 'La imagen no debe superar los 5MB'
-          }));
-          return;
-        }
-
-        try {
-          const base64 = await fileToBase64(file);
-          setFormData(prev => ({
-            ...prev,
-            imagen: base64
-          }));
-          setImagenPreview(base64);
-          setErrors(prev => ({
-            ...prev,
-            imagen: ''
-          }));
-        } catch (error) {
-          console.error('Error al convertir imagen:', error);
-          setErrors(prev => ({
-            ...prev,
-            imagen: 'Error al procesar la imagen'
-          }));
-        }
-      } else {
-        setErrors(prev => ({
-          ...prev,
-          imagen: 'Por favor, seleccione un archivo de imagen válido'
-        }));
-      }
+      // Crear preview de la imagen
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagenPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      
+      setErrors(prev => ({
+        ...prev,
+        imagen: ''
+      }));
     }
   };
 
@@ -283,10 +218,28 @@ const ModalCrearCurso = ({ isOpen, onClose, onSave }) => {
     }
 
     onSave(submitData);
-    handleCancelar();
+    
+    // Limpiar el formulario después de enviar exitosamente
+    setFormData({
+      nombre: '',
+      duracion: '',
+      costo: '',
+      descripcion: '',
+      imagen: null,
+      estado: 'activo'
+    });
+    setImagenPreview(null);
+    setErrors({
+      nombre: '',
+      descripcion: '',
+      costo: '',
+      duracion: '',
+      imagen: ''
+    });
   };
 
-  const handleCancelar = () => {
+  // Función para limpiar el formulario
+  const handleCleanForm = () => {
     setFormData({
       nombre: '',
       duracion: '',
@@ -311,18 +264,19 @@ const ModalCrearCurso = ({ isOpen, onClose, onSave }) => {
   return (
     <>
       {/* Overlay */}
-      <div className="modal-crear-curso-overlay" onClick={handleCancelar}></div>
+      <div className="modal-crear-curso-overlay" onClick={handleCleanForm}></div>
       
       {/* Modal */}
       <div className="modal-crear-curso-modal">
         {/* Header */}
         <div className="modal-crear-curso-header">
           <h2 className="modal-crear-curso-title">Crear Nuevo Curso</h2>
-          <button className="modal-crear-curso-close-button" onClick={handleCancelar}>
+          <button className="modal-crear-curso-close-button" onClick={handleCleanForm}>
             <X size={20} />
           </button>
         </div>
 
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
         {/* Content */}
         <div className="modal-crear-curso-content">
           {/* Nombre del curso */}
@@ -398,36 +352,25 @@ const ModalCrearCurso = ({ isOpen, onClose, onSave }) => {
           {/* Imagen del curso */}
           <div className="modal-crear-curso-form-group">
             <label className="modal-crear-curso-label">Imagen del curso *</label>
-            <div
-              className={`modal-crear-curso-dropzone ${isDragging ? 'modal-crear-curso-dropzone-active' : ''} ${errors.imagen ? 'dropzone-error' : ''}`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => document.getElementById('fileInput').click()}
-            >
-              {imagenPreview ? (
-                <div className="modal-crear-curso-preview-container">
-                  <img src={imagenPreview} alt="Preview" className="modal-crear-curso-preview-image" />
-                  <p className="modal-crear-curso-dropzone-text-small">Haz clic para cambiar la imagen</p>
-                </div>
-              ) : (
-                <>
-                  <Upload size={36} className="modal-crear-curso-upload-icon" />
-                  <p className="modal-crear-curso-dropzone-text">
-                    Arrastra una imagen aquí o haz clic para seleccionar
-                  </p>
-                  <p className="modal-crear-curso-dropzone-hint">
-                    Máximo 5MB - JPG, PNG o GIF
-                  </p>
-                </>
-              )}
-              <input
-                id="fileInput"
-                type="file"
-                accept="image/*"
-                onChange={handleImagenChange}
-                className="modal-crear-curso-file-input"
-              />
+            <div className="image-upload-container">
+              <label className="image-upload-label">
+                <input
+                  type="file"
+                  className="image-input"
+                  accept="image/*"
+                  onChange={handleImagenChange}
+                />
+                {imagenPreview ? (
+                  <img src={imagenPreview} alt="Preview" className="image-preview" />
+                ) : (
+                  <>
+                    <Upload size={48} className="upload-icon" />
+                    <p className="upload-text">
+                      Arrastra una imagen aquí o haz clic para seleccionar
+                    </p>
+                  </>
+                )}
+              </label>
             </div>
             {errors.imagen && <span className="error-message">{errors.imagen}</span>}
           </div>
@@ -435,17 +378,18 @@ const ModalCrearCurso = ({ isOpen, onClose, onSave }) => {
 
         {/* Footer */}
         <div className="modal-crear-curso-footer">
-          <button className="modal-crear-curso-btn-cancelar" onClick={handleCancelar}>
+          <button type="button" className="modal-crear-curso-btn-cancelar" onClick={handleCleanForm}>
             Cancelar
           </button>
           <button 
+            type="submit"
             className={`modal-crear-curso-btn-crear ${!isFormValid() ? 'btn-disabled' : ''}`}
-            onClick={handleSubmit}
             disabled={!isFormValid()}
           >
             Crear Curso
           </button>
         </div>
+        </form>
       </div>
     </>
   );
