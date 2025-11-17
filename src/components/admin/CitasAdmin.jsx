@@ -1,14 +1,12 @@
-// CitasAdmin.jsx (actualizado para mejor manejo de errores en eliminación)
 import React, { useState } from "react";
 import "./CitasAdmin.css";
-import SolicitarCitaCard from "../../pages/SolicitarCitaAdmin.jsx";
-import EditarCita from "../layout/EditarCita.jsx";
+import SolicitarCitaAdmin from "../../pages/SolicitarCitaAdmin.jsx"; // Ajusta path si es diferente
 import { useCitasAdmin } from "../../hooks/CargarCitasAdmin.jsx";
 import ModalCitaExitosa from "../layout/ModalCitaSolicitada.jsx";
 import ModalCitaEditada from "../layout/ModalCitaEditada.jsx";
 import useModalCitaExitosa from "../../hooks/useModalCitaExitosa.jsx";
 import { useProfesionales } from "../../hooks/CargarProfesionales.jsx";
-import { actualizarCita, eliminarCita } from "../../Services/citasClientesConexion";
+import { eliminarCita } from "../../Services/citasClientesConexion";
 
 export default function CitasAdmin() {
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -41,27 +39,10 @@ export default function CitasAdmin() {
         mostrarModal(datos);
     };
 
-    const handleCitaEditada = async (datosActualizados) => {
-        try {
-            await actualizarCita(citaAEditar.idCita, datosActualizados);
-            fetchCitas();
-            cerrarEditar();
-            const nombreProfesionalNuevo = profesionales.find(p => p.idProfesional === datosActualizados.idProfesional)?.nombreProfesional || citaAEditar.nombreProfesional;
-            const datosParaModal = {
-                nombreCliente: citaAEditar.nombreCliente,
-                fecha: datosActualizados.fechaCita,
-                hora: datosActualizados.horaCita,
-                profesional: nombreProfesionalNuevo,
-                servicio: citaAEditar.servNombre,
-                estadoCita: datosActualizados.estadoCita,
-                estadoPago: datosActualizados.estadoPago
-            };
-            setDatosEditados(datosParaModal);
-            setModalEditadaVisible(true);
-        } catch (error) {
-            console.error("Error al editar cita:", error);
-            alert(error.message || "Error al editar cita");
-        }
+    const handleCitaEditada = (datosParaModal) => {
+        fetchCitas();
+        setDatosEditados(datosParaModal);
+        setModalEditadaVisible(true);
     };
 
     const handleEliminarCita = async (idCita) => {
@@ -76,7 +57,24 @@ export default function CitasAdmin() {
         }
     };
 
-    // Función para filtrar citas (mantenida igual)
+    // Función para formatear hora de 'hh:mm:ss' a 'hh:mm AM/PM' (sin cambios)
+    const formatearHora = (horaStr) => {
+        if (!horaStr || typeof horaStr !== 'string') return 'N/A';
+        try {
+            const [hora, min, seg] = horaStr.split(':');
+            const fechaTemp = new Date();
+            fechaTemp.setHours(parseInt(hora), parseInt(min), parseInt(seg));
+            return fechaTemp.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true 
+            }).toLowerCase(); // Ej: '4:00 pm'
+        } catch (err) {
+            console.warn('Error formateando hora:', horaStr, err);
+            return horaStr;
+        }
+    };
+
     const citasFiltradas = citas.filter((cita) => {
         const matchesSearch = cita.nombreCliente.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesProfesional = !selectedProfesional || cita.nombreProfesional === selectedProfesional;
@@ -183,38 +181,8 @@ export default function CitasAdmin() {
                             <tbody>
                                 {citasPaginadas.map((cita) => (
                                     <tr key={cita.idCita}>
-                                        <td>{cita.servNombre}</td>
-                                        <td>{cita.nombreCliente}</td>
-                                        <td>{cita.nombreProfesional}</td>
-                                        <td>{new Date(cita.fechaCita).toLocaleDateString()}</td>
-                                        <td>{cita.horaCita}</td>
-                                        <td>
-                                            <span className={getEstadoCitaClass(cita.estadoCita)}>
-                                                {cita.estadoCita}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className={getEstadoPagoClass(cita.estadoPago)}>
-                                                {cita.estadoPago}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn-editar-cita"
-                                                onClick={() => {
-                                                    setCitaAEditar(cita);
-                                                    setMostrarEditar(true);
-                                                }}
-                                            >
-                                                Editar
-                                            </button>
-                                            <button
-                                                className="btn-eliminar-cita"
-                                                onClick={() => handleEliminarCita(cita.idCita)}
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </td>
+                                        {/* FIX: Todo en una línea para evitar whitespace text nodes entre <td> */}
+                                        <td>{cita.servNombre}</td><td>{cita.nombreCliente}</td><td>{cita.nombreProfesional}</td><td>{new Date(cita.fechaCita).toLocaleDateString()}</td><td>{formatearHora(cita.horaCita)}</td><td><span className={getEstadoCitaClass(cita.estadoCita)}>{cita.estadoCita}</span></td><td><span className={getEstadoPagoClass(cita.estadoPago)}>{cita.estadoPago}</span></td><td><button className="btn-editar-cita" onClick={() => {console.log('Clic editar - Cita seleccionada:', cita);setCitaAEditar(cita);setMostrarEditar(true);console.log('Estados setados - mostrarEditar:', true, 'citaAEditar:', cita);}}>Editar</button><button className="btn-eliminar-cita" onClick={() => handleEliminarCita(cita.idCita)}>Eliminar</button></td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -235,20 +203,27 @@ export default function CitasAdmin() {
                 )}
             </div>
 
+            {/* Modal creación sin cambios */}
             {mostrarFormulario && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <button className="btn-cerrar-modal" onClick={cerrarFormulario}>X</button>
-                        <SolicitarCitaCard onCitaCreada={handleCitaCreada} />
+                        <SolicitarCitaAdmin onCitaCreada={handleCitaCreada} />
                     </div>
                 </div>
             )}
 
+            {/* Modal edición sin cambios */}
             {mostrarEditar && citaAEditar && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <button className="btn-cerrar-modal" onClick={cerrarEditar}>X</button>
-                        <EditarCita cita={citaAEditar} onCitaEditada={handleCitaEditada} />
+                        <SolicitarCitaAdmin
+                            initialData={citaAEditar}
+                            esAdmin={true}
+                            onSuccess={handleCitaEditada}
+                            onClose={cerrarEditar}
+                        />
                     </div>
                 </div>
             )}
