@@ -6,7 +6,7 @@ const ModalCitaEditada = ({ datosCita, onClose }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-content">
+            <div className="modal-content-cita-editada">
                 <button className="btn-cerrar-modal" onClick={onClose}>X</button>
                 <h2>{datosCita.tipo === "editada" ? "Cita Editada Exitosamente" : "Cita Creada Exitosamente"}</h2>
                 <div className="modal-body">

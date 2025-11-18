@@ -161,7 +161,7 @@ const Header = () => {
       {isModalOpen && (
         <div className="modal-overlay">
           <div
-            className="modal-content"
+            className="modal-content-header"
             onClick={(e) => e.stopPropagation()} // Mantén esto para prevenir propagación
           >
             <h2>Consultar Cita</h2>
@@ -227,7 +227,7 @@ const Header = () => {
       {isDetalleOpen && cita && (
         <div className="modal-overlay" onClick={closeDetalle}>
           <div
-            className="modal-content detalle-modal"
+            className="modal-content-header detalle-modal"
             onClick={(e) => e.stopPropagation()} // Evita cierre accidental al hacer clic dentro
           >
             <h2>Detalles de tu Cita</h2>

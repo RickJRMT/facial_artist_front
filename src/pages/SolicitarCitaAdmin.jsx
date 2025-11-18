@@ -362,7 +362,6 @@ const SolicitarCitaAdmin = ({ initialData = null, esAdmin = false, onCitaCreada,
                                 >
                                     <option value="Pendiente">Pendiente</option>
                                     <option value="Pagado">Pagado</option>
-                                    <option value="Reembolsado">Reembolsado</option>
                                 </select>
                             </>
                         )}

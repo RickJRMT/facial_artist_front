@@ -144,7 +144,7 @@
 }
 
 /* Contenido común de los modales */
-.modal-content {
+.modal-content-header {
   background: var(--color-fondo-modal);
   padding: var(--espacio-extra);
   border-radius: 12px;
@@ -153,7 +153,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.modal-content h2 {
+.modal-content-header h2 {
   margin-top: 0;
   color: var(--color-texto-gris);
   text-align: center;
@@ -243,7 +243,7 @@
   gap: var(--espacio-medio);
 }
 
-.modal-content .modal-actions {
+.modal-content-header .modal-actions {
   justify-content: flex-end;
 }
 
@@ -343,7 +343,7 @@
     margin-top: 0.5rem;
   }
 
-  .modal-content .modal-actions,
+  .modal-content-header .modal-actions,
   .detalle-modal .modal-actions {
     justify-content: center;
   }
