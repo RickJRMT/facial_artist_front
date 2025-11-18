@@ -449,10 +449,48 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         setError(null);
     };
 
+    const validateDateRange = (fecha) => {
+        // Validación de rango de fechas (RANGO DESLIZANTE de 6 meses)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalizar a medianoche
+        
+        const selectedDate = new Date(fecha);
+        selectedDate.setHours(0, 0, 0, 0); // Normalizar a medianoche
+        
+        // Validar que no sea una fecha anterior a hoy
+        if (selectedDate < today) {
+            return {
+                esValido: false,
+                mensaje: 'No se puede agendar un horario en una fecha anterior a hoy.'
+            };
+        }
+        
+        // Calcular máximo dinámicamente: hoy + 6 meses (rango deslizante)
+        const maxDate = new Date(today);
+        maxDate.setMonth(maxDate.getMonth() + 6);
+        
+        if (selectedDate > maxDate) {
+            const maxDateFormato = maxDate.toLocaleDateString('es-ES');
+            return {
+                esValido: false,
+                mensaje: `No se puede agendar más allá de 6 meses desde hoy. Fecha máxima permitida: ${maxDateFormato}`
+            };
+        }
+        
+        return { esValido: true, mensaje: '' };
+    };
+
     const validateForm = () => {
         if (!formData.idProfesional || !formData.fecha || !formData.hora_inicio || !formData.hora_fin) {
             return 'Faltan campos requeridos';
         }
+        
+        // Validar rango de fechas
+        const validacionFecha = validateDateRange(formData.fecha);
+        if (!validacionFecha.esValido) {
+            return validacionFecha.mensaje;
+        }
+        
         if (new Date(`2000-01-01T${formData.hora_inicio}`) >= new Date(`2000-01-01T${formData.hora_fin}`)) {
             return 'Hora inicio debe ser menor que hora fin';
         }
@@ -539,7 +577,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
             let variant = null;
             if (errMsg.includes('Solapamiento') || errMsg.includes('cerrada') || errMsg.includes('inactivo')) {
                 variant = 'agenda-cerrada';
-                setMensaje('No se puede guardar: Hay citas existentes o la agenda está cerrada.');
+                setMensaje('No se puede guardar: Hay horario agendado para el profesional escogido o hay citas existentes.');
             } else {
                 setMensaje(errMsg);
             }
@@ -580,6 +618,7 @@ export const useGestionHoraria = (idProfesionalInicial = 1) => {
         checkCitasInHorario,
         validateHorarioModification,
         getSugerenciaHorario,
-        formatCitasComListado
+        formatCitasComListado,
+        validateDateRange
     };
 };

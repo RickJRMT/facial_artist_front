@@ -177,8 +177,3 @@
 * {
   box-sizing: border-box;
 }
-
-.admin-app-container * {
-  max-height: 100vh;
-}
-

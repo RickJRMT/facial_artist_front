@@ -1,53 +1,179 @@
+/* ========================================================================== */
+/* FORMULARIO SOLICITAR CITA ADMIN */
+/* ========================================================================== */
 :root {
-  --form-primary: #c89400;
-  --form-primary-hover: #b07f00;
-  --form-radius: 8px;
+  --solicitar-bg: #faf8f3;
+  --solicitar-card-bg: #ffffff;
+  --solicitar-primario: #c89400;
+  --solicitar-primario-hover: #b07f00;
+  --solicitar-texto: #333;
+  --solicitar-texto-light: #666;
+  --solicitar-borde: #ddd;
+  --solicitar-sombra: rgba(0,0,0,0.1);
+  --solicitar-radius: 16px;
+  --solicitar-input-height: 52px;     /* ← Altura fija para TODOS los campos */
+  --solicitar-input-padding: 0 1rem;
 }
 
-/* Botón principal */
-.formButton {
-  margin-top: 2rem;
-  padding: 0.875rem 1.5rem;
-  font-size: 1rem;
+/* Overlay */
+.solicitar-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  padding: 1rem;
+}
+
+/* Tarjeta del formulario */
+.solicitar-card {
+  background: var(--solicitar-card-bg);
+  border-radius: var(--solicitar-radius);
+  max-width: 850px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  padding: 2.5rem 2rem 2rem;
+}
+
+/* Botón cerrar único */
+.solicitar-btn-cerrar {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.solicitar-btn-cerrar:hover {
+  color: var(--solicitar-primario);
+}
+
+/* Título y subtítulo */
+.solicitar-titulo {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
   font-weight: 700;
-  background: var(--form-primary);
+  color: var(--solicitar-texto);
+  text-align: center;
+}
+
+.solicitar-subtitulo {
+  margin: 0 0 2rem 0;
+  color: var(--solicitar-texto-light);
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Grid de dos columnas */
+.solicitar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* Columna */
+.solicitar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* Labels */
+.solicitar-label {
+  font-weight: 600;
+  color: var(--solicitar-texto);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* INPUTS Y SELECTS - MISMO TAMAÑO Y ESTILO */
+.solicitar-input,
+.solicitar-select {
+  height: var(--solicitar-input-height);     /* ← Altura fija */
+  padding: var(--solicitar-input-padding);
+  border: 1px solid var(--solicitar-borde);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  appearance: none; /* Quita flecha por defecto en select */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 1rem center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+  padding-right: 3rem; /* Espacio para la flecha personalizada */
+}
+
+.solicitar-input:focus,
+.solicitar-select:focus {
+  outline: none;
+  border-color: var(--solicitar-primario);
+  box-shadow: 0 0 0 3px rgba(200, 148, 0, 0.2);
+}
+
+.solicitar-input:disabled,
+.solicitar-select:disabled {
+  background: #f5f5f5;
+  color: #888;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Botón submit - ocupa ambas columnas */
+.solicitar-btn-submit {
+  margin-top: 1.5rem;
+  padding: 1rem 2rem;
+  background: var(--solicitar-primario);
   color: white;
   border: none;
-  border-radius: var(--form-radius);
+  border-radius: var(--solicitar-radius);
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
+  transition: all 0.3s ease;
+  grid-column: 1 / -1;
 }
 
-.formButton:hover {
-  background: var(--form-primary-hover);
+.solicitar-btn-submit:hover:not(:disabled) {
+  background: var(--solicitar-primario-hover);
 }
 
-.btn-cerrar-modal {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 26px;
-  background: transparent; /* fondo totalmente transparente */
-  border: none;
-  cursor: pointer;
-  color: #444; /* gris oscuro, elegante */
-  width: 32px;
-  height: 32px;
-  line-height: 1;
-  padding: 0;
-  transition: color 0.2s ease, transform 0.2s ease;
+.solicitar-btn-submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
-.btn-cerrar-modal:hover {
-  transform: scale(1.15);
-  background-color: transparent;
+/* Loading */
+.solicitar-loading {
+  text-align: center;
+  color: var(--solicitar-texto-light);
+  font-style: italic;
+  margin: 1rem 0;
 }
 
-
-/* Responsive */
+/* Responsive - Una columna en móvil */
 @media (max-width: 768px) {
-  .formButton {
-    max-width: 100%;
+  .solicitar-grid {
+    grid-template-columns: 1fr;
+  }
+  .solicitar-card {
+    padding: 2rem 1.5rem;
+    max-width: 95%;
+  }
+  .solicitar-input,
+  .solicitar-select {
+    height: 50px;
   }
 }
