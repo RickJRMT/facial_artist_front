@@ -1,0 +1,161 @@
+/* MODAL CITA EDITADA - ESTILO MINIMALISTA Y ELEGANTE - SOLO ESTE MODAL */
+.editada-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: editadaFadeIn 0.3s ease-out;
+}
+
+.editada-modal {
+    background: white;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    position: relative;
+    animation: editadaSlideUp 0.4s ease-out;
+}
+
+.editada-btn-cerrar {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+}
+
+.editada-btn-cerrar:hover {
+    color: #c89400;
+}
+
+.editada-titulo {
+    background: linear-gradient(135deg, #c89400, #e6b800);
+    color: white;
+    margin: 0;
+    padding: 24px 20px;
+    text-align: center;
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.editada-body {
+    padding: 28px 24px;
+    background: #fafafa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.editada-body p {
+    margin: 12px 0;
+    font-size: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.editada-body strong {
+    color: #222;
+    min-width: 120px;
+    font-weight: 600;
+}
+
+.editada-estados {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.editada-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.editada-badge.pendiente {
+    background: #fff4e6;
+    color: #e67e22;
+}
+
+.editada-badge.confirmada,
+.editada-badge.pagado {
+    background: #e8f5e8;
+    color: #27ae60;
+}
+
+.editada-badge.iniciada {
+    background: #e3f2fd;
+    color: #2980b9;
+}
+
+.editada-badge.finalizada {
+    background: #f3e5f5;
+    color: #8e44ad;
+}
+
+.editada-badge.cancelada {
+    background: #ffebee;
+    color: #c0392b;
+}
+
+.editada-badge.reembolsado {
+    background: #fff3e0;
+    color: #f39c12;
+}
+
+.editada-btn-aceptar {
+    width: 100%;
+    padding: 14px;
+    background: #c89400;
+    color: white;
+    border: none;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.editada-btn-aceptar:hover {
+    background: #b58300;
+}
+
+/* Animaciones suaves */
+@keyframes editadaFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes editadaSlideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
