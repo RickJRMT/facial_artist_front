@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./CitasAdmin.css";
-import SolicitarCitaAdmin from "../../pages/SolicitarCitaAdmin.jsx"; // Ajusta path si es diferente
+import SolicitarCitaAdmin from "../../pages/SolicitarCitaAdmin.jsx";
 import { useCitasAdmin } from "../../hooks/CargarCitasAdmin.jsx";
 import ModalCitaExitosa from "../layout/ModalCitaSolicitada.jsx";
 import ModalCitaEditada from "../layout/ModalCitaEditada.jsx";
@@ -57,20 +57,19 @@ export default function CitasAdmin() {
         }
     };
 
-    // Función para formatear hora de 'hh:mm:ss' a 'hh:mm AM/PM' (sin cambios)
+    // Formateo de hora (de '08:00:00' a '8:00 am')
     const formatearHora = (horaStr) => {
         if (!horaStr || typeof horaStr !== 'string') return 'N/A';
         try {
             const [hora, min, seg] = horaStr.split(':');
             const fechaTemp = new Date();
-            fechaTemp.setHours(parseInt(hora), parseInt(min), parseInt(seg));
-            return fechaTemp.toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit', 
-                hour12: true 
-            }).toLowerCase(); // Ej: '4:00 pm'
+            fechaTemp.setHours(parseInt(hora), parseInt(min), parseInt(seg || 0));
+            return fechaTemp.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            }).toLowerCase();
         } catch (err) {
-            console.warn('Error formateando hora:', horaStr, err);
             return horaStr;
         }
     };
@@ -129,19 +128,13 @@ export default function CitasAdmin() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <select
-                    value={selectedProfesional}
-                    onChange={(e) => setSelectedProfesional(e.target.value)}
-                >
+                <select value={selectedProfesional} onChange={(e) => setSelectedProfesional(e.target.value)}>
                     <option value="">Todos los profesionales</option>
                     {profesionalesUnicos.map((prof) => (
                         <option key={prof} value={prof}>{prof}</option>
                     ))}
                 </select>
-                <select
-                    value={selectedPago}
-                    onChange={(e) => setSelectedPago(e.target.value)}
-                >
+                <select value={selectedPago} onChange={(e) => setSelectedPago(e.target.value)}>
                     <option value="">Todos los estados de pago</option>
                     {estadosPagoUnicos.map((estado) => (
                         <option key={estado} value={estado}>{estado}</option>
@@ -181,8 +174,32 @@ export default function CitasAdmin() {
                             <tbody>
                                 {citasPaginadas.map((cita) => (
                                     <tr key={cita.idCita}>
-                                        {/* FIX: Todo en una línea para evitar whitespace text nodes entre <td> */}
-                                        <td>{cita.servNombre}</td><td>{cita.nombreCliente}</td><td>{cita.nombreProfesional}</td><td>{new Date(cita.fechaCita).toLocaleDateString()}</td><td>{formatearHora(cita.horaCita)}</td><td><span className={getEstadoCitaClass(cita.estadoCita)}>{cita.estadoCita}</span></td><td><span className={getEstadoPagoClass(cita.estadoPago)}>{cita.estadoPago}</span></td><td><button className="btn-editar-cita" onClick={() => {console.log('Clic editar - Cita seleccionada:', cita);setCitaAEditar(cita);setMostrarEditar(true);console.log('Estados setados - mostrarEditar:', true, 'citaAEditar:', cita);}}>Editar</button><button className="btn-eliminar-cita" onClick={() => handleEliminarCita(cita.idCita)}>Eliminar</button></td>
+                                        {/* Todo en una línea para evitar errores de whitespace */}
+                                        <td>{cita.servNombre}</td>
+                                        <td>{cita.nombreCliente}</td>
+                                        <td>{cita.nombreProfesional}</td>
+                                        <td>{new Date(cita.fechaCita).toLocaleDateString()}</td>
+                                        <td>{formatearHora(cita.horaCita)}</td>
+                                        <td><span className={getEstadoCitaClass(cita.estadoCita)}>{cita.estadoCita}</span></td>
+                                        <td><span className={getEstadoPagoClass(cita.estadoPago)}>{cita.estadoPago}</span></td>
+                                        <td>
+                                            {/* BOTÓN EDITAR SIN LOGS */}
+                                            <button
+                                                className="btnEditar-cita"
+                                                onClick={() => {
+                                                    setCitaAEditar(cita);
+                                                    setMostrarEditar(true);
+                                                }}
+                                            >
+                                                Editar
+                                            </button>
+                                            <button
+                                                className="btn-eliminar-cita"
+                                                onClick={() => handleEliminarCita(cita.idCita)}
+                                            >
+                                                Eliminar
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -203,7 +220,7 @@ export default function CitasAdmin() {
                 )}
             </div>
 
-            {/* Modal creación sin cambios */}
+            {/* Modal creación */}
             {mostrarFormulario && (
                 <div className="modal-overlay">
                     <div className="modal-content">
@@ -213,7 +230,7 @@ export default function CitasAdmin() {
                 </div>
             )}
 
-            {/* Modal edición sin cambios */}
+            {/* Modal edición */}
             {mostrarEditar && citaAEditar && (
                 <div className="modal-overlay">
                     <div className="modal-content">
