@@ -44,7 +44,7 @@ const ModalEliminarCita = ({ cita, onClose, onConfirm }) => {
                             ¿Estás seguro de que deseas eliminar esta cita?
                         </p>
                         <p className="eliminar-submensaje">
-                            Esta acción no se puede deshacer y también eliminará la hoja de vida asociada.
+                            El registro de la cita quedará eliminado, como tambien la hoja de vida del cliente.
                         </p>
                     </div>
 
