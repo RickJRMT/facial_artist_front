@@ -110,55 +110,187 @@
   color: white;
 }
 
-/* Tabla con scroll perfecto */
-.admincitas-lista {
-  overflow: hidden;
-}
-
-.admincitas-tabla-scroll {
-  max-height: 65vh;
-  overflow-y: auto;
-  overflow-x: auto;
-  border-radius: var(--admincitas-radius);
-  box-shadow: 0 8px 30px var(--admincitas-sombra);
-  margin-bottom: 2rem;
+/* Tabla de citas - Nuevo diseño similar a clientes */
+.admincitas-table-card {
   background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 16px;
 }
 
-.admincitas-tabla {
-  width: 100%;
-  min-width: 900px;
-  border-collapse: collapse;
-}
-
-.admincitas-tabla th {
-  background: #f8f5f0;
-  padding: 1.2rem;
-  text-align: left;
+.admincitas-table-title {
+  font-size: 16px;
   font-weight: 600;
-  color: #444;
-  border-bottom: 3px solid var(--admincitas-primario);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  color: #1a1a1a;
+  margin-bottom: 12px;
 }
 
-.admincitas-tabla td {
-  padding: 1.2rem;
-  border-bottom: 1px solid var(--admincitas-borde);
+.admincitas-table-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  margin: -8px;
+  padding: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admincitas-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Anchos fijos para las 9 columnas */
+.admincitas-table th:nth-child(1),
+.admincitas-table td:nth-child(1) { width: 6%; } /* ID */
+
+.admincitas-table th:nth-child(2),
+.admincitas-table td:nth-child(2) { width: 14%; } /* Servicio */
+
+.admincitas-table th:nth-child(3),
+.admincitas-table td:nth-child(3) { width: 14%; } /* Cliente */
+
+.admincitas-table th:nth-child(4),
+.admincitas-table td:nth-child(4) { width: 12%; } /* Profesional */
+
+.admincitas-table th:nth-child(5),
+.admincitas-table td:nth-child(5) { width: 10%; } /* Fecha */
+
+.admincitas-table th:nth-child(6),
+.admincitas-table td:nth-child(6) { width: 8%; } /* Hora */
+
+.admincitas-table th:nth-child(7),
+.admincitas-table td:nth-child(7) { width: 10%; } /* Estado Cita */
+
+.admincitas-table th:nth-child(8),
+.admincitas-table td:nth-child(8) { width: 10%; } /* Pago */
+
+.admincitas-table th:nth-child(9),
+.admincitas-table td:nth-child(9) { 
+  width: 16%; 
+  text-align: center; 
+} /* Acciones */
+
+.admincitas-table-header {
+  background: #faf9f7;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.admincitas-table th {
+  padding: 12px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.admincitas-table-row {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s ease;
+}
+
+.admincitas-table-row:hover {
+  background: #fafafa;
+}
+
+.admincitas-table td {
+  padding: 12px;
+  font-size: 13px;
+  color: #1a1a1a;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admincitas-servicio-nombre,
+.admincitas-cliente-nombre,
+.admincitas-profesional-nombre {
+  font-weight: 500;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.admincitas-fecha,
+.admincitas-hora {
+  font-weight: 500;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.admincitas-action-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.admincitas-btn-edit,
+.admincitas-btn-delete {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.admincitas-btn-edit:hover {
+  background: #fafafa;
+  border-color: #d4a017;
+  transform: translateY(-1px);
+}
+
+.admincitas-btn-delete:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.admincitas-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #999;
+  font-size: 16px;
+}
+
+/* Vista Desktop - Mostrar tabla, ocultar cards */
+@media (min-width: 769px) {
+  .admincitas-table-wrapper {
+    display: block;
+  }
+  .admincitas-cards-mobile {
+    display: none;
+  }
 }
 
 /* BADGES DE ESTADO - Colores específicos y redondeados */
 .admincitas-badge {
-  padding: 0.5rem 1-rem;
+  padding: 4px 8px;
   border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: capitalize;
   display: inline-block;
-  min-width: 90px;
+  min-width: 70px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 /* Estados de Cita */
@@ -172,65 +304,76 @@
 .admincitas-badge-pago-pendiente { background: #fff4cd; color: #856404; border: 1px solid #ffeaa7; }
 .admincitas-badge-pago-pagado { background: #d1f2eb; color: #117a8b; border: 1px solid #a3e4d7; }
 
-/* Acciones */
-.admincitas-acciones {
-  white-space: nowrap;
-  text-align: center;
-}
-
-.admincitas-btn-editar,
-.admincitas-btn-eliminar {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  margin: 0 0.4rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.admincitas-btn-editar {
-  background: #a8e6cf;
-  color: #00695c;
-}
-
-.admincitas-btn-editar:hover {
-  background: #90d4bc;
-}
-
-.admincitas-btn-eliminar {
-  background: #ff9999;
-  color: #721c24;
-}
-
-.admincitas-btn-eliminar:hover {
-  background: #ff8080;
-}
-
-/* Paginación */
-.admincitas-paginacion {
+/* Paginación Avanzada */
+.admincitas-pagination-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 1.5rem;
-  margin: 3rem 0;
-  font-size: 1.1rem;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 12px;
+}
+
+.admincitas-pagination-info {
+  font-size: 14px;
+  color: #666;
   font-weight: 500;
 }
 
-.admincitas-paginacion button {
-  background: var(--admincitas-primario);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 12px;
+.admincitas-pagination-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admincitas-pagination-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: white;
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admincitas-pagination-btn:hover:not(:disabled) {
+  background: #fafafa;
+  border-color: #d4a017;
+  color: #d4a017;
+}
+
+.admincitas-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admincitas-pagination-btn.active {
+  background: linear-gradient(135deg, #d4a017 0%, #f4d03f 100%);
+  border-color: #d4a017;
+  color: #1a1a1a;
   font-weight: 600;
 }
 
-.admincitas-paginacion button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+.admincitas-pagination-btn.admincitas-pagination-nav {
+  padding: 0 12px;
+  font-weight: 500;
+}
+
+.admincitas-pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: #999;
+  font-size: 14px;
 }
 
 /* Mensajes */
@@ -350,11 +493,15 @@
 
 /* Responsive - Cards en móvil */
 @media (max-width: 768px) {
-  .admincitas-tabla-desktop {
+  .admincitas-table-wrapper {
     display: none;
   }
   .admincitas-cards-mobile {
     display: flex;
+  }
+
+  .admincitas-table-card {
+    padding: 12px;
   }
 
   .admincitas-filtros {
@@ -364,6 +511,44 @@
   .admincitas-filtros select {
     min-width: auto;
     width: 100%;
+  }
+
+  .admincitas-pagination-container {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    margin-top: 16px;
+  }
+
+  .admincitas-pagination-info {
+    order: 2;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .admincitas-pagination-controls {
+    order: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .admincitas-pagination-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 13px;
+    padding: 0 8px;
+  }
+
+  .admincitas-pagination-btn.admincitas-pagination-nav {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .admincitas-pagination-ellipsis {
+    padding: 0 4px;
+    font-size: 13px;
   }
   .admincitas-btn-limpiar {
     width: 100%;
