@@ -226,12 +226,12 @@ export default function CitasAdmin() {
             </div>
 
             {/* Modales */}
-            {/* Modal creación - AHORA SIN OVERLAY PADRE */}
+            {/* Modal creación */}
             {mostrarFormulario && (
                 <SolicitarCitaAdmin onCitaCreada={handleCitaCreada} onClose={cerrarFormulario} />
             )}
 
-            {/* Modal edición - AHORA SIN OVERLAY PADRE */}
+            {/* Modal edición */}
             {mostrarEditar && citaAEditar && (
                 <SolicitarCitaAdmin
                     initialData={citaAEditar}
