@@ -4,6 +4,7 @@ import SolicitarCitaAdmin from "../../pages/SolicitarCitaAdmin.jsx";
 import { useCitasAdmin } from "../../hooks/CargarCitasAdmin.jsx";
 import ModalCitaExitosa from "../layout/ModalCitaSolicitada.jsx";
 import ModalCitaEditada from "../layout/ModalCitaEditada.jsx";
+import ModalEliminarCita from "../layout/ModalEliminarCita.jsx";
 import useModalCitaExitosa from "../../hooks/useModalCitaExitosa.jsx";
 import { eliminarCita } from "../../Services/citasClientesConexion";
 
@@ -13,6 +14,8 @@ export default function CitasAdmin() {
     const [citaAEditar, setCitaAEditar] = useState(null);
     const [modalEditadaVisible, setModalEditadaVisible] = useState(false);
     const [datosEditados, setDatosEditados] = useState(null);
+    const [modalEliminarVisible, setModalEliminarVisible] = useState(false);
+    const [citaAEliminar, setCitaAEliminar] = useState(null);
 
     const { citas, loading, error, fetchCitas } = useCitasAdmin();
     const { modalVisible, mostrarModal, cerrarModal, datosCita } = useModalCitaExitosa();
@@ -46,15 +49,28 @@ export default function CitasAdmin() {
         setModalEditadaVisible(true);
     };
 
-    const handleEliminarCita = async (idCita) => {
-        if (!window.confirm("¿Estás seguro de eliminar esta cita? Esto también eliminará la HV asociada.")) return;
+    const handleEliminarCita = (cita) => {
+        setCitaAEliminar(cita);
+        setModalEliminarVisible(true);
+    };
+
+    const confirmarEliminarCita = async (idCita) => {
         try {
             const resultado = await eliminarCita(idCita);
             fetchCitas();
+            setModalEliminarVisible(false);
+            setCitaAEliminar(null);
             alert(resultado.message || "Cita eliminada exitosamente");
         } catch (error) {
+            setModalEliminarVisible(false);
+            setCitaAEliminar(null);
             alert(error.message || "Error al eliminar cita");
         }
+    };
+
+    const cerrarModalEliminar = () => {
+        setModalEliminarVisible(false);
+        setCitaAEliminar(null);
     };
 
     const formatearHora = (horaStr) => {
@@ -268,7 +284,7 @@ export default function CitasAdmin() {
                                                     </button>
                                                     <button 
                                                         className="admincitas-btn-delete" 
-                                                        onClick={() => handleEliminarCita(cita.idCita)}
+                                                        onClick={() => handleEliminarCita(cita)}
                                                         title="Eliminar cita"
                                                     >
                                                         🗑️
@@ -309,7 +325,7 @@ export default function CitasAdmin() {
                                             setCitaAEditar(cita);
                                             setMostrarEditar(true);
                                         }}>Editar</button>
-                                        <button className="admincitas-btn-eliminar" onClick={() => handleEliminarCita(cita.idCita)}>Eliminar</button>
+                                        <button className="admincitas-btn-eliminar" onClick={() => handleEliminarCita(cita)}>Eliminar</button>
                                     </div>
                                 </div>
                             ))}
@@ -364,6 +380,13 @@ export default function CitasAdmin() {
 
             {modalVisible && <ModalCitaExitosa datosCita={datosCita} onClose={cerrarModal} />}
             {modalEditadaVisible && <ModalCitaEditada datosCita={datosEditados} onClose={() => setModalEditadaVisible(false)} />}
+            {modalEliminarVisible && (
+                <ModalEliminarCita 
+                    cita={citaAEliminar} 
+                    onClose={cerrarModalEliminar} 
+                    onConfirm={confirmarEliminarCita} 
+                />
+            )}
         </div>
     );
 }

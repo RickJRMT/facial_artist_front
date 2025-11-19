@@ -491,6 +491,41 @@
   justify-content: flex-end;
 }
 
+/* Botones dentro de las cards móviles */
+.admincitas-cards-mobile .admincitas-btn-editar,
+.admincitas-cards-mobile .admincitas-btn-eliminar {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.admincitas-cards-mobile .admincitas-btn-editar {
+  background: linear-gradient(135deg, #d4a017 0%, #f4d03f 100%);
+  color: #1a1a1a;
+}
+
+.admincitas-cards-mobile .admincitas-btn-editar:hover {
+  background: linear-gradient(135deg, #e0b020 0%, #fae050 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(212, 160, 23, 0.3);
+}
+
+.admincitas-cards-mobile .admincitas-btn-eliminar {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  color: white;
+}
+
+.admincitas-cards-mobile .admincitas-btn-eliminar:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+}
+
 /* Responsive - Cards en móvil */
 @media (max-width: 768px) {
   .admincitas-table-wrapper {
@@ -549,6 +584,18 @@
   .admincitas-pagination-ellipsis {
     padding: 0 4px;
     font-size: 13px;
+  }
+
+  /* Botones cards móviles - responsive tablet */
+  .admincitas-cards-mobile .admincitas-btn-editar,
+  .admincitas-cards-mobile .admincitas-btn-eliminar {
+    padding: 0.7rem 1.3rem;
+    font-size: 0.85rem;
+  }
+
+  .admincitas-card-acciones {
+    gap: 0.8rem;
+    margin-top: 1.2rem;
   }
   .admincitas-btn-limpiar {
     width: 100%;
@@ -674,4 +721,58 @@
 .admincitas-lista::-webkit-scrollbar-thumb:hover {
     background: #b07f00;                     /* Dorado más oscuro al hover */
     background-clip: content-box;
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+  .admincitas-container {
+    padding: 12px;
+  }
+
+  .admincitas-card {
+    padding: 1.2rem;
+    border-radius: 12px;
+  }
+
+  .admincitas-card-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .admincitas-card-servicio {
+    font-size: 0.9rem;
+  }
+
+  .admincitas-card-body p {
+    font-size: 0.9rem;
+    margin: 0.6rem 0;
+  }
+
+  .admincitas-card-acciones {
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  /* Botones cards móviles pequeños */
+  .admincitas-cards-mobile .admincitas-btn-editar,
+  .admincitas-cards-mobile .admincitas-btn-eliminar {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .admincitas-cards-mobile .admincitas-btn-editar:hover,
+  .admincitas-cards-mobile .admincitas-btn-eliminar:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Badges en cards móviles pequeños */
+  .admincitas-cards-mobile .admincitas-badge {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+    min-width: 60px;
+  }
 }
