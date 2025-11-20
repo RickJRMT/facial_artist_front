@@ -1,0 +1,202 @@
+/* Variables globales del modal (fácil de mantener) */
+:root {
+    --natalia-black: #1a1a1a;
+    --natalia-gold: #D4AF37;
+    --natalia-gold-light: #e8c56e;
+    --natalia-white: #ffffff;
+    --natalia-gray: #f8f8f8;
+    --natalia-error: #e74c3c;
+}
+
+/* Overlay */
+.natalia-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+    animation: nataliaFadeIn 0.4s ease-out;
+}
+
+/* Contenido del modal */
+.natalia-modal-content {
+    background: var(--natalia-white);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: nataliaSlideUp 0.5s ease-out;
+}
+
+/* Animaciones */
+@keyframes nataliaFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes nataliaSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Botón cerrar */
+.natalia-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 32px;
+    color: #999;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.natalia-modal-close:hover {
+    background: #f0f0f0;
+    color: var(--natalia-black);
+}
+
+/* Título y subtítulo */
+.natalia-modal-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin: 2.5rem 2rem 0.5rem;
+    color: var(--natalia-black);
+    font-weight: 700;
+}
+
+.natalia-title-gold {
+    color: var(--natalia-gold);
+}
+
+.natalia-modal-subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Formulario */
+.natalia-modal-form {
+    padding: 0 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.natalia-modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.natalia-modal-field label {
+    font-weight: 600;
+    color: var(--natalia-black);
+    font-size: 0.95rem;
+}
+
+.natalia-modal-field input {
+    padding: 0.9rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--natalia-gray);
+}
+
+.natalia-modal-field input:focus {
+    outline: none;
+    border-color: var(--natalia-gold);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+}
+
+/* Botón submit */
+.natalia-modal-submit {
+    background: var(--natalia-black);
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.natalia-modal-submit:hover:not(:disabled) {
+    background: var(--natalia-gold);
+    color: var(--natalia-black);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+}
+
+.natalia-modal-submit:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Error */
+.natalia-modal-error {
+    background: #ffe6e6;
+    color: var(--natalia-error);
+    padding: 0.8rem;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    border: 1px solid #ffcccc;
+}
+
+/* Footer decorativo dorado */
+.natalia-modal-footer {
+    height: 6px;
+    background: linear-gradient(to right, transparent, var(--natalia-gold), transparent);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .natalia-modal-content {
+        max-width: 95%;
+        border-radius: 16px;
+    }
+
+    .natalia-modal-title {
+        font-size: 1.6rem;
+        margin: 2rem 1.5rem 0.5rem;
+    }
+
+    .natalia-modal-form {
+        padding: 0 1.5rem 2rem;
+    }
+}

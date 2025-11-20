@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 /**
  * URL base para las operaciones con servicios
@@ -12,7 +12,7 @@ const API_URL_SERVICIOS = 'http://localhost:3000/api/servicios';
  */
 export const obtenerServicios = async () => {
     try {
-        const response = await axios.get(API_URL_SERVICIOS);
+        const response = await axiosInstance.get(API_URL_SERVICIOS);
         // Transformar los datos para que el frontend use los nombres esperados
         const servicios = Array.isArray(response.data)
             ? response.data.map(s => ({
@@ -53,7 +53,7 @@ export const obtenerServicios = async () => {
  */
 export const crearServicio = async (servicioData) => {
     try {
-        const response = await axios.post(API_URL_SERVICIOS, servicioData, {
+        const response = await axiosInstance.post(API_URL_SERVICIOS, servicioData, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -80,7 +80,7 @@ export const crearServicio = async (servicioData) => {
  */
 export const actualizarServicio = async (id, servicioData) => {
     try {
-        const response = await axios.put(`${API_URL_SERVICIOS}/${id}`, servicioData);
+        const response = await axiosInstance.put(`${API_URL_SERVICIOS}/${id}`, servicioData);
         return response.data;
     } catch (error) {
         console.error('Error al actualizar servicio:', error);
@@ -96,7 +96,7 @@ export const actualizarServicio = async (id, servicioData) => {
  */
 export const eliminarServicio = async (id) => {
     try {
-        const response = await axios.delete(`${API_URL_SERVICIOS}/${id}`);
+        const response = await axiosInstance.delete(`${API_URL_SERVICIOS}/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error al eliminar servicio:', error);

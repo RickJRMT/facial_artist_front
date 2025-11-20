@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 /**
  * URL base para las operaciones con clientes
@@ -12,7 +12,7 @@ const API_URL_CLIENTES = 'http://localhost:3000/api/cliente';
  */
 export const obtenerClientes = async () => {
     try {
-        const response = await axios.get(API_URL_CLIENTES);
+        const response = await axiosInstance.get(API_URL_CLIENTES);
         return response.data;
     } catch (error) {
         console.error('Error al obtener clientes:', error);
@@ -28,7 +28,7 @@ export const obtenerClientes = async () => {
  */
 export const obtenerClientePorId = async (id) => {
     try {
-        const response = await axios.get(`${API_URL_CLIENTES}/${id}`);
+        const response = await axiosInstance.get(`${API_URL_CLIENTES}/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error al obtener cliente con ID ${id}:`, error);

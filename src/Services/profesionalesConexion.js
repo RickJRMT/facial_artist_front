@@ -1,17 +1,17 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const API_URL_PROFESIONALES = 'http://localhost:3000/api/Profesional';
 
 export const obtenerProfesionales = async () => {
     try {
-        const response = await axios.get(API_URL_PROFESIONALES);
+        const response = await axiosInstance.get(API_URL_PROFESIONALES);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
 
-const profesionalesApi = axios.create({
+const profesionalesApi = axiosInstance.create({
     baseURL: API_URL_PROFESIONALES,
     timeout: 5000,
 });
