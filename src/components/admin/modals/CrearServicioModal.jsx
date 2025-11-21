@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './CrearServicioModal.css';
+import ModalMensaje from '../../layout/ModalMensaje';
 
 /**
  * Modal para crear un nuevo servicio
@@ -28,6 +29,11 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
   });
 
   const [previewImage, setPreviewImage] = useState(null);
+  const [modalMensaje, setModalMensaje] = useState({
+    isOpen: false,
+    type: 'error',
+    mensaje: ''
+  });
   
   // Verificar si el formulario es válido
   const isFormValid = () => {
@@ -141,13 +147,21 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
     if (file) {
       // Validar que sea una imagen
       if (!file.type.startsWith('image/')) {
-        alert('Por favor, seleccione un archivo de imagen válido');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'Por favor, seleccione un archivo de imagen válido'
+        });
         return;
       }
       
       // Validar tamaño máximo (5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('La imagen no debe superar los 5MB');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'La imagen no debe superar los 5MB'
+        });
         return;
       }
 
@@ -363,6 +377,15 @@ const CrearServicioModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
         </form>
       </div>
+
+      {/* Modal de Mensaje */}
+      {modalMensaje.isOpen && (
+        <ModalMensaje
+          type={modalMensaje.type}
+          mensaje={modalMensaje.mensaje}
+          onClose={() => setModalMensaje({ isOpen: false, type: 'error', mensaje: '' })}
+        />
+      )}
     </div>
   );
 };

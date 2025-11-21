@@ -6,6 +6,7 @@ import { eliminarCurso, crearCurso, actualizarCurso } from '../../../Services/cu
 import CursoCard from '../CursoCard';
 import ModalCrearCurso from '../modals/ModalCrearCurso';
 import ModalEditarCurso from '../modals/ModalEditarCurso';
+import ModalMensaje from '../../layout/ModalMensaje';
 
 const CursosView = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -13,6 +14,11 @@ const CursosView = () => {
   const [modalEditarOpen, setModalEditarOpen] = useState(false);
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const { cursos, loading, error, recargarCursos } = UseCursos();
+  const [modalMensaje, setModalMensaje] = useState({
+    isOpen: false,
+    type: 'success',
+    mensaje: ''
+  });
 
 
 
@@ -45,18 +51,30 @@ const CursosView = () => {
           
           await crearCurso(cursoData);
           recargarCursos();
-          alert('Curso creado exitosamente');
+          setModalMensaje({
+            isOpen: true,
+            type: 'success',
+            mensaje: 'Curso creado exitosamente'
+          });
         };
         reader.readAsDataURL(formData.imagen);
       } else {
         // Si no hay imagen, crear el curso sin ella
         await crearCurso(cursoData);
         recargarCursos();
-        alert('Curso creado exitosamente');
+        setModalMensaje({
+          isOpen: true,
+          type: 'success',
+          mensaje: 'Curso creado exitosamente'
+        });
       }
     } catch (error) {
       console.error('Error al crear curso:', error);
-      alert('Error al crear el curso. Inténtalo de nuevo.');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Error al crear el curso. Inténtalo de nuevo.'
+      });
     }
   };
 
@@ -85,18 +103,30 @@ const CursosView = () => {
           
           await actualizarCurso(cursoSeleccionado.id || cursoSeleccionado.idCurso, cursoData);
           recargarCursos();
-          alert('Curso actualizado exitosamente');
+          setModalMensaje({
+            isOpen: true,
+            type: 'success',
+            mensaje: 'Curso actualizado exitosamente'
+          });
         };
         reader.readAsDataURL(formData.imagen);
       } else {
         // Si no se cambió la imagen, solo actualizar los demás datos
         await actualizarCurso(cursoSeleccionado.id || cursoSeleccionado.idCurso, cursoData);
         recargarCursos();
-        alert('Curso actualizado exitosamente');
+        setModalMensaje({
+          isOpen: true,
+          type: 'success',
+          mensaje: 'Curso actualizado exitosamente'
+        });
       }
     } catch (error) {
       console.error('Error al actualizar curso:', error);
-      alert('Error al actualizar el curso. Inténtalo de nuevo.');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Error al actualizar el curso. Inténtalo de nuevo.'
+      });
     }
   };
 
@@ -106,12 +136,24 @@ const CursosView = () => {
         await eliminarCurso(id);
         // Recargar la lista de cursos después de eliminar
         recargarCursos();
-        alert('Curso eliminado exitosamente');
+        setModalMensaje({
+          isOpen: true,
+          type: 'success',
+          mensaje: 'Curso eliminado exitosamente'
+        });
       } catch (error) {
         if (error.code === 'ACTIVE_STUDENTS') {
-          alert('No se puede eliminar el curso porque tiene estudiantes inscritos');
+          setModalMensaje({
+            isOpen: true,
+            type: 'error',
+            mensaje: 'No se puede eliminar el curso porque tiene estudiantes inscritos'
+          });
         } else {
-          alert('Error al eliminar el curso. Inténtalo de nuevo.');
+          setModalMensaje({
+            isOpen: true,
+            type: 'error',
+            mensaje: 'Error al eliminar el curso. Inténtalo de nuevo.'
+          });
         }
         console.error('Error al eliminar curso:', error);
       }
@@ -217,6 +259,15 @@ const CursosView = () => {
         onSave={handleActualizarCurso}
         curso={cursoSeleccionado}
       />
+
+      {/* Modal de Mensaje */}
+      {modalMensaje.isOpen && (
+        <ModalMensaje
+          type={modalMensaje.type}
+          mensaje={modalMensaje.mensaje}
+          onClose={() => setModalMensaje({ isOpen: false, type: 'success', mensaje: '' })}
+        />
+      )}
     </div>
   );
 };

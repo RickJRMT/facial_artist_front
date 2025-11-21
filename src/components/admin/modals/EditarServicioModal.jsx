@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './EditarServicioModal.css';
+import ModalMensaje from '../../layout/ModalMensaje';
 
 /**
  * Modal para editar un servicio existente
@@ -30,6 +31,11 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
 
   const [previewImage, setPreviewImage] = useState(null);
   const [hasImageChanged, setHasImageChanged] = useState(false);
+  const [modalMensaje, setModalMensaje] = useState({
+    isOpen: false,
+    type: 'error',
+    mensaje: ''
+  });
   
   // Cargar datos del servicio cuando se abre el modal
   useEffect(() => {
@@ -188,13 +194,21 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
     if (file) {
       // Validar que sea una imagen
       if (!file.type.startsWith('image/')) {
-        alert('Por favor, seleccione un archivo de imagen válido');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'Por favor, seleccione un archivo de imagen válido'
+        });
         return;
       }
       
       // Validar tamaño máximo (5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('La imagen no debe superar los 5MB');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'La imagen no debe superar los 5MB'
+        });
         return;
       }
 
@@ -396,6 +410,15 @@ const EditarServicioModal = ({ isOpen, onClose, onSubmit, servicio }) => {
           </div>
         </form>
       </div>
+
+      {/* Modal de Mensaje */}
+      {modalMensaje.isOpen && (
+        <ModalMensaje
+          type={modalMensaje.type}
+          mensaje={modalMensaje.mensaje}
+          onClose={() => setModalMensaje({ isOpen: false, type: 'error', mensaje: '' })}
+        />
+      )}
     </div>
   );
 };

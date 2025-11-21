@@ -6,6 +6,7 @@ import EditarServicioModal from '../modals/EditarServicioModal';
 import DescripcionModal from '../modals/DescripcionModal';
 import ImagenModal from '../modals/ImagenModal';
 import EliminarServicioModal from '../modals/EliminarServicioModal';
+import ModalMensaje from '../../layout/ModalMensaje';
 import './ServiciosView.css';
 
 /**
@@ -39,6 +40,11 @@ const ServiciosView = () => {
   const [editarModal, setEditarModal] = useState({
     isOpen: false,
     servicio: null
+  });
+  const [modalMensaje, setModalMensaje] = useState({
+    isOpen: false,
+    type: 'success',
+    mensaje: ''
   });
 
   /**
@@ -240,7 +246,11 @@ const ServiciosView = () => {
       setModalOpen(false);
     } catch (error) {
       console.error('Error al crear el servicio:', error);
-      alert('Error al crear el servicio. Por favor, intente nuevamente.');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Error al crear el servicio. Por favor, intente nuevamente.'
+      });
     }
   };
 
@@ -317,10 +327,18 @@ const ServiciosView = () => {
         servicio: null
       });
       
-      alert('Servicio actualizado exitosamente');
+      setModalMensaje({
+        isOpen: true,
+        type: 'success',
+        mensaje: 'Servicio actualizado exitosamente'
+      });
     } catch (error) {
       console.error('Error al actualizar el servicio:', error);
-      alert('Error al actualizar el servicio. Por favor, intente nuevamente.');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Error al actualizar el servicio. Por favor, intente nuevamente.'
+      });
     }
   };
 
@@ -338,7 +356,11 @@ const ServiciosView = () => {
         imagen: imagenSrc
       });
     } else {
-      alert('Este servicio no tiene imagen disponible');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Este servicio no tiene imagen disponible'
+      });
     }
   };
 
@@ -373,10 +395,14 @@ const ServiciosView = () => {
       if (error.code === 'ACTIVE_APPOINTMENTS' || error.message.includes('citas')) {
         mensajeError = `❌ No se puede eliminar el servicio "${eliminarModal.servicioNombre}"\n\n🔗 Este servicio tiene citas activas asociadas.\n\nPara eliminarlo debes:\n• Cancelar o completar todas las citas programadas\n• Verificar que no hay citas pendientes en el sistema\n• Luego podrás eliminarlo sin problemas\n\n💡 Tip: Revisa la sección de "Citas" para gestionar las citas asociadas.`;
       } else {
-        mensajeError = `Error al eliminar el servicio "${eliminarModal.servicioNombre}".\n\nPor favor, intente nuevamente o contacte al administrador del sistema.`;
+        mensajeError = `Error al eliminar el servicio "${eliminarModal.servicioNombre}". Por favor, intente nuevamente o contacte al administrador del sistema.`;
       }
       
-      alert(mensajeError);
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: mensajeError
+      });
       setEliminarModal({ isOpen: false, servicioId: null, servicioNombre: '' });
     }
   };
@@ -657,6 +683,15 @@ const ServiciosView = () => {
             </button>
           </div>
         </div>
+      )}
+      
+      {/* Modal de Mensaje */}
+      {modalMensaje.isOpen && (
+        <ModalMensaje
+          type={modalMensaje.type}
+          mensaje={modalMensaje.mensaje}
+          onClose={() => setModalMensaje({ isOpen: false, type: 'success', mensaje: '' })}
+        />
       )}
     </div>
   );

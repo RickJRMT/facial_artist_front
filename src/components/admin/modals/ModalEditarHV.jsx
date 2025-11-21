@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload } from 'lucide-react';
 import './ModalEditarHV.css';
+import ModalMensaje from '../../layout/ModalMensaje';
 
 const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,11 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
   const [hasImageAntesChanged, setHasImageAntesChanged] = useState(false);
   const [hasImageDespuesChanged, setHasImageDespuesChanged] = useState(false);
   const [errorDescripcion, setErrorDescripcion] = useState('');
+  const [modalMensaje, setModalMensaje] = useState({
+    isOpen: false,
+    type: 'error',
+    mensaje: ''
+  });
 
   // Actualizar formData cuando cambie hojaVida
   useEffect(() => {
@@ -96,14 +102,22 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
     if (file) {
       // Validar que sea una imagen
       if (!file.type.startsWith('image/')) {
-        alert('Por favor, seleccione un archivo de imagen válido');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'Por favor, seleccione un archivo de imagen válido'
+        });
         e.target.value = ''; // Limpiar el input
         return;
       }
       
       // Validar tamaño máximo (5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('La imagen no debe superar los 5MB');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'La imagen no debe superar los 5MB'
+        });
         e.target.value = ''; // Limpiar el input
         return;
       }
@@ -139,7 +153,11 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
     }
     
     if (errorDescripcion) {
-      alert('Por favor corrige los errores antes de continuar');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Por favor corrige los errores antes de continuar'
+      });
       return;
     }
     
@@ -165,7 +183,11 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
       handleCancelar();
     } catch (error) {
       console.error('Error al procesar imágenes:', error);
-      alert('Error al procesar las imágenes');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Error al procesar las imágenes'
+      });
     }
   };
 
@@ -350,6 +372,15 @@ const ModalEditarHV = ({ isOpen, onClose, onSave, hojaVida }) => {
           </button>
         </div>
       </div>
+
+      {/* Modal de Mensaje */}
+      {modalMensaje.isOpen && (
+        <ModalMensaje
+          type={modalMensaje.type}
+          mensaje={modalMensaje.mensaje}
+          onClose={() => setModalMensaje({ isOpen: false, type: 'error', mensaje: '' })}
+        />
+      )}
     </>
   );
 };

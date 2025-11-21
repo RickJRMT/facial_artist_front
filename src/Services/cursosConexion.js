@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 /**
  * URL base para las operaciones con cursos
  */
-const API_URL_CURSOS = 'http://localhost:3000/api/cursos';
+const API_URL_CURSOS = '/api/cursos';
 
 /**
  * Obtiene la lista de todos los cursos disponibles
@@ -12,7 +12,7 @@ const API_URL_CURSOS = 'http://localhost:3000/api/cursos';
  */
 export const obtenerCursos = async () => {
     try {
-        const response = await axios.get(API_URL_CURSOS);
+        const response = await axiosInstance.get(API_URL_CURSOS);
         // Transformar los datos para que el frontend use los nombres esperados
         const cursos = Array.isArray(response.data)
             ? response.data.map(c => ({
@@ -50,7 +50,7 @@ export const obtenerCursos = async () => {
  */
 export const obtenerCursoPorId = async (id) => {
     try {
-        const response = await axios.get(`${API_URL_CURSOS}/${id}`);
+        const response = await axiosInstance.get(`${API_URL_CURSOS}/${id}`);
         const curso = response.data;
         return {
             id: curso.idCurso,
@@ -91,7 +91,7 @@ export const obtenerCursoPorId = async (id) => {
  */
 export const crearCurso = async (cursoData) => {
     try {
-        const response = await axios.post(API_URL_CURSOS, cursoData, {
+        const response = await axiosInstance.post(API_URL_CURSOS, cursoData, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -118,7 +118,7 @@ export const crearCurso = async (cursoData) => {
  */
 export const actualizarCurso = async (id, cursoData) => {
     try {
-        const response = await axios.put(`${API_URL_CURSOS}/${id}`, cursoData);
+        const response = await axiosInstance.put(`${API_URL_CURSOS}/${id}`, cursoData);
         return response.data;
     } catch (error) {
         console.error('Error al actualizar curso:', error);
@@ -134,7 +134,7 @@ export const actualizarCurso = async (id, cursoData) => {
  */
 export const eliminarCurso = async (id) => {
     try {
-        const response = await axios.delete(`${API_URL_CURSOS}/${id}`);
+        const response = await axiosInstance.delete(`${API_URL_CURSOS}/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error al eliminar curso:', error);

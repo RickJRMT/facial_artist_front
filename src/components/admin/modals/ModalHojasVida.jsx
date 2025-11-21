@@ -3,6 +3,7 @@ import { X, Edit, Trash2, Calendar, Clock, User, AlertCircle, ChevronDown, Chevr
 import './ModalHojasVida.css';
 import { useHojasVida } from '../../../hooks/useHojasVida';
 import ModalEditarHV from './ModalEditarHV';
+import ModalMensaje from '../../layout/ModalMensaje';
 
 const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
   const { hojasVida, loading, error, eliminarHoja, actualizarHoja, actualizarLista } = useHojasVida(cliente?.idCliente);
@@ -13,6 +14,13 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
   
   // Estado para controlar qué acordeones están abiertos
   const [imagenesAbiertas, setImagenesAbiertas] = useState({});
+  
+  // Estado para el modal de mensajes
+  const [modalMensaje, setModalMensaje] = useState({
+    isOpen: false,
+    type: 'success',
+    mensaje: ''
+  });
 
   const handleEditar = (hoja) => {
     setHojaSeleccionada(hoja);
@@ -37,15 +45,27 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
       const success = await actualizarHoja(datosActualizados.idHv, datosActualizados);
       
       if (success) {
-        alert('Hoja de vida actualizada correctamente');
+        setModalMensaje({
+          isOpen: true,
+          type: 'success',
+          mensaje: 'Hoja de vida actualizada correctamente'
+        });
         setModalEditarOpen(false);
         setHojaSeleccionada(null);
       } else {
-        alert('Error al actualizar la hoja de vida');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'Error al actualizar la hoja de vida'
+        });
       }
     } catch (error) {
       console.error('Error al actualizar:', error);
-      alert('Error al actualizar la hoja de vida');
+      setModalMensaje({
+        isOpen: true,
+        type: 'error',
+        mensaje: 'Error al actualizar la hoja de vida'
+      });
     }
   };
 
@@ -53,9 +73,17 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta hoja de vida?')) {
       const success = await eliminarHoja(idHv);
       if (success) {
-        alert('Hoja de vida eliminada correctamente');
+        setModalMensaje({
+          isOpen: true,
+          type: 'success',
+          mensaje: 'Hoja de vida eliminada correctamente'
+        });
       } else {
-        alert('Error al eliminar la hoja de vida');
+        setModalMensaje({
+          isOpen: true,
+          type: 'error',
+          mensaje: 'Error al eliminar la hoja de vida'
+        });
       }
     }
   };
@@ -230,6 +258,15 @@ const ModalHojasVida = ({ isOpen, onClose, cliente }) => {
         onSave={handleGuardarEdicion}
         hojaVida={hojaSeleccionada}
       />
+
+      {/* Modal de Mensaje */}
+      {modalMensaje.isOpen && (
+        <ModalMensaje
+          type={modalMensaje.type}
+          mensaje={modalMensaje.mensaje}
+          onClose={() => setModalMensaje({ isOpen: false, type: 'success', mensaje: '' })}
+        />
+      )}
     </>
   );
 };
