@@ -1,9 +1,13 @@
 import React from 'react';
 import { Home, Users, Scissors, Calendar, GraduationCap, UserCircle, LogOut as LogOutIcon } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import './Sidebar.css';
-import { Link } from "react-router-dom";
 
 const Sidebar = ({ activeMenu, setActiveMenu, isOpen, onClose }) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth(); // ← Usamos el logout del contexto
+
   const menuItems = [
     { id: 'inicio', icon: Home, label: 'Inicio' },
     { id: 'clientes', icon: Users, label: 'Clientes' },
@@ -13,6 +17,12 @@ const Sidebar = ({ activeMenu, setActiveMenu, isOpen, onClose }) => {
     { id: 'profesionales', icon: UserCircle, label: 'Profesionales' },
     { id: 'agenda', icon: Calendar, label: 'Agenda' },
   ];
+
+  const handleLogout = () => {
+    logout();                    // Borra token y user de localStorage
+    if (onClose) onClose();      // Cierra el sidebar (importante en móvil)
+    navigate('/homecliente');    // Redirige al home público
+  };
 
   return (
     <div className={`sidebar ${isOpen ? 'open' : ''}`}>
@@ -28,7 +38,7 @@ const Sidebar = ({ activeMenu, setActiveMenu, isOpen, onClose }) => {
             className={`nav-item ${activeMenu === item.id ? 'nav-item-active' : ''}`}
             onClick={() => {
               setActiveMenu(item.id);
-              onClose && onClose();
+              onClose?.();
             }}
           >
             <item.icon size={20} />
@@ -37,9 +47,10 @@ const Sidebar = ({ activeMenu, setActiveMenu, isOpen, onClose }) => {
         ))}
       </nav>
 
-      <button className="nav-item-logout" onClick={onClose}>
+      {/* Botón Salir CORRECTO */}
+      <button className="nav-item-logout" onClick={handleLogout}>
         <LogOutIcon size={20} />
-      <Link to='/homecliente'><span>Salir</span></Link>  
+        <span>Salir</span>
       </button>
     </div>
   );
