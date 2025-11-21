@@ -1,10 +1,12 @@
 .servicios-container {
   padding: 24px;
+  padding-bottom: 32px;
   background: #f5f3f0;
-  min-height: calc(100vh - 64px);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .descripcion-truncada {
@@ -116,11 +118,10 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
   margin-bottom: 16px;
+  overflow: visible;
 }
 
 .servicios-table-title {
@@ -132,8 +133,6 @@
 
 .servicios-table-wrapper {
   overflow-x: auto;
-  flex: 1;
-  min-height: 0;
   margin: -8px;
   padding: 8px;
 }
@@ -324,11 +323,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 14px 16px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin-top: 12px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
 }
 
 .servicios-pagination-info {
@@ -413,13 +414,21 @@
 
 @media (max-width: 768px) {
   .servicios-container {
-    padding: 16px;
+    padding: 16px 12px;
+    padding-bottom: 24px;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .servicios-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    margin-bottom: 12px;
   }
   
   .servicios-title-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    text-align: left;
   }
   
   .servicios-title {
@@ -430,48 +439,47 @@
     font-size: 13px;
   }
   
-  .descripcion {
-    max-width: 200px;
-  }
-  
-  .servicios-btn-visualizar {
-    padding: 6px 12px;
-  }
-  
-  .servicios-action-buttons {
-    gap: 4px;
-  }
-  
-  .servicios-btn-edit,
-  .servicios-btn-delete {
-    width: 32px;
-    height: 32px;
-  }
-
   .btn-nuevo-servicio {
     width: 100%;
     justify-content: center;
+    padding: 10px 16px;
+  }
+
+  .servicios-search-section {
+    margin-bottom: 16px;
+  }
+
+  .servicios-search-input {
+    padding: 12px 16px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+
+  /* Ocultar tabla en móviles */
+  .servicios-table-wrapper {
+    display: none !important;
   }
 
   .servicios-pagination-container {
     flex-direction: column;
     gap: 12px;
     align-items: center;
-    padding: 12px;
+    padding: 14px 12px;
     margin-top: 16px;
+    margin-bottom: 12px;
   }
 
   .servicios-pagination-info {
     order: 2;
     font-size: 13px;
     text-align: center;
+    width: 100%;
   }
 
   .servicios-pagination-controls {
     order: 1;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
   }
 
   .servicios-pagination-btn {
@@ -494,88 +502,102 @@
 
 @media (max-width: 480px) {
   .servicios-container {
-    padding: 12px;
+    padding: 12px 8px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+  }
+  
+  .servicios-header {
+    margin-bottom: 12px;
   }
   
   .servicios-title {
     font-size: 20px;
   }
   
-  .servicios-table-card {
-    padding: 10px;
-  }
-  
-  .servicios-table th,
-  .servicios-table td {
-    padding: 10px 6px;
+  .servicios-subtitle {
     font-size: 12px;
   }
-  
-  .descripcion {
-    max-width: 150px;
+
+  .btn-nuevo-servicio {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .servicios-search-section {
+    margin-bottom: 12px;
+  }
+
+  .servicios-search-input {
+    padding: 10px 12px;
+    font-size: 16px;
   }
   
-  .badge {
-    padding: 4px 8px;
-    font-size: 11px;
+  .servicios-table-card {
+    padding: 12px 8px;
+    margin-bottom: 12px;
   }
   
-  .servicios-btn-edit,
-  .servicios-btn-delete {
-    width: 28px;
-    height: 28px;
+  .servicios-table-title {
+    font-size: 16px;
+    text-align: left;
   }
 
   .servicios-pagination-container {
-    padding: 8px 10px;
+    padding: 12px 8px;
+    gap: 10px;
+    margin-bottom: 10px;
   }
 
   .servicios-pagination-info {
-    font-size: 11px;
-    text-align: center;
+    font-size: 12px;
+    width: 100%;
   }
 
   .servicios-pagination-controls {
-    flex-wrap: wrap;
-    justify-content: center;
+    gap: 4px;
   }
 
   .servicios-pagination-btn {
-    min-width: 24px;
-    height: 24px;
-    font-size: 11px;
-    padding: 0 4px;
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+    padding: 0 6px;
   }
 
   .servicios-pagination-btn.servicios-pagination-nav {
-    padding: 0 8px;
+    padding: 0 10px;
     font-size: 11px;
   }
 
   .servicios-pagination-ellipsis {
     padding: 0 2px;
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 
 /* Vista de tarjetas móviles */
 .servicios-cards-container {
   display: grid;
-  gap: 16px;
-  padding: 8px 0;
+  gap: 14px;
+  padding: 0;
+  width: 100%;
+  overflow: visible;
 }
 
 .servicio-card {
   background: white;
   border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .servicio-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
   border-color: #d4a017;
 }
 
@@ -584,7 +606,7 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 12px;
-  gap: 12px;
+  gap: 10px;
 }
 
 .servicio-card-title {
@@ -596,52 +618,58 @@
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
-  margin: 0;
+  margin: 0 0 4px 0;
   display: block;
   word-wrap: break-word;
+  line-height: 1.3;
 }
 
 .servicio-id {
   font-size: 12px;
-  color: #666;
+  color: #999;
   font-weight: 500;
-  margin-top: 2px;
   display: block;
 }
 
 .servicio-card-body {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .servicio-info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  gap: 12px;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
 .servicio-info-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: #666;
   flex-shrink: 0;
 }
 
 .servicio-info-row .costo {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: #d4a017;
 }
 
 .servicio-info-row .duracion {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: #4b5563;
 }
 
+.servicio-info-row .duracion::after {
+  display: none;
+}
+
 .servicio-descripcion {
-  margin-top: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f5f5f5;
 }
 
 .servicio-descripcion .servicio-info-label {
@@ -652,7 +680,7 @@
 .descripcion-truncada-mobile {
   font-size: 13px;
   color: #4a5568;
-  line-height: 1.4;
+  line-height: 1.5;
   margin: 0;
   cursor: pointer;
   display: -webkit-box;
@@ -662,6 +690,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: color 0.2s;
+  word-wrap: break-word;
 }
 
 .descripcion-truncada-mobile:hover {
@@ -672,7 +701,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding-top: 12px;
   border-top: 1px solid #f0f0f0;
 }
@@ -680,22 +709,23 @@
 .servicios-btn-visualizar-mobile {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   color: #495057;
-  padding: 8px 12px;
-  border: 1px solid #e9ecef;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   flex: 1;
-  justify-content: center;
+  min-width: 0;
 }
 
 .servicios-btn-visualizar-mobile:hover {
-  background: #e9ecef;
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
   color: #212529;
   border-color: #d4a017;
 }
@@ -703,6 +733,7 @@
 .servicios-action-buttons-mobile {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .servicios-btn-edit-mobile,
@@ -710,14 +741,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
   cursor: pointer;
   color: #495057;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .servicios-btn-edit-mobile:hover {
@@ -736,31 +768,25 @@
 @media (max-width: 900px) {
   .servicios-header {
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     align-items: stretch;
   }
   
   .servicios-title-container {
-    text-align: center;
+    text-align: left;
   }
   
   .btn-nuevo-servicio {
     width: 100%;
-    padding: 12px 16px;
+    padding: 11px 16px;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (max-width: 768px) {
-  
-  .servicios-search-input {
-    padding: 12px 16px;
-    font-size: 16px; /* Evita zoom en iOS */
-  }
-  
   .servicios-table-card {
-    padding: 16px 12px;
+    padding: 14px 10px;
   }
   
   .servicios-cards-container {
@@ -772,46 +798,31 @@
   }
   
   .servicio-card-header {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   
   .servicio-card-body {
     margin-bottom: 14px;
   }
+
+  .servicio-info-row {
+    margin-bottom: 9px;
+  }
+
+  .servicio-card-actions {
+    padding-top: 12px;
+  }
 }
 
 @media (max-width: 480px) {
-  .servicios-container {
-    padding: 16px 12px;
-  }
-  
-  .servicios-title {
-    font-size: 20px;
-  }
-  
-  .servicios-subtitle {
-    font-size: 14px;
-  }
-  
-  .btn-nuevo-servicio {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-  
-  .servicios-search-input {
-    padding: 10px 16px;
-    font-size: 16px;
-  }
-  
   .servicios-table-card {
-    padding: 12px 8px;
-    margin-bottom: 12px;
+    padding: 10px 6px;
+    margin-bottom: 10px;
   }
   
   .servicios-table-title {
-    font-size: 18px;
-    margin-bottom: 16px;
-    text-align: center;
+    font-size: 16px;
+    margin-bottom: 12px;
   }
   
   .servicios-cards-container {
@@ -823,6 +834,11 @@
     border-radius: 8px;
   }
   
+  .servicio-card-header {
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  
   .servicio-card-title .servicio-nombre {
     font-size: 15px;
   }
@@ -830,38 +846,146 @@
   .servicio-id {
     font-size: 11px;
   }
+
+  .servicio-card-body {
+    margin-bottom: 12px;
+  }
+  
+  .servicio-info-row {
+    margin-bottom: 8px;
+  }
   
   .servicio-info-label {
-    font-size: 13px;
+    font-size: 12px;
   }
   
   .servicio-info-row .costo {
-    font-size: 15px;
+    font-size: 14px;
   }
   
   .servicio-info-row .duracion {
-    font-size: 13px;
+    font-size: 12px;
+  }
+
+  .servicio-descripcion {
+    margin-top: 8px;
+    padding-top: 8px;
   }
   
   .descripcion-truncada-mobile {
     font-size: 12px;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-  }
-  
-  .servicios-btn-visualizar-mobile {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-  
-  .servicios-btn-edit-mobile,
-  .servicios-btn-delete-mobile {
-    width: 32px;
-    height: 32px;
+    line-height: 1.4;
   }
   
   .servicio-card-actions {
     gap: 8px;
+    padding-top: 10px;
+  }
+  
+  .servicios-btn-visualizar-mobile {
+    padding: 8px 10px;
+    font-size: 12px;
+    gap: 4px;
+  }
+  
+  .servicios-btn-edit-mobile,
+  .servicios-btn-delete-mobile {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 375px) {
+  .servicios-container {
+    padding: 10px 6px;
+    padding-bottom: 16px;
+    overflow-y: auto;
+  }
+
+  .servicios-header {
+    margin-bottom: 10px;
+  }
+  
+  .servicios-title {
+    font-size: 18px;
+  }
+  
+  .servicios-subtitle {
+    font-size: 12px;
+  }
+
+  .btn-nuevo-servicio {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .servicios-search-section {
+    margin-bottom: 10px;
+  }
+
+  .servicios-search-input {
+    padding: 9px 12px;
+    font-size: 15px;
+  }
+
+  .servicios-table-card {
+    padding: 8px 4px;
+  }
+  
+  .servicios-table-title {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .servicios-cards-container {
+    gap: 8px;
+  }
+  
+  .servicio-card {
+    padding: 10px;
+    border-radius: 6px;
+  }
+  
+  .servicio-card-title .servicio-nombre {
+    font-size: 14px;
+  }
+  
+  .servicio-id {
+    font-size: 10px;
+  }
+  
+  .servicio-info-label {
+    font-size: 11px;
+  }
+  
+  .servicio-info-row .costo {
+    font-size: 13px;
+  }
+  
+  .servicio-info-row .duracion {
+    font-size: 11px;
+  }
+  
+  .descripcion-truncada-mobile {
+    font-size: 11px;
+  }
+  
+  .servicios-btn-visualizar-mobile {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+  
+  .servicios-btn-edit-mobile,
+  .servicios-btn-delete-mobile {
+    width: 34px;
+    height: 34px;
+  }
+
+  .servicios-pagination-container {
+    padding: 10px 6px;
+    margin-bottom: 8px;
   }
 }
 
