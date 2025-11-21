@@ -1,4 +1,6 @@
 import axios from 'axios';
+// Nota: Este archivo usa axios directamente sin autenticación
+// Si el backend requiere autenticación, estos endpoints deben ser públicos
 
 const API_URL = 'http://localhost:3000/api'; // Ajusta según tu backend
 
@@ -14,15 +16,5 @@ export const getProfesionales = async () => {
 
 export const getServicios = async () => {
   const response = await axios.get(`${API_URL}/servicios`);
-  return response.data;
-};
-
-// export const getHorarios = async () => {
-//   const response = await axios.get(`${API_URL}/horarios`);
-//   return response.data;
-// };
-
-export const crearCita = async (cita) => {
-  const response = await axios.post(`${API_URL}/citas`, cita);
   return response.data;
 };

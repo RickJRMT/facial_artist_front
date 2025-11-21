@@ -4,6 +4,7 @@ import { obtenerServicios } from '../Services/ServiciosConexion';
 
 export function UseServicios() {
     const [servicios, setServicios] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function cargarServicios() {
@@ -16,10 +17,13 @@ export function UseServicios() {
                 setServicios(serviciosActivos);
             } catch (error) {
                 console.error('Error al cargar servicios:', error);
+                setServicios([]);
+            } finally {
+                setLoading(false);
             }
         }
         cargarServicios();
     }, []);
 
-    return { servicios };
+    return { servicios, loading };
 }

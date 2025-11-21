@@ -44,13 +44,24 @@ const SolicitarCitaPage = () => {
   const [idServicio, setIdServicio] = useState("");
 
   // Obtenemos listas de profesionales, servicios y horarios disponibles (según selección)
-  const { profesionales } = useProfesionales();
-  const { servicios } = UseServicios();
+  const { profesionales, loading: loadingProfesionales } = useProfesionales();
+  const { servicios, loading: loadingServicios } = UseServicios();
   const { horariosDisponibles } = useHorariosDisponibles(
     idProfesional,
     idServicio,
     resumen.fecha
   );
+
+  // Advertencia si no hay datos DESPUÉS de cargar (no durante la carga)
+  useEffect(() => {
+    // Solo mostrar advertencia si ya terminó de cargar y no hay datos
+    if (!loadingProfesionales && !loadingServicios && (profesionales.length === 0 || servicios.length === 0)) {
+      console.warn(
+        '⚠️ ADVERTENCIA: No se pudieron cargar profesionales o servicios.\n' +
+        'Verifica que el backend esté funcionando correctamente.'
+      );
+    }
+  }, [profesionales, servicios, loadingProfesionales, loadingServicios]);
   // es para determinar el estado visible o no visible del modal:
   const { modalVisible, mostrarModal, cerrarModal, datosCita } =
     useModalCitaExitosa();

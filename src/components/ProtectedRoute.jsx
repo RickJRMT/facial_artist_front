@@ -1,13 +1,14 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth'; // o el hook/context que estés usando
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
-export default function ProtectedRoute({ children }) {
-    const { isLoggedIn } = useAuth(); // o const user = useAuth().getUser(); si no tienes isLoggedIn
+export default function ProtectedRoute() {
+    const { isLoggedIn } = useAuth();
 
     if (!isLoggedIn()) {
-        // Redirige al home y abre el modal (opcional)
+        // Redirige al home si no está autenticado
         return <Navigate to="/" replace />;
     }
 
-    return children;
+    // Outlet renderiza las rutas hijas protegidas
+    return <Outlet />;
 }

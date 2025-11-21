@@ -121,37 +121,40 @@ const Header = () => {
           <span></span>
         </button>
 
-        {/* Menú de navegación principal */}
+        {/* Menú de navegación principal - Funciona para desktop y móvil */}
         <nav className={`header__nav ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
 
           {/* 1. Cursos y Servicios */}
           <a
             href="#cursos"
             className="main-nav-link"
-            onClick={() => setIsMobileMenuOpen(false)}   // ← Cierra menú al hacer clic
+            onClick={() => setIsMobileMenuOpen(false)}
           >
             Cursos y Servicios
           </a>
 
           {/* 2. Gestión de Citas (con submenú) */}
-          <div className="header__nav-item">
+          <div 
+            className="header__nav-item"
+            onMouseEnter={() => setIsSubmenuOpen(true)}
+            onMouseLeave={() => setIsSubmenuOpen(false)}
+          >
             <a
               href="#gestion"
               className="main-nav-link"
-              onClick={(e) => e.preventDefault()}   // Evita scroll innecesario
+              onClick={(e) => e.preventDefault()}
             >
               Gestión de Citas
             </a>
 
-            {/* Submenú */}
-            <ul className="header__submenu">
+            {/* Submenú - se muestra con hover en desktop y siempre visible en móvil */}
+            <ul className={`header__submenu ${isSubmenuOpen ? 'show' : ''}`}>
               <li>
-                {/* Opción 1: Abrir modal de Consultar Cita */}
                 <button
                   className="submenu-link"
                   onClick={() => {
                     setIsModalOpen(true);
-                    setIsMobileMenuOpen(false);   // ← Cierra menú móvil
+                    setIsMobileMenuOpen(false);
                   }}
                 >
                   Consultar Cita
@@ -159,18 +162,16 @@ const Header = () => {
               </li>
 
               <li>
-                {/* Opción 2: Ir a Solicitar Cita */}
                 <Link
                   to="/cita"
                   className="submenu-link"
-                  onClick={() => setIsMobileMenuOpen(false)}   // ← Cierra menú
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Solicitar Cita
                 </Link>
               </li>
 
               <li>
-                {/* Futuras opciones (puedes convertir a Link o button después) */}
                 <a href="#" className="submenu-link" onClick={() => setIsMobileMenuOpen(false)}>
                   Modificar Cita
                 </a>
@@ -190,63 +191,7 @@ const Header = () => {
             onClick={(e) => {
               e.preventDefault();
               setIsLoginModalOpen(true);
-              setIsMobileMenuOpen(false);   // ← Cierra menú móvil
-            }}
-          >
-            Iniciar sesión Administrador
-          </Link>
-        </nav>
-
-        {/* Menú de navegación principal */}
-        <nav className="header__nav">
-          {/* Enlace simple a la sección de cursos */}
-          <a href="#cursos" className="main-nav-link">
-            Cursos y Servicios
-          </a>
-
-          {/* Menú desplegable para gestión de citas */}
-          <div
-            className="header__nav-item"
-            onMouseEnter={() => setIsSubmenuOpen(true)}   // Abre el submenú al pasar el mouse
-            onMouseLeave={() => setIsSubmenuOpen(false)}  // Lo cierra al salir
-          >
-            <a href="#gestion" className="main-nav-link">
-              Gestión de Citas
-            </a>
-
-            {/* Submenú visible solo si isSubmenuOpen = true */}
-            {isSubmenuOpen && (
-              <ul className="header__submenu">
-                <li>
-                  {/* Botón que abre el modal de consulta */}
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="submenu-link"
-                  >
-                    Consultar Cita
-                  </button>
-                </li>
-                <li>
-                  {/* Enlace a la página de solicitud de cita */}
-                  <Link to="/cita">Solicitar Cita</Link>
-                </li>
-                <li>
-                  <a href="#">Modificar Cita</a>
-                </li>
-                <li>
-                  <a href="#">Cancelar Cita</a>
-                </li>
-              </ul>
-            )}
-          </div>
-
-          {/* Botón que abre el modal de login en lugar de ir directo a /admin */}
-          <Link
-            to="#"   // o to="/admin" (da igual, lo vamos a prevenir)
-            className="main-nav-link btn-admin-login"
-            onClick={(e) => {
-              e.preventDefault();               // Evita que navegue
-              setIsLoginModalOpen(true);        // Abre el modal
+              setIsMobileMenuOpen(false);
             }}
           >
             Iniciar sesión Administrador

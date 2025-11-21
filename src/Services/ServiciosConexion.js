@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import axiosPublic from './axiosPublic';
 
 /**
  * URL base para las operaciones con servicios
@@ -12,7 +13,7 @@ const API_URL_SERVICIOS = 'http://localhost:3000/api/servicios';
  */
 export const obtenerServicios = async () => {
     try {
-        const response = await axiosInstance.get(API_URL_SERVICIOS);
+        const response = await axiosPublic.get(API_URL_SERVICIOS);
         // Transformar los datos para que el frontend use los nombres esperados
         const servicios = Array.isArray(response.data)
             ? response.data.map(s => ({

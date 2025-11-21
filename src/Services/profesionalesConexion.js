@@ -1,12 +1,15 @@
 import axiosInstance from './axiosInstance';
+import axiosPublic from './axiosPublic';
 
 const API_URL_PROFESIONALES = 'http://localhost:3000/api/Profesional';
 
+// Usa axiosPublic para peticiones públicas (sin token)
 export const obtenerProfesionales = async () => {
     try {
-        const response = await axiosInstance.get(API_URL_PROFESIONALES);
+        const response = await axiosPublic.get(API_URL_PROFESIONALES);
         return response.data;
     } catch (error) {
+        console.error('Error al obtener profesionales:', error.message);
         throw error;
     }
 };

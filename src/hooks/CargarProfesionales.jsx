@@ -11,6 +11,7 @@ export function useProfesionales() {
   // Creamos un estado local para almacenar la lista de profesionales.
   // Inicialmente está vacío.
   const [profesionales, setProfesionales] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // useEffect se ejecuta cuando el componente que usa este hook se monta (solo una vez por el array de dependencias vacío []).
   useEffect(() => {
@@ -27,6 +28,10 @@ export function useProfesionales() {
       } catch (error) {
         // Si ocurre un error al obtener los datos, lo mostramos en consola.
         console.error('Error al cargar profesionales:', error);
+        // Mantener profesionales vacío para evitar crashes
+        setProfesionales([]);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -35,5 +40,5 @@ export function useProfesionales() {
   }, []); // El array vacío asegura que esto se ejecute solo una vez cuando se monta el componente.
 
   // Retornamos el estado `profesionales` para que quien use este hook pueda acceder a la lista.
-  return { profesionales };
+  return { profesionales, loading };
 }

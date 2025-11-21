@@ -13,14 +13,20 @@ axiosInstance.interceptors.request.use(config => {
     return config;
 });
 
-// Si da 401, desloguea automáticamente
+// Si da 401, desloguea automáticamente SOLO si hay un token presente
+// Esto evita redirecciones en rutas públicas
 axiosInstance.interceptors.response.use(
     response => response,
     error => {
         if (error.response?.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/';
+            const token = localStorage.getItem('token');
+            // Solo redirige si había un token (usuario autenticado cuya sesión expiró)
+            if (token) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            }
+            // Si no hay token, es una petición pública que falló, no redirigir
         }
         return Promise.reject(error);
     }
