@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { Search, Plus, Loader2 } from 'lucide-react';
 import './CursosView.css';
 import { UseCursos } from '../../../hooks/CargarCursos';
-import { eliminarCurso, crearCurso } from '../../../Services/cursosConexion';
+import { eliminarCurso, crearCurso, actualizarCurso } from '../../../Services/cursosConexion';
 import CursoCard from '../CursoCard';
 import ModalCrearCurso from '../modals/ModalCrearCurso';
+import ModalEditarCurso from '../modals/ModalEditarCurso';
 
 const CursosView = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [modalCrearOpen, setModalCrearOpen] = useState(false);
+  const [modalEditarOpen, setModalEditarOpen] = useState(false);
+  const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const { cursos, loading, error, recargarCursos } = UseCursos();
 
 
@@ -33,15 +36,24 @@ const CursosView = () => {
         cursoEstado: formData.estado || 'activo'
       };
 
-      // Si hay imagen, ya viene como base64 desde el modal
+      // Si hay imagen, convertirla a base64
       if (formData.imagen) {
-        const base64String = formData.imagen.split(',')[1]; // Remover el prefijo data:image
-        cursoData.imagenBase64 = base64String; // Cambiar cursoImagen por imagenBase64
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64String = reader.result.split(',')[1]; // Remover el prefijo data:image
+          cursoData.imagenBase64 = base64String;
+          
+          await crearCurso(cursoData);
+          recargarCursos();
+          alert('Curso creado exitosamente');
+        };
+        reader.readAsDataURL(formData.imagen);
+      } else {
+        // Si no hay imagen, crear el curso sin ella
+        await crearCurso(cursoData);
+        recargarCursos();
+        alert('Curso creado exitosamente');
       }
-
-      await crearCurso(cursoData);
-      recargarCursos();
-      alert('Curso creado exitosamente');
     } catch (error) {
       console.error('Error al crear curso:', error);
       alert('Error al crear el curso. Inténtalo de nuevo.');
@@ -49,7 +61,43 @@ const CursosView = () => {
   };
 
   const handleEditarCurso = (curso) => {
-    alert(`Editar curso: ${curso.nombre}`);
+    setCursoSeleccionado(curso);
+    setModalEditarOpen(true);
+  };
+
+  const handleActualizarCurso = async (formData) => {
+    try {
+      // Preparar los datos para enviar al backend
+      const cursoData = {
+        nombreCurso: formData.nombre,
+        cursoDescripcion: formData.descripcion,
+        cursoDuracion: formData.duracion,
+        cursoCosto: formData.costo,
+        cursoEstado: formData.estado || 'activo'
+      };
+
+      // Si la imagen fue cambiada, incluirla en los datos
+      if (formData.imagenCambiada && formData.imagen) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64String = reader.result.split(',')[1];
+          cursoData.imagenBase64 = base64String;
+          
+          await actualizarCurso(cursoSeleccionado.id || cursoSeleccionado.idCurso, cursoData);
+          recargarCursos();
+          alert('Curso actualizado exitosamente');
+        };
+        reader.readAsDataURL(formData.imagen);
+      } else {
+        // Si no se cambió la imagen, solo actualizar los demás datos
+        await actualizarCurso(cursoSeleccionado.id || cursoSeleccionado.idCurso, cursoData);
+        recargarCursos();
+        alert('Curso actualizado exitosamente');
+      }
+    } catch (error) {
+      console.error('Error al actualizar curso:', error);
+      alert('Error al actualizar el curso. Inténtalo de nuevo.');
+    }
   };
 
   const handleEliminarCurso = async (id) => {
@@ -157,6 +205,17 @@ const CursosView = () => {
         isOpen={modalCrearOpen}
         onClose={() => setModalCrearOpen(false)}
         onSave={handleCrearCurso}
+      />
+
+      {/* Modal Editar Curso */}
+      <ModalEditarCurso
+        isOpen={modalEditarOpen}
+        onClose={() => {
+          setModalEditarOpen(false);
+          setCursoSeleccionado(null);
+        }}
+        onSave={handleActualizarCurso}
+        curso={cursoSeleccionado}
       />
     </div>
   );
