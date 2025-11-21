@@ -1,5 +1,5 @@
 // esta conexión permite que, desde el modulo de admin, en el apartado de "citas" traiga todo el listado de citas
-import axios from 'axios';
+import axiosInstance from './axiosInstance.js';
 
 const API_URL_ADMIN_CITAS = 'http://localhost:3000/api/adminCitas'; // Ajusta URL si es diferente
 
@@ -12,7 +12,7 @@ export const obtenerCitasAdmin = async (includeCliente = false) => {
         }
 
         // CAMBIO: GET con params en URL (ej. /api/adminCitas?includeCliente=true)
-        const response = await axios.get(`${API_URL_ADMIN_CITAS}?${params.toString()}`);
+        const response = await axiosInstance.get(`${API_URL_ADMIN_CITAS}?${params.toString()}`);
 
         // Opcional: Mapea respuesta para aplanar si backend devuelve anidado (ej. {..., Cliente: {fechaNacCliente: '...'}})
         const citasEnriquecidas = response.data.map(cita => ({

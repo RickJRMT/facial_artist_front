@@ -5,6 +5,7 @@ import { consultarCita } from "../../Services/citasClientesConexion"; // Funció
 import axios from "axios";                        // Librería para hacer solicitudes HTTP
 import "../layout/Header.css";                    // Archivo CSS con los estilos del header
 import logo from "../../assets/img/logo_natalia.jpg"; // Logo de la empresa o marca
+import ModalLogin from './ModalLogin.jsx';         // Componente modal para login de administrador
 
 // Componente principal del encabezado
 const Header = () => {
@@ -18,6 +19,7 @@ const Header = () => {
   const [error, setError] = useState("");                    // Muestra mensajes de error al usuario si algo falla
   const [loading, setLoading] = useState(false);             // Indica si la aplicación está procesando la búsqueda
   const [cita, setCita] = useState(null);                    // Guarda los datos completos de la cita encontrada
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Controla si el modal de login está abierto
 
   // === Función para manejar la consulta de una cita ===
   const handleConsultar = async (e) => {
@@ -95,7 +97,7 @@ const Header = () => {
     setError("");            // Limpia cualquier mensaje de error
     setLoading(false);       // Asegura que loading esté en false
   };
- 
+
   return (
     <header className="header">
       {/* Contenedor principal del encabezado */}
@@ -150,8 +152,15 @@ const Header = () => {
             )}
           </div>
 
-          {/* Enlace al inicio de sesión de administración */}
-          <Link to="/admin" className="main-nav-link">
+          {/* Botón que abre el modal de login en lugar de ir directo a /admin */}
+          <Link
+            to="#"   // o to="/admin" (da igual, lo vamos a prevenir)
+            className="main-nav-link btn-admin-login"
+            onClick={(e) => {
+              e.preventDefault();               // Evita que navegue
+              setIsLoginModalOpen(true);        // Abre el modal
+            }}
+          >
             Iniciar sesión Administrador
           </Link>
         </nav>
@@ -252,6 +261,11 @@ const Header = () => {
           </div>
         </div>
       )}
+      {/* Modal de Login Administrador */}
+      <ModalLogin
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </header>
   );
 };

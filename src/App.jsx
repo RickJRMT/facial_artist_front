@@ -8,7 +8,8 @@ import CalendarioCitas from './components/layout/calendarioCitas.jsx';
 import ModalCitaExitosa from './components/layout/ModalCitaSolicitada.jsx';
 import Homecliente from './pages/homeCliente.jsx';
 import Adminpage from './pages/AdminPage.jsx';
-import SolicitarCitaCard from './pages/SolicitarCitaAdmin.jsx'; 
+import SolicitarCitaCard from './pages/SolicitarCitaAdmin.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 function App() {
   return (
     <BrowserRouter>
@@ -22,7 +23,15 @@ function App() {
         <Route path='/calendario' element={< CalendarioCitas />} />
         <Route path='/modal' element={<ModalCitaExitosa />} />
         <Route path='/homecliente' element={< Homecliente />} />
-        <Route path='/admin' element={< Adminpage />} />
+        {/* RUTA PROTEGIDA */}
+        <Route 
+          path='/admin' 
+          element={
+            <ProtectedRoute>
+              <Adminpage />
+            </ProtectedRoute>
+          } 
+        />
         <Route path='/adminCita' element={< SolicitarCitaCard />} />
         <Route path="*" element={<Homecliente />} />
       </Routes>

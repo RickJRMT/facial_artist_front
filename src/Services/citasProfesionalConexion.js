@@ -1,13 +1,9 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const API_BASE = 'http://localhost:3000/api';
 
-const citasProfesionalApi = axios.create({
-    baseURL: API_BASE,
-    // timeout: 5000,
-});
-
-citasProfesionalApi.interceptors.response.use(
+// Interceptor de errores (opcional, puedes dejarlo si quieres logs específicos)
+axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
         console.error('Error en citas profesional API:', error.response?.data || error.message);
@@ -16,21 +12,21 @@ citasProfesionalApi.interceptors.response.use(
 );
 
 export const getAllCitas = async () => {
-    const response = await citasProfesionalApi.get('/citas-profesional/all');
-    return response.data; // ← CAMBIO: Full data ({ citas: raw, eventosParaCalendario })
+    const response = await axiosInstance.get(`${API_BASE}/citas-profesional/all`);
+    return response.data;
 };
 
 export const getCitasByProfesional = async (idProfesional) => {
-    const response = await citasProfesionalApi.get(`/citas-profesional/profesional/${idProfesional}`);
-    return response.data.eventosParaCalendario || []; // Mantiene para compatibilidad
+    const response = await axiosInstance.get(`${API_BASE}/citas-profesional/profesional/${idProfesional}`);
+    return response.data.eventosParaCalendario || [];
 };
 
 export const getCitasByDate = async (fecha) => {
-    const response = await citasProfesionalApi.get(`/citas-profesional/date/${fecha}`);
-    return response.data; // ← CAMBIO: Full data (raw con idProfesional)
+    const response = await axiosInstance.get(`${API_BASE}/citas-profesional/date/${fecha}`);
+    return response.data;
 };
 
 export const getEstadisticasCitas = async () => {
-    const response = await citasProfesionalApi.get('/citas-profesional/stats');
+    const response = await axiosInstance.get(`${API_BASE}/citas-profesional/stats`);
     return response.data;
 };
