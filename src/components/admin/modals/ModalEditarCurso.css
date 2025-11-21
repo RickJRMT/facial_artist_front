@@ -1,0 +1,323 @@
+/* ModalEditarCurso.css - Estilos para el modal de editar curso */
+
+.modal-editar-curso-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-editar-curso-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 540px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 1001;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-editar-curso-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.modal-editar-curso-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.modal-editar-curso-close-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-editar-curso-close-button:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.modal-editar-curso-content {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-editar-curso-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.modal-editar-curso-form-group {
+  margin-bottom: 20px;
+}
+
+.modal-editar-curso-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.modal-editar-curso-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.modal-editar-curso-input:focus {
+  border-color: #d4a017;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.1);
+}
+
+.modal-editar-curso-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.modal-editar-curso-textarea:focus {
+  border-color: #d4a017;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.1);
+}
+
+/* Image Upload Styles */
+.image-upload-container {
+  position: relative;
+}
+
+.image-input {
+  display: none;
+}
+
+.image-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  max-height: 250px;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 20px;
+  background-color: #fafafa;
+  overflow: hidden;
+}
+
+.image-upload-label:hover {
+  border-color: #d4a017;
+  background-color: #fff9e6;
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  color: #9ca3af;
+  margin-bottom: 12px;
+}
+
+.upload-text {
+  font-size: 14px;
+  color: #374151;
+  text-align: center;
+  margin: 0;
+  font-weight: 500;
+}
+
+.image-preview {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
+
+.modal-editar-curso-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.modal-editar-curso-btn-cancelar {
+  padding: 10px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: white;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.modal-editar-curso-btn-cancelar:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.modal-editar-curso-btn-guardar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #d4a017 0%, #f4d03f 100%);
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(212, 160, 23, 0.25);
+  transition: all 0.2s ease;
+}
+
+.modal-editar-curso-btn-guardar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 160, 23, 0.35);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-editar-curso-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .modal-editar-curso-header {
+    padding: 16px 20px;
+  }
+
+  .modal-editar-curso-content {
+    padding: 20px;
+  }
+
+  .modal-editar-curso-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .modal-editar-curso-footer {
+    padding: 12px 20px;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .modal-editar-curso-btn-cancelar,
+  .modal-editar-curso-btn-guardar {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-editar-curso-modal {
+    width: 98%;
+    max-height: 98vh;
+  }
+
+  .modal-editar-curso-header {
+    padding: 14px 16px;
+  }
+
+  .modal-editar-curso-title {
+    font-size: 16px;
+  }
+
+  .modal-editar-curso-content {
+    padding: 16px;
+  }
+
+  .modal-editar-curso-form-group {
+    margin-bottom: 16px;
+  }
+
+  .modal-editar-curso-footer {
+    padding: 10px 16px;
+  }
+}
+
+/* Estilos de validación y errores */
+.input-error {
+  border-color: #dc2626 !important;
+  background-color: #fff5f5;
+}
+
+.input-error:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+}
+
+/* Dropzone error style */
+.dropzone-error {
+  border-color: #dc2626 !important;
+  background-color: #fff5f5;
+}
+
+/* Botón deshabilitado */
+.btn-disabled {
+  background: #9ca3af !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-disabled:hover {
+  background: #9ca3af !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
