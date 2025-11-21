@@ -348,3 +348,103 @@
     justify-content: center;
   }
 }
+
+/* === MENÚ HAMBURGUESA Y RESPONSIVE === */
+
+/* Botón hamburguesa (solo visible en móvil) */
+.header__mobile-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 1001;
+}
+
+.header__mobile-toggle span {
+  width: 28px;
+  height: 3px;
+  background: var(--color-texto-principal);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+/* Animación del ícono al abrir */
+.header__mobile-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+.header__mobile-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+.header__mobile-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Overlay oscuro cuando menú móvil está abierto */
+.header__mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Responsive: ocultar menú normal y mostrar hamburguesa */
+@media (max-width: 768px) {
+  .header__mobile-toggle {
+    display: flex;
+  }
+
+  .header__nav {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 280px;
+    height: 100vh;
+    background: var(--color-fondo-header);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 80px 20px 40px;
+    gap: 20px;
+    transition: left 0.4s ease;
+    z-index: 1000;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .header__nav.mobile-open {
+    left: 0;
+  }
+
+  .header__nav-item {
+    width: 100%;
+  }
+
+  .main-nav-link {
+    display: block;
+    padding: 12px 0;
+    font-size: 1.1rem;
+  }
+
+  /* Submenú en móvil */
+  .header__submenu {
+    position: static;
+    display: block;
+    background: transparent;
+    box-shadow: none;
+    padding-left: 20px;
+  }
+
+  .header__submenu li {
+    margin: 8px 0;
+  }
+}
+
+/* Pequeño ajuste para logo en móvil */
+@media (max-width: 480px) {
+  .header__logo img {
+    transform: scale(2.2);
+    margin-left: 10px;
+  }
+}

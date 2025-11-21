@@ -47,7 +47,7 @@ const Sidebar = ({ activeMenu, setActiveMenu, isOpen, onClose }) => {
         ))}
       </nav>
 
-      {/* Botón Salir CORRECTO */}
+      {/* Botón Salir */}
       <button className="nav-item-logout" onClick={handleLogout}>
         <LogOutIcon size={20} />
         <span>Salir</span>

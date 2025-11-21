@@ -16,23 +16,26 @@ function App() {
       {/* Definimos rutas con <Routes> y <Route path="..." element={<Componente />} />
       Cuando la URL coincide con el path, React muestra ese componente. */}
       <Routes>
-        {/* Ruta por defecto al entrar a la raiz (/) muestra HomeCliente */}
-        <Route path='/' element={<Homecliente />} />
+        {/* RUTAS PÚBLICAS - Cualquier visitante */}
+        <Route path="/" element={<Homecliente />} />
+        <Route path="/homecliente" element={<Homecliente />} />
         <Route path="/cursos" element={<CursosPage />} />
-        <Route path='/cita' element={< SolicitarCitaPage />} />
-        <Route path='/calendario' element={< CalendarioCitas />} />
-        <Route path='/modal' element={<ModalCitaExitosa />} />
-        <Route path='/homecliente' element={< Homecliente />} />
-        {/* RUTA PROTEGIDA */}
-        <Route 
-          path='/admin' 
-          element={
-            <ProtectedRoute>
-              <Adminpage />
-            </ProtectedRoute>
-          } 
-        />
-        <Route path='/adminCita' element={< SolicitarCitaCard />} />
+
+        {/* CLIENTES - PÚBLICA */}
+        <Route path="/cita" element={<SolicitarCitaPage />} />
+
+        <Route path="/calendario" element={<CalendarioCitas />} />
+        <Route path="/modal" element={<ModalCitaExitosa />} />
+
+        {/* RUTAS PROTEGIDAS - Solo administrador */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/*" element={<Adminpage />} />
+
+          {/* MUEVE ESTA LÍNEA DENTRO DEL PROTECTEDROUTE */}
+          <Route path="/adminCita" element={<SolicitarCitaCard />} />
+        </Route>
+
+        {/* Ruta por defecto si no existe */}
         <Route path="*" element={<Homecliente />} />
       </Routes>
     </BrowserRouter>

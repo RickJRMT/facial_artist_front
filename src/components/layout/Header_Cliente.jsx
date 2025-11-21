@@ -20,6 +20,7 @@ const Header = () => {
   const [loading, setLoading] = useState(false);             // Indica si la aplicación está procesando la búsqueda
   const [cita, setCita] = useState(null);                    // Guarda los datos completos de la cita encontrada
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Controla si el modal de login está abierto
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Controla el responsivo para dispositivos mobiles
 
   // === Función para manejar la consulta de una cita ===
   const handleConsultar = async (e) => {
@@ -109,6 +110,93 @@ const Header = () => {
           </Link>
         </div>
 
+        {/* Botón hamburguesa visible solo en móvil */}
+        <button
+          className={`header__mobile-toggle ${isMobileMenuOpen ? 'active' : ''}`}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        {/* Menú de navegación principal */}
+        <nav className={`header__nav ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+
+          {/* 1. Cursos y Servicios */}
+          <a
+            href="#cursos"
+            className="main-nav-link"
+            onClick={() => setIsMobileMenuOpen(false)}   // ← Cierra menú al hacer clic
+          >
+            Cursos y Servicios
+          </a>
+
+          {/* 2. Gestión de Citas (con submenú) */}
+          <div className="header__nav-item">
+            <a
+              href="#gestion"
+              className="main-nav-link"
+              onClick={(e) => e.preventDefault()}   // Evita scroll innecesario
+            >
+              Gestión de Citas
+            </a>
+
+            {/* Submenú */}
+            <ul className="header__submenu">
+              <li>
+                {/* Opción 1: Abrir modal de Consultar Cita */}
+                <button
+                  className="submenu-link"
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setIsMobileMenuOpen(false);   // ← Cierra menú móvil
+                  }}
+                >
+                  Consultar Cita
+                </button>
+              </li>
+
+              <li>
+                {/* Opción 2: Ir a Solicitar Cita */}
+                <Link
+                  to="/cita"
+                  className="submenu-link"
+                  onClick={() => setIsMobileMenuOpen(false)}   // ← Cierra menú
+                >
+                  Solicitar Cita
+                </Link>
+              </li>
+
+              <li>
+                {/* Futuras opciones (puedes convertir a Link o button después) */}
+                <a href="#" className="submenu-link" onClick={() => setIsMobileMenuOpen(false)}>
+                  Modificar Cita
+                </a>
+              </li>
+              <li>
+                <a href="#" className="submenu-link" onClick={() => setIsMobileMenuOpen(false)}>
+                  Cancelar Cita
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* 3. Iniciar sesión Administrador */}
+          <Link
+            to="#"
+            className="main-nav-link btn-admin-login"
+            onClick={(e) => {
+              e.preventDefault();
+              setIsLoginModalOpen(true);
+              setIsMobileMenuOpen(false);   // ← Cierra menú móvil
+            }}
+          >
+            Iniciar sesión Administrador
+          </Link>
+        </nav>
+
         {/* Menú de navegación principal */}
         <nav className="header__nav">
           {/* Enlace simple a la sección de cursos */}
@@ -165,6 +253,14 @@ const Header = () => {
           </Link>
         </nav>
       </div>
+
+      {/* Overlay cuando el menú móvil está abierto */}
+      {isMobileMenuOpen && (
+        <div
+          className="header__mobile-overlay"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
 
       {/* === Modal de consulta de cita === */}
       {isModalOpen && (
