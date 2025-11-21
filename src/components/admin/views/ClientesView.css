@@ -303,6 +303,13 @@
   }
 }
 
+/* Vista de tarjetas móviles */
+.clientes-cards-container {
+  display: grid;
+  gap: 16px;
+  padding: 8px 0;
+}
+
 @media (max-width: 768px) {
   .clientes-container {
     padding: 16px;
@@ -322,10 +329,22 @@
     font-size: 13px;
   }
   
-  .clientes-table th,
-  .clientes-table td {
-    padding: 10px 6px;
-    font-size: 12px;
+  /* Ocultar tabla en móvil */
+  .clientes-table {
+    display: none;
+  }
+
+  /* Mostrar cards en móvil */
+  .clientes-cards-container {
+    display: grid;
+  }
+
+  .table-card {
+    padding: 16px 12px;
+  }
+
+  .clientes-cards-container {
+    gap: 12px;
   }
   
   .pagination-container {
@@ -358,7 +377,7 @@
 
 @media (max-width: 480px) {
   .clientes-container {
-    padding: 12px;
+    padding: 16px 12px;
   }
   
   .clientes-title {
@@ -366,15 +385,25 @@
   }
   
   .table-card {
-    padding: 10px;
+    padding: 12px 8px;
+    margin-bottom: 12px;
   }
-  
-  .clientes-table th,
-  .clientes-table td {
-    padding: 10px 6px;
-    font-size: 12px;
+
+  .table-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+    text-align: center;
   }
-  
+
+  .clientes-cards-container {
+    gap: 10px;
+  }
+
+  .search-input {
+    padding: 10px 16px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+
   .pagination-container {
     padding: 8px 10px;
   }
@@ -538,6 +567,26 @@
   .clientes-table td:nth-child(7) { width: 20%; }
 }
 
+/* Forzar vista de tabla en pantallas grandes */
+@media (min-width: 769px) {
+  .clientes-cards-container {
+    display: none !important;
+  }
+  
+  .clientes-table {
+    display: table !important;
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .table-row,
+  .btn-acciones-hv,
+  .pagination-btn {
+    transition: none !important;
+  }
+}
+
 @media (max-width: 480px) {
   .btn-acciones-hv {
     width: 38px;
@@ -550,42 +599,13 @@
     box-shadow: 0 4px 12px rgba(212, 160, 23, 0.3);
   }
 
+  /* Ocultar tabla en móvil completamente */
   .clientes-table {
-    font-size: 12px;
+    display: none !important;
   }
 
-  .clientes-table th:nth-child(4) {
-    display: none;
-  }
-
-  .clientes-table td:nth-child(4) {
-    display: none;
-  }
-
-  /* En mobile solo mostrar: ID, Nombre, Acciones */
-  .clientes-table th:nth-child(1),
-  .clientes-table td:nth-child(1) { width: 10%; }
-
-  .clientes-table th:nth-child(2),
-  .clientes-table td:nth-child(2) { width: 60%; }
-
-  .clientes-table th:nth-child(3),
-  .clientes-table td:nth-child(3),
-  .clientes-table th:nth-child(5),
-  .clientes-table td:nth-child(5),
-  .clientes-table th:nth-child(6),
-  .clientes-table td:nth-child(6) {
-    display: none;
-  }
-
-  .clientes-table th:nth-child(7),
-  .clientes-table td:nth-child(7) { width: 30%; }
-
-  .clientes-table td {
-    padding: 10px 8px;
-  }
-
-  .clientes-table th {
-    padding: 10px 8px;
+  /* Asegurar que las cards se muestran */
+  .clientes-cards-container {
+    display: grid !important;
   }
 }

@@ -3,6 +3,7 @@ import { Search, FileText } from 'lucide-react';
 import './ClientesView.css';
 import { useClientes } from '../../../hooks/CargarClientes';
 import ModalHojasVida from '../modals/ModalHojasVida';
+import ClienteCard from '../ClienteCard';
 
 /**
  * Componente principal para la gestión de clientes en el panel de administración
@@ -17,12 +18,29 @@ const ClientesView = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [modalHVOpen, setModalHVOpen] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const itemsPerPage = 10;
 
   const filteredClientes = clientes.filter(cliente =>
     cliente.nombreCliente?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cliente.celularCliente?.includes(searchTerm)
   );
+
+  /**
+   * Efecto para detectar el tamaño de pantalla
+   */
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   // Calcular la paginación
   const totalPages = Math.ceil(filteredClientes.length / itemsPerPage);
@@ -38,13 +56,16 @@ const ClientesView = () => {
   // Funciones de paginación
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    // Scroll hacia arriba de la tabla
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll hacia arriba - en móviles scroll a la tabla/cards, en desktop al inicio
+    const scrollTarget = isMobile 
+      ? document.querySelector('.table-card')?.offsetTop || 0
+      : 0;
+    window.scrollTo({ top: scrollTarget - (isMobile ? 20 : 0), behavior: 'smooth' });
   };
 
   const renderPaginationButtons = () => {
     const buttons = [];
-    const maxVisible = 5;
+    const maxVisible = isMobile ? 3 : 5; // Menos botones en móviles
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
 
@@ -142,6 +163,12 @@ const ClientesView = () => {
     }
   };
 
+  // Función para manejar ver hojas de vida
+  const handleVerHojasVida = (cliente) => {
+    setClienteSeleccionado(cliente);
+    setModalHVOpen(true);
+  };
+
   return (
     <div className="clientes-container">
       {/* Header */}
@@ -179,69 +206,86 @@ const ClientesView = () => {
             </div>
           ) : (
             <>
-          <table className="clientes-table">
-            <thead>
-              <tr className="table-header">
-                <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Celular</th>
-                <th>Fecha Nacimiento</th>
-                    <th>Edad</th>
-                    <th>Fecha Registro</th>
-                    <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
+              {/* Vista Desktop - Tabla */}
+              {!isMobile && (
+                <table className="clientes-table">
+                  <thead>
+                    <tr className="table-header">
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Celular</th>
+                      <th>Fecha Nacimiento</th>
+                      <th>Edad</th>
+                      <th>Fecha Registro</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentClientes.map((cliente) => (
+                      <tr key={cliente.idCliente} className="table-row">
+                        <td>{cliente.idCliente}</td>
+                        <td>
+                          <span className="cliente-nombre">{cliente.nombreCliente}</span>
+                        </td>
+                        <td>
+                          <span className="celular">{cliente.celularCliente}</span>
+                        </td>
+                        <td>
+                          <span className="fecha-nacimiento">
+                            {formatDate(cliente.fechaNacCliente)}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="edad">
+                            {calculateAge(cliente.fechaNacCliente)} años
+                          </span>
+                        </td>
+                        <td>
+                          <span className="fecha-registro">
+                            {formatDateTime(cliente.fechaRegistro)}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            className="btn-acciones-hv"
+                            onClick={() => {
+                              setClienteSeleccionado(cliente);
+                              setModalHVOpen(true);
+                            }}
+                            title="Ver hojas de vida"
+                          >
+                            <FileText size={16} />
+                            <span>Ver H/V</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              {/* Vista Mobile - Cards */}
+              {isMobile && (
+                <div className="clientes-cards-container">
                   {currentClientes.map((cliente) => (
-                    <tr key={cliente.idCliente} className="table-row">
-                      <td>{cliente.idCliente}</td>
-                      <td>
-                        <span className="cliente-nombre">{cliente.nombreCliente}</span>
-                  </td>
-                      <td>
-                        <span className="celular">{cliente.celularCliente}</span>
-                  </td>
-                      <td>
-                        <span className="fecha-nacimiento">
-                          {formatDate(cliente.fechaNacCliente)}
-                        </span>
-                  </td>
-                      <td>
-                        <span className="edad">
-                          {calculateAge(cliente.fechaNacCliente)} años
-                        </span>
-                  </td>
-                      <td>
-                        <span className="fecha-registro">
-                          {formatDateTime(cliente.fechaRegistro)}
-                        </span>
-                  </td>
-                      <td>
-                        <button
-                          className="btn-acciones-hv"
-                          onClick={() => {
-                            setClienteSeleccionado(cliente);
-                            setModalHVOpen(true);
-                          }}
-                          title="Ver hojas de vida"
-                        >
-                          <FileText size={16} />
-                          <span>Ver H/V</span>
-                        </button>
-                      </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {filteredClientes.length === 0 && (
-            <div className="empty-state">
-              <p>No se encontraron clientes</p>
-            </div>
-          )}
+                    <ClienteCard
+                      key={cliente.idCliente}
+                      cliente={cliente}
+                      onVerHojasVida={handleVerHojasVida}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {filteredClientes.length === 0 && (
+                <div className="empty-state">
+                  <p>No se encontraron clientes</p>
+                </div>
+              )}
             </>
           )}
         </div>
-        </div>
+      </div>
 
         {/* Paginación */}
       {!loading && !error && filteredClientes.length > 0 && (
